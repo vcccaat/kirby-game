@@ -1,0 +1,13 @@
+{
+  "entryPoints": ["./src/anigraph/index.ts"],
+  "out": "./docsRelated/hierarchy/docs/",
+  "json": "./docsRelated/hierarchy/generator/input/api_reflection_data.json",
+  "exclude": [
+    "node_modules",
+    "Assignment1",
+    "src/Assignment1",
+    "src/Assignment1Solution",
+    "src/ExampleApps",
+    "src/tests"
+  ]
+}
