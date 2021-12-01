@@ -14,17 +14,20 @@ export class ExampleThirdPersonControls extends APointerDragPlayerControls{
     // we will filter the player's position
     cameraFilter!:FilteredVector<Vec3>;
     selectedModel!:ASceneNodeModel|undefined;
-    camOffset:number=200;
+    camOffset:number=1;
+
+    startOffset!:Vec3;
 
     beforeActivate(...args:any[]) {
         super.beforeActivate(...args);
         GetAppState().freezeSelection();
         let selectedModel = GetAppState().selectionModel.singleSelectedModel;
+        this.startOffset = this.camera.pose.position.clone();
         const self = this;
         if(selectedModel){
             this.selectedModel = selectedModel;
             this.cameraFilter = new FilteredVector<Vec3>(
-                selectedModel.transform.position.plus(V3(0,0,self.camOffset)),
+                selectedModel.transform.position.plus(this.startOffset),
                 0.2,
                 (filteredValue:FilteredVector<Vec3>)=>{
                     // @ts-ignore
@@ -45,6 +48,12 @@ export class ExampleThirdPersonControls extends APointerDragPlayerControls{
         interaction.setInteractionState('lastCursor', event.cursorPosition);
     }
 
+    updateCamera(){
+        if(this.selectedModel) {
+            this.cameraFilter.target = this.selectedModel.transform.position.plus(this.startOffset.times(this.camOffset));
+        }
+    }
+
     dragMoveCallback(interaction:ADragInteraction, event:AInteractionEvent){
         let mouseMovement = event.cursorPosition.minus(interaction.getInteractionState('lastCursor'));
         interaction.setInteractionState('lastCursor', event.cursorPosition);
@@ -52,17 +61,15 @@ export class ExampleThirdPersonControls extends APointerDragPlayerControls{
         let translate = V3(mouseMovement.x,-mouseMovement.y,0).times(1);
         if(this.selectedModel){
             this.selectedModel.transform.position = this.selectedModel.transform.position.plus(translate);
-            this.cameraFilter.target=this.selectedModel.transform.position.plus(V3(0,0,this.camOffset));
+            this.updateCamera();
         }
 
     }
 
     wheelCallback(interaction:AWheelInteraction, event:AInteractionEvent){
         let zoom= (event.DOMEvent as WheelEvent).deltaY;
-        this.camOffset = this.camOffset+zoom;
-        if(this.selectedModel) {
-            this.cameraFilter.target = this.selectedModel.transform.position.plus(V3(0, 0, this.camOffset));
-        }
+        this.camOffset = this.camOffset+0.01*zoom;
+        this.updateCamera();
     }
 
     onKeyDown(interaction: AKeyboardInteraction, event: AInteractionEvent) {
