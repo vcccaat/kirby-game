@@ -32,7 +32,6 @@ export class MainAppState extends Base2DAppAppState{
     }
 
     async PrepAssets(){
-        // this.materials.setMaterialModel('trippy', new TexturedMaterialModel('trippy.jpeg'));
         let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
         this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
         let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
@@ -86,8 +85,6 @@ export class MainAppState extends Base2DAppAppState{
         this.setNodeMaterial(groundPlane, 'marble');
     }
 
-
-
     addTestSquare(sideLength:number=200, position?:Vec2, color?:Color){
         color = color?color:Color.Random();
         let newShape = this.NewNode();
@@ -125,5 +122,6 @@ export class MainAppState extends Base2DAppAppState{
     }
 
     onAnimationFrameCallback(){
+
     }
 }

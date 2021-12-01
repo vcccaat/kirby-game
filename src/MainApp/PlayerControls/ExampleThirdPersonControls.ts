@@ -11,11 +11,10 @@ import {AWheelInteraction} from "../../anigraph/ainteraction/AWheelInteraction";
 import {FilteredVector} from "../../anigraph/amvc/FilteredVector";
 
 export class ExampleThirdPersonControls extends APointerDragPlayerControls{
-    // we will filter the player's position
+    // we will filter the Camera to follow the player
     cameraFilter!:FilteredVector<Vec3>;
     selectedModel!:ASceneNodeModel|undefined;
     camOffset:number=1;
-
     startOffset!:Vec3;
 
     beforeActivate(...args:any[]) {
@@ -35,23 +34,24 @@ export class ExampleThirdPersonControls extends APointerDragPlayerControls{
                 });
         }
     }
-
     afterDeactivate(...args:any[]) {
         super.afterDeactivate(...args);
-        this.cameraFilter.dispose();
+        if(this.cameraFilter) {
+            this.cameraFilter.dispose();
+        }
         this.selectedModel = undefined;
         GetAppState().unfreezeSelection();
-    }
-
-    dragStartCallback(interaction:ADragInteraction, event:AInteractionEvent){
-        interaction.dragStartPosition = event.cursorPosition;
-        interaction.setInteractionState('lastCursor', event.cursorPosition);
     }
 
     updateCamera(){
         if(this.selectedModel) {
             this.cameraFilter.target = this.selectedModel.transform.position.plus(this.startOffset.times(this.camOffset));
         }
+    }
+
+    dragStartCallback(interaction:ADragInteraction, event:AInteractionEvent){
+        interaction.dragStartPosition = event.cursorPosition;
+        interaction.setInteractionState('lastCursor', event.cursorPosition);
     }
 
     dragMoveCallback(interaction:ADragInteraction, event:AInteractionEvent){

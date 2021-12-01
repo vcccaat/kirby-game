@@ -19,16 +19,7 @@ export class TexturedMaterialModel extends AShaderModel{
             this.setTexture('maintexture', './images/'+this.textureName);
             this.getTexture('maintexture').setWrapToRepeat();
         }
-
-
-
     }
-    // get mainTexture(){
-    //     return this.getTexture('maintexture')
-    // }
-    // set mainTexture(v:ATexture){
-    //     this.setTexture('maintexture', v);
-    // }
 
     CreateMaterial(){
         let mat = super.CreateMaterial();
