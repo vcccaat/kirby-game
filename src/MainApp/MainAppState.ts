@@ -20,6 +20,7 @@ import {AGroundModel} from "../anigraph/amvc/derived";
 import * as THREE from "three";
 import {TexturedMaterialModel} from "./Materials/TexturedMaterialModel";
 import {ATexture} from "../anigraph/arender/ATexture";
+import {ExampleNodeModel} from "./Nodes/Example/ExampleNodeModel";
 
 
 export class MainAppState extends Base2DAppAppState{
@@ -41,7 +42,7 @@ export class MainAppState extends Base2DAppAppState{
     async initSceneModel() {
         const self = this;
         self._addGroundPlane();
-        self.currentNewModelTypeName = AExtrudedShapeModel.SerializationLabel();
+        self.currentNewModelTypeName = ExampleNodeModel.SerializationLabel();
 
         // You can add more shapes using, e.g.,
         // self.addTestSquare(300);

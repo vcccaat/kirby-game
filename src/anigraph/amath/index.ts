@@ -24,6 +24,7 @@ export * from './NodeTransform3D';
 export * from './BoundingBox';
 export * from './BoundingBox2D';
 export * from './BoundingBox3D';
+export * from './BezierTween';
 // export * from '../ageometry/VertexAttributeArray';
 // export * from '../ageometry/VertexArray';
 // export * from '../ageometry/VertexArray2D';

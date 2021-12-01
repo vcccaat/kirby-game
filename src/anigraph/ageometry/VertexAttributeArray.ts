@@ -5,6 +5,8 @@ import * as THREE from "three";
 import {Mat3} from "../amath/Mat3";
 import {Vec4} from "../amath/Vec4";
 import {Mat4} from "../amath/Mat4";
+import {BufferAttribute} from "three/src/core/BufferAttribute";
+import {InterleavedBufferAttribute} from "three/src/core/InterleavedBufferAttribute";
 
 
 export abstract class VertexAttributeArray<V extends Vector> extends Vector{
@@ -13,6 +15,8 @@ export abstract class VertexAttributeArray<V extends Vector> extends Vector{
     abstract setAt(i:number, vertex:V):void;
 
     abstract get nVerts():number;
+
+
 
     push(vertex:V){
         for(let i=0;i<vertex.elements.length;i++){
@@ -34,12 +38,15 @@ export abstract class VertexAttributeArray<V extends Vector> extends Vector{
     }
 }
 
-
 export class VertexAttributeArray2D extends VertexAttributeArray<Vec2>{
     static ElementsPerVertex:number=2;
     constructor(elements?:number[])
     constructor(...args:any[]) {
         super(...args);
+    }
+
+    static FromThreeJS(attr:THREE.BufferAttribute | THREE.InterleavedBufferAttribute){
+        return new this(Array.from(attr.array));
     }
 
     push(vertex:Vec2){
@@ -76,6 +83,10 @@ export class VertexAttributeArray3D extends VertexAttributeArray<Vec3>{
         return new Vec3(this.elements[i*3], this.elements[(i*3)+1], this.elements[(i*3)+2]);
     }
 
+    static FromThreeJS(attr:THREE.BufferAttribute | THREE.InterleavedBufferAttribute){
+        return new this(Array.from(attr.array));
+    }
+
     setAt(i:number, vertex:Vec3|number[]){
         let elements = (vertex instanceof Vec3)?vertex.elements:vertex;
         this.elements[i*3]=elements[0];
@@ -109,6 +120,11 @@ export class VertexAttributeArray3D extends VertexAttributeArray<Vec3>{
 export class VertexAttributeArray4D extends VertexAttributeArray<Vec4>{
     static ElementsPerVertex:number=4;
     _defaultH = 0;
+
+    static FromThreeJS(attr:THREE.BufferAttribute | THREE.InterleavedBufferAttribute){
+        return new this(Array.from(attr.array));
+    }
+
     getAt(i:number){
         return new Vec4(this.elements[i*4], this.elements[(i*4)+1], this.elements[(i*4)+2], this.elements[(i*4)+3]);
     }
@@ -164,6 +180,10 @@ export class VertexPositionArray2DH extends VertexAttributeArray3D{
     constructor(elements?:number[])
     constructor(...args:any[]) {
         super(...args);
+    }
+
+    static FromThreeJS(attr:THREE.BufferAttribute | THREE.InterleavedBufferAttribute){
+        return new this(Array.from(attr.array));
     }
 
     push(vertex:Vec3|Vec2){
@@ -228,7 +248,9 @@ export class VertexPositionArray3DH extends VertexAttributeArray4D{
         super(...args);
     }
 
-
+    static FromThreeJS(attr:THREE.BufferAttribute | THREE.InterleavedBufferAttribute){
+        return new this(Array.from(attr.array));
+    }
 
     getAt(i:number){
         return new Vec4(this.elements[i*4], this.elements[(i*4)+1], this.elements[(i*4)+2], this.elements[(i*4)+3]);
@@ -243,5 +265,23 @@ export class VertexPositionArray3DH extends VertexAttributeArray4D{
         } else {
             this.elements[(i * 4) + 3] = elements[3];
         }
+    }
+}
+
+
+export function VertexAttributeArrayFromThreeJS(threeattribute:THREE.BufferAttribute | THREE.InterleavedBufferAttribute){
+    switch (threeattribute.itemSize) {
+        case 2:
+            return VertexAttributeArray2D.FromThreeJS(threeattribute);
+            break;
+        case 3:
+            return VertexAttributeArray3D.FromThreeJS(threeattribute);
+            break;
+        case 4:
+            return VertexAttributeArray4D.FromThreeJS(threeattribute);
+            break;
+        default:
+            throw new Error("What kind of attribute dis?");
+            break;
     }
 }

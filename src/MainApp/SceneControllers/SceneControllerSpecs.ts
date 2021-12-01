@@ -15,6 +15,7 @@ import {
     CubicBezierView, EditVertsController, EditVertsModel, EditVertsView, PyramidController,
 } from "../../anigraph/amvc/derived";
 import {FlameModel} from "../../anigraph/effects/particle/flame/FlameModel";
+import {FlameView} from "../../anigraph/effects/particle/flame/FlameView";
 
 
 
@@ -46,6 +47,7 @@ export function BasicGameSceneControllerSpecs(){
         new AMVCSpec(AExtrudedShapeModel,AExtrudedShapeView, CubicBezierController),
         new AMVCSpec(ALoadedModel, ALoadedView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(AGroundModel, AGroundView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
+        new AMVCSpec(FlameModel, FlameView, ASceneNodeController),
 
     ]
 }

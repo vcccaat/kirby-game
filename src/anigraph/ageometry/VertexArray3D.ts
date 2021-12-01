@@ -1,5 +1,10 @@
 import {V3, Vec3} from "../amath/Vec3";
-import {VertexAttributeArray, VertexAttributeArray2D, VertexAttributeArray3D} from "./VertexAttributeArray";
+import {
+    VertexAttributeArray,
+    VertexAttributeArray2D,
+    VertexAttributeArray3D,
+    VertexAttributeArrayFromThreeJS, VertexPositionArray3DH
+} from "./VertexAttributeArray";
 import {ASerializable} from "../aserial";
 import {VertexArray} from "./VertexArray";
 import {V2} from "../amath/Vec2";
@@ -34,13 +39,18 @@ export class VertexArray3D extends VertexArray<Vec3>{
     }
 
 
-
-    static FromVertexArray2D(v2:VertexArray2D, transform:Mat4){
-        let v3=new VertexArray3D();
-
-
-
+    static FromThreeJS(buffergeo:THREE.BufferGeometry){
+        let varray = new VertexArray3D();
+        varray.indices = VertexIndexArray.FromThreeJS(buffergeo.index);
+        for(let atrname in buffergeo.attributes){
+            varray.attributes[atrname] = VertexAttributeArrayFromThreeJS(buffergeo.attributes[atrname]);
+        }
+        return varray;
     }
+
+    // static FromVertexArray2D(v2:VertexArray2D, transform:Mat4){
+    //     let v3=new VertexArray3D();
+    // }
 
 
     addTriangleCCW(A:Vec3, B:Vec3, C:Vec3){

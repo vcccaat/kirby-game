@@ -9,10 +9,7 @@ import {AMaterial} from "../../material";
 
 import {bezier} from "@leva-ui/plugin-bezier";
 import {ACallbackSwitch} from "../../../aevents";
-// import {AModel} from "../../base/AModel";
-
-// import {SVGItem} from "../../amath/svg/SVGItem";
-
+import {GetAppState} from "../../AAppState";
 
 const MATERIAL_UPDATE_SUBSCRIPTION_HANDLE = 'MATERIAL_UPDATE_SUBSCRIPTION_SceneNodeModel';
 
@@ -92,45 +89,6 @@ export class ASceneNodeModel extends AModel implements HasBounds{
             ...self.material.getMaterialGUIParams(),
             Transform: folder(
                 {
-                    // rotationX: {
-                    //     value: Math.acos(self.transform.rotation.w)*2,
-                    //     onChange: (v:number) => {
-                    //         // let axisangle = this.transform.rotation.getAxisAndAngle();
-                    //         // let axis = axisangle['axis'];
-                    //         // if(axis.L2()>0){
-                    //         //     this.transform.rotation = Quaternion.FromAxisAngle(axisangle['axis'], v);
-                    //         // }else if(v>0){
-                    //         this.transform.rotation = Quaternion.FromAxisAngle(new Vec3(0.0,0.0,1.0), v);
-                    //         // }
-                    //     },
-                    //     step: 0.2
-                    // },
-                    // rotationY: {
-                    //     value: Math.acos(self.transform.rotation.w)*2,
-                    //     onChange: (v:number) => {
-                    //         // let axisangle = this.transform.rotation.getAxisAndAngle();
-                    //         // let axis = axisangle['axis'];
-                    //         // if(axis.L2()>0){
-                    //         //     this.transform.rotation = Quaternion.FromAxisAngle(axisangle['axis'], v);
-                    //         // }else if(v>0){
-                    //         this.transform.rotation = Quaternion.FromAxisAngle(new Vec3(0.0,1.0,0.0), v);
-                    //         // }
-                    //     },
-                    //     step: 0.2
-                    // },
-                    // rotationZ: {
-                    //     value: Math.acos(self.transform.rotation.w)*2,
-                    //     onChange: (v:number) => {
-                    //         // let axisangle = this.transform.rotation.getAxisAndAngle();
-                    //         // let axis = axisangle['axis'];
-                    //         // if(axis.L2()>0){
-                    //         //     this.transform.rotation = Quaternion.FromAxisAngle(axisangle['axis'], v);
-                    //         // }else if(v>0){
-                    //         this.transform.rotation = Quaternion.FromAxisAngle(new Vec3(1.0,0.0,0.0), v);
-                    //         // }
-                    //     },
-                    //     step: 0.2
-                    // },
                     scale: {
                         value: self.transform.scale.x,
                         min:0,
@@ -140,17 +98,6 @@ export class ASceneNodeModel extends AModel implements HasBounds{
                             self.transform.scale = new Vec3(v,v,v);
                         }
                     },
-
-                    // curve: bezier({ handles: [0.54, 0.05, 0.6, 0.98], graph: true})
-
-                    // anchor: {
-                    //     value: {x: self.transform.anchor.x, y:self.transform.anchor.y},
-                    //     joystick: "invertY",
-                    //     step: 5,
-                    //     onChange:(v: any)=>{
-                    //         self.transform.anchor = new Vec3(v.x, v.y, 0);
-                    //     }
-                    // },
                 },
                 { collapsed: true }
             ),
@@ -168,15 +115,21 @@ export class ASceneNodeModel extends AModel implements HasBounds{
         // this.initMaterial();
     }
 
-    setMaterial(material:AMaterial){
+    setMaterial(material:AMaterial|string){
         if(this.material === material){
             return;
         }else{
+            let amaterial:AMaterial;
+            if(material instanceof AMaterial){
+                amaterial=material;
+            }else{
+                amaterial = GetAppState().CreateMaterial(material);
+            }
             let color = this.color;
             if(this.material){
                 this._disposeMaterial()
             }
-            this._material = material;
+            this._material = amaterial;
             if(color) {
                 this._material.setModelColor(color);
             }

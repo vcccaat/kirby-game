@@ -1,5 +1,5 @@
-import {ARenderElement} from "../../../anigraph";
+import {ATriangleMeshElement} from "../../../anigraph/arender/basic/ATriangleMeshElement";
 
-export class ExampleRenderElement extends ARenderElement{
+export class ExampleRenderElement extends ATriangleMeshElement{
 
 }

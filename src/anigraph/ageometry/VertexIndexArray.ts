@@ -37,5 +37,13 @@ export class VertexIndexArray extends Vector{
         return rval;
     }
 
+    static FromThreeJS(index:THREE.BufferAttribute|null){
+        let iar = new VertexIndexArray();
+        if(index){
+            iar.elements=Array.from(index.array);
+        }
+        return iar;
+    }
+
 }
 

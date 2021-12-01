@@ -25,39 +25,15 @@ export class ATriangleMeshElement extends ARenderElement{
     _createDefaultMaterial(){
         return new THREE.MeshBasicMaterial({
             color: 0x22aa22,
-            transparent: false,
-            side: THREE.DoubleSide
+            transparent: true,
+            side: THREE.DoubleSide,
+            opacity:1.0
         })
     }
-
-    // init(verts?:VertexArray3D){
-    //     // this.objectNode = NewObject3D();
-    //     this.initGeometry(verts);
-    //     if(this._element === undefined){
-    //         this._element = new THREE.Mesh(
-    //             this.geometry,
-    //             this._createDefaultMaterial()
-    //         );
-    //         this._element.matrixAutoUpdate=false;
-    //     }
-    // }
 
     setVerts(verts:VertexArray3D){
         this.verts = verts;
         this.setGeometry(this.verts);
     }
 
-    // updateGeometry(){
-    //     this._geometry.setIndex(this.verts.indices.elements);
-    //     for(let attribute in this.verts.attributes){
-    //         this._geometry.setAttribute(attribute, this.verts.getAttributeArray(attribute).BufferAttribute());
-    //     }
-    // }
-
 }
-
-
-// this._geometry.setIndex(this.verts.indices.elements);
-// for(let attribute in this.verts.attributes){
-//     this._geometry.setAttribute(attribute, this.verts.getAttributeArray(attribute).BufferAttribute());
-// }

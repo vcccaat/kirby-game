@@ -3,8 +3,9 @@ import {ExampleNodeModel} from "./ExampleNodeModel";
 import {ExampleNodeController} from "./ExampleNodeController";
 import {ATriangleMeshElement} from "../../../anigraph/arender/basic/ATriangleMeshElement";
 import {ExampleRenderElement} from "./ExampleRenderElement";
+import {AMeshView} from "../../../anigraph/amvc/node/mesh/AMeshView";
 
-export class ExampleNodeView extends ASceneNodeView<ExampleNodeModel>{
+export class ExampleNodeView extends AMeshView{
     controller!:ExampleNodeController;
     public element!:ExampleRenderElement;
     onGeometryUpdate(){

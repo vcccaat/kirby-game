@@ -27,6 +27,10 @@ export class ACameraNodeModel extends ASceneNodeModel implements HasCamera {
     get camera() {
         return this._camera;
     }
+
+    get pose(){return this.camera.pose;}
+    get projection(){return this.camera.projection;}
+
     get movementSpeed(){return this.camera.movementSpeed;}
     constructor(camera?: THREE.Camera | ACamera, ...args: any[]) {
         super();

@@ -85,6 +85,10 @@ export abstract class AAppState<NodeModelType extends ASceneNodeModel, SceneMode
         }
     }
 
+    CreateMaterial(modelName:string){
+        return this.materials.getMaterialModel(modelName).CreateMaterial();
+    }
+
     /** Get set currentNewModelTypeName */
     set currentMaterialName(value:string){
         const self = this;
@@ -200,9 +204,6 @@ export abstract class AAppState<NodeModelType extends ASceneNodeModel, SceneMode
         return this.sceneModel.materials;
     }
 
-    getNewMaterial(){
-
-    }
 
     //##################//--Selection--\\##################
     //<editor-fold desc="Selection">

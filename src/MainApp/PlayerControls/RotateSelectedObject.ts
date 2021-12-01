@@ -4,12 +4,25 @@
  */
 import {
     ADragInteraction,
-    AInteractionEvent, AKeyboardInteraction, NodeTransform3D, Quaternion, V3, V4, Vec3,
+    AInteractionEvent,
+    AKeyboardInteraction,
+    APointLightModel,
+    ASceneNodeModel, GetAppState,
+    NodeTransform3D,
+    Quaternion,
+    V3,
+    V4,
+    Vec3,
 } from "../../anigraph";
 import {APointerDragPlayerControls} from "../../anigraph/aplayercontrols/APointerDragPlayerControls";
 import {AWheelInteraction} from "../../anigraph/ainteraction/AWheelInteraction";
+import {ExampleDragOrbitControls} from "./ExampleDragOrbitControls";
 
-export class ExampleDragOrbitControls extends APointerDragPlayerControls{
+export class RotateSelectedObject extends APointerDragPlayerControls{
+    target!:ASceneNodeModel;
+    focalPoint!:Vec3;
+    targetWeight:number = 0.6;
+
     dragStartCallback(interaction:ADragInteraction, event:AInteractionEvent){
         interaction.dragStartPosition = event.cursorPosition;
         interaction.setInteractionState('lastCursor', event.cursorPosition);
@@ -20,12 +33,21 @@ export class ExampleDragOrbitControls extends APointerDragPlayerControls{
         interaction.setInteractionState('lastCursor', event.cursorPosition);
         let rotationX = mouseMovement.y*0.002;
         let rotationY = mouseMovement.x*0.002;
-        let qY = Quaternion.FromAxisAngle(this.cameraNode.right, rotationX);
-        let qX = Quaternion.FromAxisAngle(this.cameraNode.up, rotationY);
-        let newPose = this.cameraNode.camera.pose.clone();
-        newPose = new NodeTransform3D(qX.getInverse().appliedTo(newPose.position), newPose.rotation.times(qX));
-        newPose = new NodeTransform3D(qY.getInverse().appliedTo(newPose.position), newPose.rotation.times(qY));
-        this.cameraNode.camera.pose = newPose;
+        // let qY = Quaternion.FromAxisAngle(this.cameraNode.right, rotationX);
+        // let qX = Quaternion.FromAxisAngle(this.cameraNode.up, rotationY);
+
+        let selectedModel = GetAppState().selectionModel.singleSelectedModel;
+        if(!selectedModel){
+            return;
+        }
+
+        let newPose = selectedModel.transform.clone();
+
+        newPose.rotation = newPose.rotation.times(Quaternion.FromAxisAngle(this.cameraNode.up,mouseMovement.x * 0.002));
+        newPose.rotation = newPose.rotation.times(Quaternion.FromAxisAngle(this.cameraNode.right,mouseMovement.y * 0.002));
+        // newPose = new NodeTransform3D(qX.getInverse().appliedTo(newPose.position), newPose.rotation.times(qX));
+        // newPose = new NodeTransform3D(qY.getInverse().appliedTo(newPose.position), newPose.rotation.times(qY));
+        selectedModel.setTransform(newPose);
     }
 
     dragEndCallback(interaction:ADragInteraction, event?:AInteractionEvent){
@@ -33,7 +55,7 @@ export class ExampleDragOrbitControls extends APointerDragPlayerControls{
 
     wheelCallback(interaction:AWheelInteraction, event:AInteractionEvent){
         let zoom= (event.DOMEvent as WheelEvent).deltaY;
-        this.cameraNode.stepForward(0.5*zoom);
+        this.cameraNode.stepForward(10*zoom);
     }
 
 

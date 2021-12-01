@@ -1,6 +1,10 @@
 import {AObject, AObjectState} from "../aobject/AObject";
 // import {GetAppState} from "../amvc";
 import {GetAppState} from "./AAppState";
+import {CallbackType} from "../basictypes";
+import {BezierTween} from "../amath";
+import {v4 as uuidv4} from "uuid";
+import {ADragInteraction} from "../ainteraction";
 
 export enum AClockEnums{
     DEFAULT_PERIOD_IN_MILLISECONDS=1000,
@@ -18,6 +22,7 @@ export class AClock extends AObject{
     protected _refStart:number=0;
     protected _lastPauseStateChange:number=0;
     protected _lastUpdate:number=0;
+    protected _lastClockTimeUpdated:number=0;
     protected _offset:number=0;
     protected _periodInMilliseconds:number=AClockEnums.DEFAULT_PERIOD_IN_MILLISECONDS;
 
@@ -26,7 +31,7 @@ export class AClock extends AObject{
     get paused(){return this._paused;}
 
     get lastTimeUpdated(){
-        return this._lastUpdate;
+        return this._lastClockTimeUpdated;
     }
 
     get rate(){
@@ -39,11 +44,11 @@ export class AClock extends AObject{
         this._periodInMilliseconds = AClockEnums.DEFAULT_PERIOD_IN_MILLISECONDS/v;
     }
 
-    addTimeListener(callback:(t:number)=>any){
+    addTimeListener(callback:(t:number)=>any, handle?:string){
         const self = this;
         return this.addStateKeyListener('time', ()=>{
             callback(self.time);
-        });
+        }, handle, false);
     }
 
     constructor() {
@@ -76,6 +81,7 @@ export class AClock extends AObject{
         }
         this.time = this._offset+(t-this._refStart)/this._periodInMilliseconds;
         this._lastUpdate=t;
+        this._lastClockTimeUpdated = this.time;
     }
 
     _getNow(){
@@ -98,6 +104,35 @@ export class AClock extends AObject{
         this._paused=true;
         this._lastPauseStateChange=now;
         this.deactivateSubscription(AClockEnums.TIME_UPDATE_SUBSCRIPTION_HANDLE);
+    }
+
+    /**
+     * IMPORTANT! If you want to remove the listener at the end of the action
+     * you need to do so in the actionOverCallback!
+     * @param callback
+     * @param duration
+     * @param actionOverCallback
+     * @param tween
+     * @returns {AStateCallbackSwitch}
+     * @constructor
+     */
+    CreateTimedAction(callback:(actionProgress:number)=>any, duration:number, actionOverCallback:CallbackType, tween?:BezierTween,){
+        const self = this;
+        const startTime = this.time;
+        return this.addTimeListener((t:number)=>{
+            //calculate how much time has passed
+            let timePassed = t-startTime;
+            // Check to see if the duration has passed
+            if(timePassed>duration){
+                if(actionOverCallback){actionOverCallback();}
+                return;
+            }
+            let normalizedTime:number=timePassed/duration;
+            if(tween){
+                normalizedTime=tween.eval(normalizedTime);
+            }
+            callback(normalizedTime);
+        });
     }
 
 
