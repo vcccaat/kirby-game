@@ -64,9 +64,11 @@
     "test": "craco test",
     "testall": "craco test --watchAll",
     "eject": "craco eject",
-    "postinstall": "cd docsRelated/hierarchy && yarn",
-    "genDocs": "yarn && typedoc --options ./typedoc.json && cd docsRelated/hierarchy/ && yarn run tree:generateHierarchyData",
-    "serveDocs": "cd docsRelated/hierarchy && yarn run startCache",
+    "postinstall": "cd docs/hierarchy && yarn",
+    "genDocs": "yarn && typedoc --options ./typedoc.json && cd docs/hierarchy/ && yarn run tree:generateHierarchyData",
+    "serveDocs": "cd docs/hierarchy && yarn run startCache",
+    "genAndserveDocs": "yarn run genDocs && yarn run serveDocs",
+    "buildDocs": "yarn run genDocs && cd docs/hierarchy && yarn run build && zip -r productionDocs.zip productionDocs && mv productionDocs.zip ../../",
     "testreport": "craco test --ci --testResultsProcessor=`jest-junit`"
   },
   "eslintConfig": {

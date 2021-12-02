@@ -17,9 +17,9 @@ src/anigraph/AnigraphDocs
 
 # dependencies
 /node_modules
-/docsRelated/hierarchy/node_modules
-/docsRelated/hierarchy/generator/node_modules
-/docsRelated/hierarchy/hierarchy-graph/node_modules
+/docs/hierarchy/node_modules
+/docs/hierarchy/generator/node_modules
+/docs/hierarchy/hierarchy-graph/node_modules
 /.pnp
 .pnp.js
 
