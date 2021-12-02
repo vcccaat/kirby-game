@@ -19,6 +19,10 @@ import {AWheelInteraction} from "../../anigraph/ainteraction/AWheelInteraction";
 import {ExampleDragOrbitControls} from "./ExampleDragOrbitControls";
 
 export class RotateSelectedObject extends APointerDragPlayerControls{
+
+    static NameInGUI(){
+        return "RotateSelected";}
+
     target!:ASceneNodeModel;
     focalPoint!:Vec3;
     targetWeight:number = 0.6;
@@ -55,7 +59,7 @@ export class RotateSelectedObject extends APointerDragPlayerControls{
 
     wheelCallback(interaction:AWheelInteraction, event:AInteractionEvent){
         let zoom= (event.DOMEvent as WheelEvent).deltaY;
-        this.cameraNode.stepForward(10*zoom);
+        this.cameraNode.stepForward(5*zoom);
     }
 
 

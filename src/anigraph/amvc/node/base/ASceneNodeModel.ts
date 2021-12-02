@@ -10,8 +10,14 @@ import {AMaterial} from "../../material";
 import {bezier} from "@leva-ui/plugin-bezier";
 import {ACallbackSwitch} from "../../../aevents";
 import {GetAppState} from "../../AAppState";
+import {AInteractionEvent, AKeyboardInteraction, AKeyboardInteractionCallback} from "../../../ainteraction";
 
 const MATERIAL_UPDATE_SUBSCRIPTION_HANDLE = 'MATERIAL_UPDATE_SUBSCRIPTION_SceneNodeModel';
+
+enum SceneNodeEvents{
+    KEYBOARD_KEY_DOWN_EVENT='NODE_KEYBOARD_KEY_DOWN_EVENT',
+    KEYBOARD_KEY_UP_EVENT='NODE_KEYBOARD_KEY_UP_EVENT',
+}
 
 @ASerializable("ASceneNodeModel")
 export class ASceneNodeModel extends AModel implements HasBounds{
@@ -21,6 +27,8 @@ export class ASceneNodeModel extends AModel implements HasBounds{
     @AObjectState _transform!:NodeTransform3D;
     @AObjectState selectable!:boolean;
     protected _material!:AMaterial;
+
+    static NodeEvents=SceneNodeEvents;
 
     get transform(){return this._transform;}
     setTransform(t:NodeTransform3D){this._transform=t;}
@@ -136,7 +144,6 @@ export class ASceneNodeModel extends AModel implements HasBounds{
             this.setMaterialUpdateSubscriptions();
         }
         this.signalEvent(AMaterial.Events.CHANGE)
-
     }
 
     /**

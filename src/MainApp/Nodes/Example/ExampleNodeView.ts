@@ -1,4 +1,4 @@
-import {ASceneNodeView} from "../../../anigraph";
+import {ASceneNodeView, VertexArray3D} from "../../../anigraph";
 import {ExampleNodeModel} from "./ExampleNodeModel";
 import {ExampleNodeController} from "./ExampleNodeController";
 import {ATriangleMeshElement} from "../../../anigraph/arender/basic/ATriangleMeshElement";
@@ -7,15 +7,14 @@ import {AMeshView} from "../../../anigraph/amvc/node/mesh/AMeshView";
 
 export class ExampleNodeView extends AMeshView{
     controller!:ExampleNodeController;
-    public element!:ExampleRenderElement;
+    // public extraElement!:ExampleRenderElement;
     onGeometryUpdate(){
         super.onGeometryUpdate();
-        this.element.setVerts(this.model.verts);
     }
     initGraphics() {
         super.initGraphics();
-        this.element = new ATriangleMeshElement();
-        this.element.init(this.model.verts, this.model.material.threejs);
-        this.addElement(this.element);
+        // this.element = new ExampleRenderElement();
+        // this.element.init(VertexArray3D., this.model.material.threejs);
+        // this.addElement(this.element);
     }
 }

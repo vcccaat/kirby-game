@@ -21,6 +21,7 @@ export class AWheelInteraction extends AInteraction{
         const self = this;
         this.wheelCallback = callback??this.wheelCallback;
         this.addDOMEventListener(PointerEvents.POINTER_WHEEL, (event:AInteractionEvent)=>{
+            event.preventDefault();
             self.wheelCallback(self, event);
         });
     }

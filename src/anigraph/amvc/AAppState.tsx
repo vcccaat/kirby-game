@@ -47,7 +47,7 @@ export abstract class AAppState<NodeModelType extends ASceneNodeModel, SceneMode
     @AObjectState _guiKey!:string;
     sceneModel!:SceneModelType;
     selectionModel!: ASelectionModel<NodeModelType>;
-    @AObjectState time:number;
+    @AObjectState _time:number;
     @AObjectState _currentNewModelTypeName!:string;
     @AObjectState _currentMaterialName!:string;
     protected _clockID!:number;
@@ -133,14 +133,13 @@ export abstract class AAppState<NodeModelType extends ASceneNodeModel, SceneMode
         return newNode;
     }
 
-    addDefaultNode(color?:Color, position?:Vec2, ...args:any[]){
+    async addDefaultNode(color?:Color, position?:Vec2, ...args:any[]){
         // this.sceneModel.addNode(this.currentNewModelType.CreateDefaultNode());
         if(typeof this.currentNewModelType.CreateDefaultNode == 'function') {
-            this.sceneModel.addNode(this.currentNewModelType.CreateDefaultNode());
+            this.sceneModel.addNode(await this.currentNewModelType.CreateDefaultNode());
         }else{
             this.sceneModel.addNode(this.CreateTestSquare(color, position));
         }
-
     }
 
 
@@ -297,7 +296,7 @@ export abstract class AAppState<NodeModelType extends ASceneNodeModel, SceneMode
             this._paused=false;
             this._clockID = setInterval(()=>{
                 if(!self._paused) {
-                    self.time = Date.now();
+                    self._time = Date.now();
                 }
             });
         }
@@ -392,7 +391,7 @@ export abstract class AAppState<NodeModelType extends ASceneNodeModel, SceneMode
     constructor(sceneModel?:SceneModelType){
         super();
         this._paused=true;
-        this.time = Date.now();
+        this._time = Date.now();
         this.unpauseClock();
 
         if(sceneModel){
@@ -411,8 +410,8 @@ export abstract class AAppState<NodeModelType extends ASceneNodeModel, SceneMode
 
     addClockListener(callback:(t:number)=>any){
         const self = this;
-        return this.addStateKeyListener('time', ()=>{
-            callback(self.time);
+        return this.addStateKeyListener('_time', ()=>{
+            callback(self._time);
         });
     }
 
@@ -442,9 +441,9 @@ export abstract class AAppState<NodeModelType extends ASceneNodeModel, SceneMode
     }
 
 
-    // selectModel(model?: NodeModelType) {
-    //     this.selectedModel = model;
-    // }
+    selectModel(model?: NodeModelType) {
+        this.selectionModel.selectModel(model);
+    }
 
 
     addSceneControllerClass(container:HTMLDivElement, sceneControllerClass:ClassInterface<ASceneController<NodeModelType,SceneModelType>>, name?:string){

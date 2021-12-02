@@ -27,11 +27,7 @@ import {ASelectionController} from "./ASelectionController";
 // import {ASelectionModel} from "./ASelectionModel";
 
 import {GETSERIALIZABLES} from "../../aserial";
-console.log(GETSERIALIZABLES())
-
 let serializables = GETSERIALIZABLES();
-
-console.log(serializables);
 
 @ASerializable("ASelectionView")
 export class ASelectionView<NodeModelType extends ASceneNodeModel, SelectionModelType extends ASelectionModel<NodeModelType>> extends ASupplementalView<SelectionModelType, NodeModelType>{

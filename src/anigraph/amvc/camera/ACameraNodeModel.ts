@@ -2,7 +2,7 @@ import {ASceneNodeModel} from "../node/base/ASceneNodeModel";
 import {ACamera, HasCamera} from "./ACamera";
 import {AObject, AObjectState} from "../../aobject";
 import * as THREE from "three";
-import {Color, NodeTransform3D, V3, Vec3} from "../../amath";
+import {Color, Mat4, NodeTransform3D, V3, Vec3} from "../../amath";
 import {ASerializable} from "../../aserial";
 import {VertexArray3D} from "../../ageometry";
 import {ACameraNodeView} from "./ACameraNodeView";
@@ -30,6 +30,13 @@ export class ACameraNodeModel extends ASceneNodeModel implements HasCamera {
 
     get pose(){return this.camera.pose;}
     get projection(){return this.camera.projection;}
+
+    setPose(pose:NodeTransform3D){
+        this.camera.pose=pose;
+    }
+    setProjection(m:Mat4){
+        this.camera.projection = m;
+    }
 
     get movementSpeed(){return this.camera.movementSpeed;}
     constructor(camera?: THREE.Camera | ACamera, ...args: any[]) {
@@ -102,7 +109,7 @@ export class ACameraNodeModel extends ASceneNodeModel implements HasCamera {
     _setCameraListeners() {
         const self = this;
         const POSE_UPDATE_HANDLE = ACamera.CameraUpdateEvents.POSE_UPDATED + '_ACameraNodeModel_' + this.serializationLabel;
-        const PROJECTION_UPDATE_HANDLE = ACamera.CameraUpdateEvents.POSE_UPDATED + '_ACameraNodeModel_' + this.serializationLabel;
+        const PROJECTION_UPDATE_HANDLE = ACamera.CameraUpdateEvents.PROJECTION_UPDATED + '_ACameraNodeModel_' + this.serializationLabel;
         this.unsubscribe(POSE_UPDATE_HANDLE, false);
         this.unsubscribe(PROJECTION_UPDATE_HANDLE, false);
         this.subscribe(this.camera.addPoseListener(() => {

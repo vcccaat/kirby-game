@@ -9,8 +9,11 @@ import {
 import {APointerDragPlayerControls} from "../../anigraph/aplayercontrols/APointerDragPlayerControls";
 import {AWheelInteraction} from "../../anigraph/ainteraction/AWheelInteraction";
 import {FilteredVector} from "../../anigraph/amvc/FilteredVector";
+import {MainAppState} from "../MainAppState";
 
 export class ExampleThirdPersonControls extends APointerDragPlayerControls{
+    static NameInGUI(){return "ThirdPersonControls";}
+
     // we will filter the Camera to follow the player
     cameraFilter!:FilteredVector<Vec3>;
     selectedModel!:ASceneNodeModel|undefined;
@@ -68,18 +71,19 @@ export class ExampleThirdPersonControls extends APointerDragPlayerControls{
 
     wheelCallback(interaction:AWheelInteraction, event:AInteractionEvent){
         let zoom= (event.DOMEvent as WheelEvent).deltaY;
-        this.camOffset = this.camOffset+0.01*zoom;
+        this.camOffset = this.camOffset+0.005*zoom;
         this.updateCamera();
     }
 
     onKeyDown(interaction: AKeyboardInteraction, event: AInteractionEvent) {
         super.onKeyDown(interaction, event);
-        if(interaction.keysDownState[' ']){
-            if(this.selectedModel){
-                // @ts-ignore
-                this.selectedModel.spin();
-            }
+
+        let appState=GetAppState() as MainAppState;
+        let selectedController = appState.selectedController;
+        if(selectedController){
+            selectedController.onKeyDown(interaction, event);
         }
+
     }
 
     dragEndCallback(interaction:ADragInteraction, event?:AInteractionEvent){

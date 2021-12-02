@@ -37,17 +37,17 @@ export class ExampleNodeModel extends AMeshModel{
      * Define this to customize what gets created when you click the create default button in the GUI
      * @constructor
      */
-    static CreateDefaultNode(radius:number=50, widthSegments:number=50, heightSegments:number=50, ...args:any[]){
+    static async CreateDefaultNode(radius:number=50, widthSegments:number=50, heightSegments:number=50, ...args:any[]){
         let newNode = new ExampleNodeModel();
         newNode.verts = VertexArray3D.FromThreeJS(new THREE.SphereBufferGeometry(radius, 50,50, ...args));
         // newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
-        newNode.setMaterial('trippy');
+        // newNode.setMaterial('trippy');
         newNode.color = Color.Random();
         newNode.color.a = 0.5;
         return newNode;
     }
 
-    spin(){
+    onSpacebar(){
         this.signalEvent(ExampleNodeModel.SpinEventHandle);
     }
 
@@ -56,7 +56,7 @@ export class ExampleNodeModel extends AMeshModel{
         const specs = {
             SPIN: button(() => {
                 // @ts-ignore
-                self.spin();
+                self.onSpacebar();
             }),
             spinDuration: {
                 value: self.spinDuration,

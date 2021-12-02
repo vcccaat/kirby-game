@@ -11,6 +11,7 @@ import {A3DSceneController, ACamera, ACameraNodeModel} from "../amvc";
 import {ASerializable} from "../aserial";
 import {ADOMPointerMoveInteraction} from "../ainteraction/DOM/ADOMPointerMoveInteraction";
 import {V2} from "../amath";
+import {AWheelInteraction} from "../ainteraction/AWheelInteraction";
 
 export enum PointerLockEvents{
     Lock="PointerLock_Lock",
@@ -19,6 +20,10 @@ export enum PointerLockEvents{
 
 @ASerializable("APlayerControlsBase")
 export abstract class APlayerControlsBase extends AInteractionMode {
+
+    static NameInGUI(){ // @ts-ignore
+        return this.SerializationLabel();}
+
     abstract setupInteractions(): void;
     public owner!: A3DSceneController<any, any>;
 
@@ -95,12 +100,16 @@ export abstract class APlayerControlsBase extends AInteractionMode {
 
 @ASerializable("APlayerControls")
 export class APlayerControls extends APlayerControlsBase{
+
+
+
     bindMethods(){
         super.bindMethods();
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onKeyUp = this.onKeyUp.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.dispose = this.dispose.bind(this);
+        this.wheelCallback = this.wheelCallback.bind(this);
     }
 
 
@@ -179,5 +188,9 @@ export class APlayerControls extends APlayerControlsBase{
         if(!interaction.keysDownState['f']){
             this.cameraNode.haltDown();
         }
+    }
+
+    wheelCallback(interaction:AWheelInteraction, event?:AInteractionEvent){
+        console.log(event);
     }
 }

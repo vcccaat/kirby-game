@@ -245,6 +245,13 @@ export class AObject{
         return this._eventCallbackDicts[eventName].addCallback(callback, handle);
     }
 
+    addEventListeners(eventName:string, callbacks:((...args:any[])=>void)[], handle?:string) {
+        if (this._eventCallbackDicts[eventName] === undefined) {
+            this._eventCallbackDicts[eventName] = new AEventCallbackDict(eventName);
+        }
+        return this._eventCallbackDicts[eventName].addCallback(callbacks, handle);
+    }
+
     addOneTimeEventListener(eventName:string, callback:(...args:any[])=>void, handle?:string) {
         if (this._eventCallbackDicts[eventName] === undefined) {
             this._eventCallbackDicts[eventName] = new AEventCallbackDict(eventName);

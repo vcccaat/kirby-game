@@ -10,6 +10,9 @@ import {APointerDragPlayerControls} from "../../anigraph/aplayercontrols/APointe
 import {AWheelInteraction} from "../../anigraph/ainteraction/AWheelInteraction";
 
 export class ExampleDragOrbitControls extends APointerDragPlayerControls{
+    static NameInGUI(){ // @ts-ignore
+        return "OrbitOnDrag";}
+
     dragStartCallback(interaction:ADragInteraction, event:AInteractionEvent){
         interaction.dragStartPosition = event.cursorPosition;
         interaction.setInteractionState('lastCursor', event.cursorPosition);
@@ -33,7 +36,7 @@ export class ExampleDragOrbitControls extends APointerDragPlayerControls{
 
     wheelCallback(interaction:AWheelInteraction, event:AInteractionEvent){
         let zoom= (event.DOMEvent as WheelEvent).deltaY;
-        this.cameraNode.stepForward(0.5*zoom);
+        this.cameraNode.stepForward(0.25*zoom);
     }
 
 
@@ -65,6 +68,9 @@ export class ExampleDragOrbitControls extends APointerDragPlayerControls{
         }
         if(interaction.keysDownState['f']){
             this.cameraNode.moveDown();
+        }
+        if(interaction.keysDownState['P']){
+            console.log(this.camera.pose);
         }
     }
 

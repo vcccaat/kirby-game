@@ -1,10 +1,10 @@
 import {v4 as uuidv4} from 'uuid';
 import {ACallbackSwitch} from "./ACallbackSwitch";
 
-class AEventCallbackSwitch extends ACallbackSwitch{
-    public callback:(...args:any[])=>any;
+export class AEventCallbackSwitch extends ACallbackSwitch{
+    public callback:((...args:any[])=>any)|((...args:any[])=>any)[];
     public owner:AEventCallbackDict;
-    constructor(owner: AEventCallbackDict, handle:string, callback:(...args:any[])=>any) {
+    constructor(owner: AEventCallbackDict, handle:string, callback:((...args:any[])=>any)|((...args:any[])=>any)[]) {
         super(handle);
         this.callback = callback;
         this.owner = owner;
@@ -45,7 +45,7 @@ export class AEventCallbackDict{
      * @param callback
      * @returns Callback switch {{activate: activate, active: boolean, handle: string, deactivate: deactivate}}
      */
-    addCallback(callback:(...args:any[])=>void, handle?:string){
+    addCallback(callback:((...args:any[])=>void)[]|((...args:any[])=>void), handle?:string){
         if(handle===undefined){
             handle = (uuidv4() as string);
         }
@@ -70,6 +70,7 @@ export class AEventCallbackDict{
         // callbackSwitch.activate();
         return callbackSwitch;
     }
+
     removeCallback(handle:string){
         delete this.callbacks[handle];
     }
@@ -84,7 +85,13 @@ export class AEventCallbackDict{
     signalEvent(...args:any[]){
         const callbackList = this.getCallbackList();
         for(let c of callbackList){
-            c['callback'].call(null, ...args);
+            if(Array.isArray(c['callback'])){
+                for(let cb of c['callback']){
+                    cb.call(null, ...args);
+                }
+            }else{
+                c['callback'].call(null, ...args);
+            }
         }
     }
 

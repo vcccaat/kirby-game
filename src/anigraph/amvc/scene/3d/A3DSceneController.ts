@@ -6,6 +6,8 @@ import {NodeTransform3D, Quaternion, V3} from "../../../amath";
 import {ASerializable} from "../../../aserial";
 import {APerspectiveCamera} from "../../camera/APerspectiveCamera";
 import {APointerLockPlayerControls} from "../../../aplayercontrols/APointerLockPlayerControls";
+import {ClassInterface} from "../../../basictypes";
+import {APlayerControlsBase} from "../../../aplayercontrols";
 
 @ASerializable("A3DSceneController")
 export class A3DSceneController<NodeModelType extends ASceneNodeModel, SceneModelType extends ASceneModel<NodeModelType>> extends ASceneController<NodeModelType, SceneModelType>{
@@ -20,6 +22,14 @@ export class A3DSceneController<NodeModelType extends ASceneNodeModel, SceneMode
 
     InstantiateNewCamera(): ACamera {
         return new APerspectiveCamera();
+    }
+
+
+    addControlType(controlClass:ClassInterface<APlayerControlsBase>, name?:string){
+        // @ts-ignore
+        let controls = controlClass.Create(this);
+        // @ts-ignore
+        this.defineInteractionMode(name??controlClass.NameInGUI(), controls);
     }
 
     initSceneCamera(){

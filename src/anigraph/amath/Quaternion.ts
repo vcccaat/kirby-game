@@ -115,6 +115,12 @@ export class Quaternion extends THREE.Quaternion{
         return r;
     }
 
+    static FromVectors(forward:Vec3, up:Vec3){
+        return Quaternion.FromMatrix(
+            Mat3.FromColumns(forward.cross(up), up, forward)
+        )
+    }
+
     Mat3(){
         var w = this._w;
         var x = this._x;

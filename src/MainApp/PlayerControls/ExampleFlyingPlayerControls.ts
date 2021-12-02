@@ -14,6 +14,10 @@ export class ExampleFlyingCameraControls extends APointerLockPlayerControls{
      */
     // get sceneController():A3DSceneController<any, any>{return this.owner;}
 
+
+    static NameInGUI(){ // @ts-ignore
+        return "FlyPointerLock";}
+
     onLock(...args:any[]){
         // Do something when the ponter lock is entered
     }

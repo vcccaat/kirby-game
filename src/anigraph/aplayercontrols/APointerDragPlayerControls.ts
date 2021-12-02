@@ -18,6 +18,8 @@ import {AWheelInteraction} from "../ainteraction/AWheelInteraction";
 export class APointerDragPlayerControls extends APlayerControls{
     domElement!: HTMLElement;
 
+
+
     constructor(domElement?:HTMLElement, ...args:any[]) {
         super();
         if(domElement){this.domElement=domElement};
@@ -28,7 +30,6 @@ export class APointerDragPlayerControls extends APlayerControls{
         this.dragStartCallback = this.dragStartCallback.bind(this);
         this.dragMoveCallback = this.dragMoveCallback.bind(this);
         this.dragEndCallback = this.dragEndCallback.bind(this);
-        this.wheelCallback = this.wheelCallback.bind(this);
     }
 
     init(owner:A3DSceneController<any, any>, ...args:any[]) {
@@ -58,8 +59,6 @@ export class APointerDragPlayerControls extends APlayerControls{
     dragEndCallback(interaction:ADragInteraction, event?:AInteractionEvent){
     }
 
-    wheelCallback(interaction:AWheelInteraction, event?:AInteractionEvent){
-        console.log(event);
-    }
+
 
 }

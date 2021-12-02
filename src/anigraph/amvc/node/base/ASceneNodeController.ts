@@ -130,6 +130,8 @@ export class ASceneNodeController<NodeModelType extends ASceneNodeModel> extends
             this.sceneController.getSelectionController().initNodeControllerInSelectionInteractions(this);
         }
     }
+
+    onKeyDown(interaction: AKeyboardInteraction, event: AInteractionEvent){;}
 }
 
 export class BasicSceneNodeController extends ASceneNodeController<ASceneNodeModel>{

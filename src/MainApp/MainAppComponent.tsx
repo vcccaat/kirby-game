@@ -13,23 +13,20 @@ import {MainAppState} from "./MainAppState";
 const appState = MainAppState.SetAppState();
 
 
-enum AppSubComponents{
-    ModelScene='ModelScene',
-    ViewScene = 'ViewScene'
-}
+const AppSubComponents = MainAppState.SceneControllerNames;
 
-const ParticleAppModelSceneComponent = appState.AppComponent(
+const MainAppMapSceneComponent = appState.AppComponent(
     MapSceneController,
-    AppSubComponents.ModelScene,
+    AppSubComponents.MapScene,
     new AMVCMap(),
     {usesThreeInteractive:true, sceneNumber:1}
 );
 
 
-const ParticleAppViewSceneComponent = appState.AppComponent(
+const MainAppViewSceneComponent = appState.AppComponent(
 // @ts-ignore
     GameSceneController,
-    AppSubComponents.ViewScene,
+    AppSubComponents.GameScene,
     new AMVCMap(),
     {usesThreeInteractive:false, sceneNumber:2}
 );
@@ -63,7 +60,7 @@ export function MainAppComponent() {
                             <h2 className={"Base2DApp-label"}>Viewing World Space:</h2>
                         </div>
                         <div className={"row"}>
-                            <ParticleAppModelSceneComponent/>
+                            <MainAppMapSceneComponent/>
                         </div>
                     </div>
                     <div className={"col-5"}>
@@ -71,7 +68,7 @@ export function MainAppComponent() {
                             <h2 className={"Base2DApp-label"}>Viewing Object Space:</h2>
                         </div>
                         <div className={"row"}>
-                            <ParticleAppViewSceneComponent/>
+                            <MainAppViewSceneComponent/>
                         </div>
                     </div>
                 </div>

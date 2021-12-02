@@ -21,7 +21,7 @@ import {
     AAppState,
     VertexArray2D,
     SetAppState,
-    GetAppState, V2, Mat3, ALoadedModel, Quaternion, Vec3, VertexArray3D
+    GetAppState, V2, Mat3, ALoadedModel, Quaternion, Vec3, VertexArray3D, AClock
 } from "src/anigraph";
 import {A2DSceneNodeController, AGroundModel} from "../../amvc/derived/";
 
@@ -38,6 +38,22 @@ export abstract class Basic2DAppState<NodeModelType extends ASceneNodeModel, Sce
     @AObjectState selectedColor!: Color;
     @AObjectState _isCreatingShape!: boolean;
 
+    appClock!:AClock;
+    private _lastFrameTime:number=0;
+    _lastFrameInterval:number=0;
+    get timeSinceLastFrame(){return this._lastFrameInterval;}
+
+    onAnimationFrameCallback() {
+        this._lastFrameInterval=this.appClock.time-this._lastFrameTime;
+        this._lastFrameTime = this.appClock.time;
+        super.onAnimationFrameCallback();
+    }
+
+    init() {
+        super.init();
+        this.appClock = new AClock();
+        this.appClock.play();
+    }
 
 
     constructor() {
@@ -56,7 +72,6 @@ export abstract class Basic2DAppState<NodeModelType extends ASceneNodeModel, Sce
                 }
             }
         }));
-
     }
 
     getControlPanelStandardSpec(): {} {
@@ -112,7 +127,7 @@ export abstract class Basic2DAppState<NodeModelType extends ASceneNodeModel, Sce
         };
     }
 
-    addDefaultNode(color?: Color, position?: Vec2, ...args: any[]) {
+    async addDefaultNode(color?: Color, position?: Vec2, ...args: any[]) {
         super.addDefaultNode(this.selectedColor, position, ...args);
     }
 
@@ -172,6 +187,7 @@ class Base2DAppSceneModel extends ASceneModel<ASceneNodeModel> {
 }
 
 export class Base2DAppAppState extends Basic2DAppState<ASceneNodeModel, ASceneModel<ASceneNodeModel>> {
+
     NewSceneModel() {
         return new Base2DAppSceneModel();
     }
@@ -238,6 +254,10 @@ export class Base2DAppAppState extends Basic2DAppState<ASceneNodeModel, ASceneMo
     //     this.sceneModel.addNode(groundPlane);
     //     groundPlane.transform.position.z = -0.5;
     // }
+
+    onAnimationFrameCallback(){
+        super.onAnimationFrameCallback()
+    }
 
     async initSceneModel() {
         const self = this;

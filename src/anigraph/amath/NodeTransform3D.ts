@@ -5,6 +5,7 @@ import {Precision} from "./Precision";
 import {Quaternion} from "./Quaternion";
 import {Mat4} from "./Mat4";
 import {NodeTransform2D} from "./NodeTransform2D";
+import {V4} from "./Vec4";
 
 @ASerializable("NodeTransform3D")
 export class NodeTransform3D implements NodeTransform<Vec3, Mat4>{
@@ -191,6 +192,10 @@ export class NodeTransform3D implements NodeTransform<Vec3, Mat4>{
         obj.quaternion.set(this.rotation.x, this.rotation.y, this.rotation.z, this.rotation.w);
         obj.scale.set(this.scale.x, this.scale.y, this.scale.z);
         this.getMatrix().assignTo(obj.matrix);
+    }
+
+    getObjectSpaceOrigin(){
+        return this.getMatrix().times(V4(0,0,0,1)).getHomogenized().Point3D;
     }
 }
 

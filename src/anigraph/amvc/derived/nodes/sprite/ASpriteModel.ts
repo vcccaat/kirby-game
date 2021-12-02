@@ -26,7 +26,7 @@ export class ASpriteModel extends ASceneNodeModel{
         this.verts = VertexArray3D.SpriteGeometry(this.texture, this.sourceScale);
     }
 
-    static CreateDefaultNode(){
+    static async CreateDefaultNode(){
         let node = new this();
         return node;
     }

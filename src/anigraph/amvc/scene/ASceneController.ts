@@ -14,35 +14,20 @@ import {ACamera, HasCamera} from "../camera/ACamera";
 import {Interaction} from "../../thirdparty";
 import {AObject, AObjectState} from "../../aobject";
 import {A2DSelectionController} from "../selection/2d";
-import {AniGraphEnums} from "../../basictypes";
+import {AniGraphEnums, ClassInterface} from "../../basictypes";
 import {ACameraNodeModel} from "../camera";
 import {folder} from "leva";
 import {ASerializable} from "../../aserial";
 import {AOrthoCamera} from "../camera/AOrthoCamera";
-
-// export interface ASceneControllerClassInterface<NodeModelType extends ASceneNodeModel, SceneModelType extends ASceneModel<NodeModelType>> extends Function {new (...args:any[]): ASceneController<NodeModelType, SceneModelType>}
-// export interface ASceneControllerClassInterface<SceneControllerClass> extends ClassInterface<SceneControllerClass>;
-
-// export interface ASceneControllerInterface<NodeModelType extends ASceneNodeModel, SceneModelType extends ASceneModel<NodeModelType>> extends AControllerInterface<SceneModelType>{
-//     model:SceneModelType;
-//     getDOMElement():HTMLCanvasElement;
-//     getNodeControllerForModel(model:AModel):AControllerInterface<NodeModelType>;
-//     view:ASceneView<NodeModelType, SceneModelType>;
-//     appState:AAppState<NodeModelType, SceneModelType>;
-//     camera:THREE.Camera;
-//     nodeControllers:{[modelID:string]:AControllerInterface<NodeModelType>};
-//     selectModel(model:AModel, ...args:any[]):void;
-// }
-
+import {ExampleThirdPersonControls} from "../../../MainApp/PlayerControls/ExampleThirdPersonControls";
 export interface ASceneControllerOptions {
     usesThreeInteractive?:boolean;
     sceneNumber?:number;
 }
 
-// enum CAMERA_UPDATE_SUBSCRIPTIONS{
-//     POSE = 'CAMERA_POSE_UPDATE_ASCENECONTROLLER_TRIGGER_EVENT',
-//     PROJECTION = 'CAMERA_PROJECTION_UPDATE_ASCENECONTROLLER_TRIGGER_EVENT'
-// }
+interface HasNameInGUI{
+    NameInGUI():string;
+}
 
 @ASerializable("ASceneController")
 export abstract class ASceneController<NodeModelType extends ASceneNodeModel, SceneModelType extends ASceneModel<NodeModelType>> extends AController<SceneModelType> implements HasCamera{
@@ -136,6 +121,14 @@ export abstract class ASceneController<NodeModelType extends ASceneNodeModel, Sc
 
     }
 
+
+    setCurrentInteractionMode(name?: string|HasNameInGUI) {
+        if(typeof name === 'string'){
+            super.setCurrentInteractionMode(name);
+        }else{
+            super.setCurrentInteractionMode(name?.NameInGUI());
+        }
+    }
 
     signalCameraProjectionUpdate(){
         this.signalEvent(ACamera.CameraUpdateEvents.PROJECTION_UPDATED);
@@ -446,5 +439,7 @@ export abstract class ASceneController<NodeModelType extends ASceneNodeModel, Sc
         }
         return this.nodeControllers[model.uid];
     }
+
+    onKeyDown(interaction: AKeyboardInteraction, event: AInteractionEvent){;}
 
 }

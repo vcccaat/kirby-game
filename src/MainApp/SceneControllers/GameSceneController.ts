@@ -4,11 +4,11 @@ import {
     APointLightModel,
     ASceneModel,
     ASceneNodeModel,
-    BasicSceneNodeController,
+    BasicSceneNodeController, ClassInterface,
     V3
 } from "../../anigraph";
 import {BasicGameSceneControllerSpecs} from "./SceneControllerSpecs";
-import {APointerLockPlayerControls} from "../../anigraph/aplayercontrols";
+import {APlayerControlsBase, APointerLockPlayerControls} from "../../anigraph/aplayercontrols";
 import {ExampleFlyingCameraControls} from "../PlayerControls/ExampleFlyingPlayerControls";
 import {folder} from "leva";
 import {ExampleDragOrbitControls} from "../PlayerControls/ExampleDragOrbitControls";
@@ -17,6 +17,7 @@ import {ExampleNodeModel} from "../Nodes/Example/ExampleNodeModel";
 import {ExampleNodeView} from "../Nodes/Example/ExampleNodeView";
 import {ExampleNodeController} from "../Nodes/Example/ExampleNodeController";
 import {ExampleThirdPersonControls} from "../PlayerControls/ExampleThirdPersonControls";
+import {DragonGameControls} from "../PlayerControls/DragonGameControls";
 
 export class GameSceneController extends A3DSceneController<ASceneNodeModel, ASceneModel<ASceneNodeModel>>{
     initClassSpec() {
@@ -26,23 +27,19 @@ export class GameSceneController extends A3DSceneController<ASceneNodeModel, ASc
         // add additional specs here
     }
 
+
+
     initCameraControls() {
-        let FlyControls = ExampleFlyingCameraControls.Create(this);
-        this.defineInteractionMode('FlyControls', FlyControls);
-        let OrbitControls = ExampleDragOrbitControls.Create(this);
-        this.defineInteractionMode('OrbitControls', OrbitControls);
-        let ObjectRotate = RotateSelectedObject.Create(this);
-        this.defineInteractionMode('ObjectRotate', ObjectRotate);
-
-        let ThirdPerson = ExampleThirdPersonControls.Create(this);
-        this.defineInteractionMode('ThirdPerson', ThirdPerson);
-
-        this.setCurrentInteractionMode('OrbitControls');
+        this.addControlType(ExampleFlyingCameraControls)
+        this.addControlType(ExampleDragOrbitControls)
+        this.addControlType(RotateSelectedObject)
+        this.addControlType(ExampleThirdPersonControls)
+        this.addControlType(DragonGameControls);
+        this.setCurrentInteractionMode(DragonGameControls);
     }
 
     initSceneCamera() {
         super.initSceneCamera();
-        this.camera.setPosition(V3(0,0,250)); // V3() is shorthand for new Vec3()
     }
 
     /**
