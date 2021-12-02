@@ -4,7 +4,8 @@ const reflectionData: DocReflectionData = require("./input/api_reflection_data.j
 
 // configs
 // const DocURLBase = "http://127.0.0.1:5500/docs/";
-const DocURLBase = "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/docs/";
+// const DocURLBase = "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/docs/";
+const DocURLBase = process.env.DOC_URL;
 const outputPath = "../hierarchy-graph/src/data/hierarchy.json";
 
 const kindStringToURLMap = {

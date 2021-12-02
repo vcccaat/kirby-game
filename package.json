@@ -67,8 +67,8 @@
     "postinstall": "cd docs/hierarchy && yarn",
     "genDocs": "yarn && typedoc --options ./typedoc.json && cd docs/hierarchy/ && yarn run tree:generateHierarchyData",
     "serveDocs": "cd docs/hierarchy && yarn run startCache",
-    "genAndserveDocs": "yarn run genDocs && yarn run serveDocs",
-    "buildDocs": "yarn run genDocs && cd docs/hierarchy && yarn run build && zip -r productionDocs.zip productionDocs && mv productionDocs.zip ../../",
+    "genAndserveDocs": "DOC_URL=http://127.0.0.1:5500/docs/ yarn run genDocs && yarn run serveDocs",
+    "buildDocs": "DOC_URL=https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/docs/ yarn run genDocs && cd docs/hierarchy && yarn run build && zip -r productionDocs.zip productionDocs && mv productionDocs.zip ../../",
     "testreport": "craco test --ci --testResultsProcessor=`jest-junit`"
   },
   "eslintConfig": {
