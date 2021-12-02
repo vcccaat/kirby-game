@@ -10,11 +10,13 @@
     "build": "rm -rf ./productionDocs && npm-run-all build:*",
     "postinstall": "(cd generator && yarn); (cd hierarchy-graph && yarn);",
     "tree:generateHierarchyData": "cd generator && ts-node generateHierarchyData.ts",
-    "tree:serveFrontend": "cd hierarchy-graph && PORT=2222 yarn run start",
-    "serveTree": "npm-run-all tree:*",
+    "tree:devFrontend": "cd hierarchy-graph && PORT=2333 yarn run start",
+    "tree:buildFrontend": "cd hierarchy-graph && yarn run build",
+    "tree:serveFrontendBuild": "cd hierarchy-graph/build && http-server --o=/index.html --port=2333",
+    "devTree": "npm-run-all tree:generateHierarchyData tree:devFrontend",
     "serveDocs": "http-server --o=/docs/index.html --port=5500",
-    "start": "npm-run-all --parallel serveTree serveDocs",
-    "startCache": "npm-run-all --parallel tree:serveFrontend serveDocs"
+    "dev": "npm-run-all --parallel devTree serveDocs",
+    "startCache": "npm-run-all --parallel tree:serveFrontendBuild serveDocs"
   },
   "dependencies": {},
   "devDependencies": {
