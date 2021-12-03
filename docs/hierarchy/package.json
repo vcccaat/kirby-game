@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build:tree": "cd hierarchy-graph && yarn run build && mkdir -p ../productionDocs && mv build ../productionDocs && cd ../productionDocs && mv build hierarchy",
+    "build:tree": "cd hierarchy-graph && mkdir -p ../productionDocs && cp -R build ../productionDocs && cd ../productionDocs && mv build hierarchy",
     "build:docs": "mkdir -p ./productionDocs && cp -R docs ./productionDocs",
     "build": "rm -rf ./productionDocs && npm-run-all build:*",
     "postinstall": "(cd generator && yarn); (cd hierarchy-graph && yarn);",
