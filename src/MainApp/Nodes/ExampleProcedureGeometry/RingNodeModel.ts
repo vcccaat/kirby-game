@@ -19,6 +19,11 @@ export class RingNodeModel extends ASceneNodeModel{
 
     constructor(segments?:RingSegment[], ...args:any[]) {
         super();
+
+        // these will not be selectable through clicking in map view...
+        // you can still select through the scene graph view though
+        this.selectable=false;
+
         this.segments=[];
         if(segments){this.segments=segments;}
         const self=this;

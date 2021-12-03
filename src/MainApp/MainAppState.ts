@@ -98,13 +98,6 @@ export class MainAppState extends Base2DAppAppState{
         SetAppState(newappState);
         return newappState;
     }
-    async PrepAssets(){
-        let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
-        let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
-        this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
-        await this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
-        await this.materials.setMaterialModel('ground', new GroundMaterialModel(marbleTexture));
-    }
     get selectedModel(){
         return this.selectionModel.singleSelectedModel;
     }
@@ -133,34 +126,20 @@ export class MainAppState extends Base2DAppAppState{
         return this.gameSceneController.cameraNode;
     }
 
-    handleSceneGraphSelection(m:any){
-        this.selectionModel.selectModel(m);
-        console.log(`Model: ${m.name}: ${m.uid}`)
-        console.log(m);
-        console.log(`Transform with position:${m.transform.position}\nrotation: ${m.transform.rotation} \nmatrix:\n${m.transform.getMatrix().asPrettyString()}`)
-        console.log(THREE.RepeatWrapping);
-    }
+
 
     //##################//--Setting up the scene--\\##################
     //<editor-fold desc="Setting up the scene">
-
-    async initSceneModel() {
-        // Replace the provided examples
-        // this.initExampleScene1();
-        this.initDragonGame();
-        // this.initDebug();
-    }
-
 
     addArmModel(){
         let ringModel = new RingNodeModel();
         let joints = [
             V3(0,0,0),
             V3(0,0,50),
-            V3(0,20,100),
-            V3(0,-20,150),
+            V3(0,100,100),
+            V3(0,-100,150),
         ]
-        let radius = 10;
+        let radius = 5;
         ringModel.segments = [
             new RingSegment(joints[0], joints[1], radius, [Color.FromString('#ff0000'), Color.FromString('#00ff00')]),
             new RingSegment(joints[1], joints[2], radius, [Color.FromString('#00ff00'), Color.FromString('#0000ff')]),
@@ -175,7 +154,16 @@ export class MainAppState extends Base2DAppAppState{
         // lets make arms spin...
         let arms = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return node instanceof RingNodeModel;}) as RingNodeModel[];
         for (let a of arms){
-            a.segments[2].end=V3(Math.sin(t)*20,Math.cos(t)*20,150);
+            let armlen = 25;
+            let sa=2;
+            let sb = 5;
+            let v2=V3(Math.sin(t*sa)*armlen,Math.cos(t*sa)*armlen,50+armlen);
+            let v3 = V3(Math.sin(t*sb)*armlen,Math.cos(t*sb)*armlen,0)
+                .plus(v2);
+            a.segments[1].end=v2;
+            a.segments[2].start=v2;
+            a.segments[2].end=v3;
+
         }
     }
 
@@ -282,7 +270,7 @@ export class MainAppState extends Base2DAppAppState{
         )
 
         let arm = this.addArmModel();
-        arm.transform.position = V3(200,200,0);
+        arm.transform.position = V3(-200,200,0);
 
         /***
          * IF YOU WANT A THREEJS PLAYGROUND!
@@ -386,17 +374,6 @@ export class MainAppState extends Base2DAppAppState{
     //</editor-fold>
     //##################\\--Setting up the scene--//##################
 
-    onAnimationFrameCallback(){
-        super.onAnimationFrameCallback()
-        if(this.dragon){
-            this.exampleDragonGameCallback();
-        }else{
-            // you can also get time since last frame with this.timeSinceLastFrame
-            this.updateSpinningArms(this.appClock.time);
-        }
-
-    }
-
     exampleDragonGameCallback(){
         // You can get the current time, and the amount of time that has passed since
         // the last frame was rendered...
@@ -405,9 +382,6 @@ export class MainAppState extends Base2DAppAppState{
 
         // let's get all of the enemy nodes...
         let enemies = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return node instanceof EnemyNodeModel;});
-
-
-
 
         // Note that you can use the same approach to select any subset of the node models in the scene.
         // You can use this, for example, to get all of the models that you want to detect collistions with
@@ -443,6 +417,69 @@ export class MainAppState extends Base2DAppAppState{
         // or for an enemy model enemy.getBounds()
 
     }
+
+    //##################//--Customize Here--\\##################
+    //<editor-fold desc="Customize Here">
+
+    // For debugging, you can customize what happens when you select a model in the SceneGraph view (Menu->Show Scene Graph)
+    handleSceneGraphSelection(m:any){
+        this.selectionModel.selectModel(m);
+        console.log(`Model: ${m.name}: ${m.uid}`)
+        console.log(m);
+        console.log(`Transform with position:${m.transform.position}\nrotation: ${m.transform.rotation} \nmatrix:\n${m.transform.getMatrix().asPrettyString()}`)
+    }
+
+    /**
+     * Load any assets you want to use (e.g., custom textures, shaders, etc)
+     * @returns {Promise<void>}
+     * @constructor
+     */
+    async PrepAssets(){
+        let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
+        let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
+        this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
+        await this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
+        await this.materials.setMaterialModel('ground', new GroundMaterialModel(marbleTexture));
+    }
+
+
+    /**
+     * Initialize the scene model
+     * @returns {Promise<void>}
+     */
+    async initSceneModel() {
+        // Replace the provided examples, which you can use as a starting point/reference
+        // this.initExampleScene1();
+        // this.initDebug();
+
+        // this will run the dragon game... replace with another init example to start in orbit view.
+        let startInDragonMode:boolean=true;
+        this.initDragonGame(startInDragonMode);
+    }
+
+    /**
+     * Basic animation loop
+     */
+    onAnimationFrameCallback(){
+        super.onAnimationFrameCallback()
+
+        ////////////////////  Replace this ////////////////////
+        if(this.dragon){
+            this.exampleDragonGameCallback();
+        }else{
+            // for now we will update any spinning arms if we added them...
+            // you can also get time since last frame with this.timeSinceLastFrame
+            this.updateSpinningArms(this.appClock.time);
+        }
+        //////////////////////////////////////////////////////////
+
+
+
+    }
+
+    //</editor-fold>
+    //##################\\--Customize Here--//##################
+
 
 
 
