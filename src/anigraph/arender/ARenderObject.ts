@@ -71,5 +71,6 @@ export abstract class ARenderObject {
             // this._mesh.dispose();
             this.threejs.parent?.remove(this.threejs);
         }
+
     }
 }

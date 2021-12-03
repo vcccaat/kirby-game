@@ -2,7 +2,7 @@ import {V3, Vec3} from "../amath/Vec3";
 import {
     VertexAttributeArray,
     VertexAttributeArray2D,
-    VertexAttributeArray3D,
+    VertexAttributeArray3D, VertexAttributeArray4D,
     VertexAttributeArrayFromThreeJS, VertexPositionArray3DH
 } from "./VertexAttributeArray";
 import {ASerializable} from "../aserial";
@@ -55,7 +55,7 @@ export class VertexArray3D extends VertexArray<Vec3>{
 
 
 
-    addTriangleCCW(A:Vec3, B:Vec3, C:Vec3, uv?:Vec2[], color?:Vec3[]){
+    addTriangleCCW(A:Vec3, B:Vec3, C:Vec3, uv?:Vec2[], color?:Vec4[]){
         let i = this.nVerts;
         let AB = B.minus(A);
         let AC = C.minus(A)
@@ -111,7 +111,7 @@ export class VertexArray3D extends VertexArray<Vec3>{
             v.uv = new VertexAttributeArray2D()
         }
         if(hasColors){
-            v.color = new VertexAttributeArray3D();
+            v.color = new VertexAttributeArray4D();
         }
         return v;
     }
@@ -202,10 +202,10 @@ export class VertexArray3D extends VertexArray<Vec3>{
     }
 
 
-    addVertex(v:Vec3, normal?:Vec3, uv?:Vec2, color?:Color|Vec3){
+    addVertex(v:Vec3, normal?:Vec3, uv?:Vec2, color?:Color|Vec4){
         this.position.push(v);
         if(color){
-            this.color?.push(V3(...color.elements));
+            this.color?.push(V4(...color.elements));
         }
         if(normal){
             this.normal?.push(V3(...normal.elements));

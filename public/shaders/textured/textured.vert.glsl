@@ -7,7 +7,7 @@ varying vec3 vNormal;
 varying vec2 vUv;
 
 void main() {
-    vColor = vec4(color,1.0);
+    vColor = vec4(color.xyz,1);
     vPosition = modelViewMatrix * vec4(position.xyz, 1.0);
     vNormal = normalMatrix * normal;
     vUv = uv;

@@ -30,7 +30,6 @@ varying vec2 vUv;
 
 
 void main()	{
-
     vec3 N = normalize(vNormal);
     vec3 position = vPosition.xyz/vPosition.w;
     vec3 surface_color = texture(colorMap, vUv).xyz;

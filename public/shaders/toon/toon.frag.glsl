@@ -33,7 +33,7 @@ void main()	{
     vec3 N = normalize(vNormal);
     vec3 position = vPosition.xyz/vPosition.w;
     vec3 surface_color = vColor.xyz;
-    float alpha = 1.0;
+    float alpha = vColor.w;
     vec3 diffuseLighting = vec3(0.0,0.0,0.0);
     vec3 specularLighting = vec3(0.0,0.0,0.0);
     float specularStrength = 0.0;
@@ -87,7 +87,7 @@ void main()	{
         toon = vec3(1.0,1.0,1.0);
     }
 
-    gl_FragColor = vec4(TOON*toon + (1.0-TOON)*standardLighting.xyz, 1.0);
+    gl_FragColor = vec4(TOON*toon + (1.0-TOON)*standardLighting.xyz, alpha);
 //    gl_FragColor = vec4(toon,1.0);
 //    gl_FragColor = standardLighting;
 

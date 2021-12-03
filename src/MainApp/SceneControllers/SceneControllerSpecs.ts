@@ -26,6 +26,8 @@ import {AMeshView} from "../../anigraph/amvc/node/mesh/AMeshView";
 import GroundView from "../Nodes/Ground/GroundView";
 import {GroundController} from "../Nodes/Ground/GroundController";
 import {GroundModel} from "../Nodes/Ground/GroundModel";
+import {RingNodeView} from "../Nodes/ExampleProcedureGeometry/RingNodeView";
+import {RingNodeController} from "../Nodes/ExampleProcedureGeometry/RingNodeController";
 
 
 
@@ -52,7 +54,7 @@ export function BasicMapSceneControllerSpecs(){
         new AMVCSpec(ALoadedModel, ALoadedBoundsView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(GroundModel, GroundView, GroundController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(DragonNodeModel, ALoadedBoundsView, DragonNodeController, {canCreateDefault:true, isGUIOption:true}),
-        new AMVCSpec(RingNodeModel, ASceneNodeBoundsView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
+        new AMVCSpec(RingNodeModel, ASceneNodeBoundsView, RingNodeController, {canCreateDefault:true, isGUIOption:true}),
         ];
 }
 
@@ -63,7 +65,7 @@ export function BasicGameSceneControllerSpecs(){
         new AMVCSpec(ALoadedModel, ALoadedView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(FlameModel, FlameView, ASceneNodeController),
         new AMVCSpec(DragonNodeModel, DragonNodeView, DragonNodeController, {canCreateDefault:true, isGUIOption:true}),
-        new AMVCSpec(RingNodeModel, AMeshView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
+        new AMVCSpec(RingNodeModel, RingNodeView, RingNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(GroundModel, GroundView, GroundController, {canCreateDefault:false, isGUIOption:false}),
 
     ]

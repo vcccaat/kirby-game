@@ -38,6 +38,7 @@ import {ExampleDragOrbitControls} from "./PlayerControls/ExampleDragOrbitControl
 import {GroundModel} from "./Nodes/Ground/GroundModel";
 import {GroundMaterialModel} from "./Materials/GroundMaterialModel";
 import {RingNodeModel} from "./Nodes/ExampleProcedureGeometry/RingNodeModel";
+import {RingSegment} from "./Nodes/ExampleProcedureGeometry/RingSegment";
 
 
 enum SceneControllerNames{
@@ -146,18 +147,43 @@ export class MainAppState extends Base2DAppAppState{
     async initSceneModel() {
         // Replace the provided examples
         // this.initExampleScene1();
-        // this.initDragonGame();
-        this.initDebug();
+        this.initDragonGame();
+        // this.initDebug();
     }
 
+
+    addArmModel(){
+        let ringModel = new RingNodeModel();
+        let joints = [
+            V3(0,0,0),
+            V3(0,0,50),
+            V3(0,20,100),
+            V3(0,-20,150),
+        ]
+        let radius = 10;
+        ringModel.segments = [
+            new RingSegment(joints[0], joints[1], radius, [Color.FromString('#ff0000'), Color.FromString('#00ff00')]),
+            new RingSegment(joints[1], joints[2], radius, [Color.FromString('#00ff00'), Color.FromString('#0000ff')]),
+            new RingSegment(joints[2], joints[3], radius, [Color.FromString('#0000ff'), Color.FromString('#ffffff')]),
+        ]
+        this.setNodeMaterial(ringModel, 'Toon');
+        this.sceneModel.addNode(ringModel);
+        return ringModel;
+    }
+
+    updateSpinningArms(t:number){
+        // lets make arms spin...
+        let arms = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return node instanceof RingNodeModel;}) as RingNodeModel[];
+        for (let a of arms){
+            a.segments[2].end=V3(Math.sin(t)*20,Math.cos(t)*20,150);
+        }
+    }
 
     async initDebug(startInGameMode:boolean=false){
         const self = this;
         // add a ground plane
 
-        let ringModel = new RingNodeModel();
-        this.setNodeMaterial(ringModel, 'trippy');
-        this.sceneModel.addNode(ringModel);
+        this.addArmModel();
 
         self._addGroundPlane();
         self._addStartingPointLight();
@@ -181,7 +207,7 @@ export class MainAppState extends Base2DAppAppState{
 
 
 
-    async initDragonGame(startInGameMode:boolean=false){
+    async initDragonGame(startInGameMode:boolean=true){
         const self = this;
         this.enemySpeed = 1;
         this.enemyRange = 200;
@@ -254,6 +280,9 @@ export class MainAppState extends Base2DAppAppState{
                         new Quaternion(-0.48287245789277944, 0.006208070367882366, -0.005940267920390677, 0.8756485382206308)
             )
         )
+
+        let arm = this.addArmModel();
+        arm.transform.position = V3(200,200,0);
 
         /***
          * IF YOU WANT A THREEJS PLAYGROUND!
@@ -361,6 +390,9 @@ export class MainAppState extends Base2DAppAppState{
         super.onAnimationFrameCallback()
         if(this.dragon){
             this.exampleDragonGameCallback();
+        }else{
+            // you can also get time since last frame with this.timeSinceLastFrame
+            this.updateSpinningArms(this.appClock.time);
         }
 
     }
@@ -373,6 +405,9 @@ export class MainAppState extends Base2DAppAppState{
 
         // let's get all of the enemy nodes...
         let enemies = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return node instanceof EnemyNodeModel;});
+
+
+
 
         // Note that you can use the same approach to select any subset of the node models in the scene.
         // You can use this, for example, to get all of the models that you want to detect collistions with
@@ -399,6 +434,9 @@ export class MainAppState extends Base2DAppAppState{
                 l.color = Color.FromString("#ffffff");
             }
         }
+
+        // you can also get time since last frame with this.timeSinceLastFrame
+        this.updateSpinningArms(this.appClock.time);
 
         // Note that you can get the bounding box of any model by calling
         // e.g., for the dragon, this.dragon.getBounds()
