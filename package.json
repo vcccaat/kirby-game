@@ -2,9 +2,6 @@
   "name": "anigraphx-react",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "hierarchy-inheritance-tree"
-  ],
   "dependencies": {
     "@chakra-ui/react": "^1.6.12",
     "@craco/craco": "^6.2.0",
@@ -99,6 +96,7 @@
     "bootstrap": "^5.1.0",
     "craco-alias": "^3.0.1",
     "docsify-cli": "^4.4.3",
+    "http-server": "^14.0.0",
     "jest-junit": "^12.2.0",
     "madge": "^5.0.1",
     "typedoc": "^0.22.3"
