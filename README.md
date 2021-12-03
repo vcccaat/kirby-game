@@ -16,12 +16,9 @@ To this end, AniGraph is written in [TypeScript](https://www.typescriptlang.org/
 At its core, AniGraph is a combination of a scene graph, a model-view-controller framework, and tools expressing interactions with various graphical elements.
 
 
-To build and view the AniGraph Docs, you will need to install the node server globalls:
-```shell
-npm install http-server -g
-```
-then you should be able to run `yarn run buildDocs` to build the documentation
-Finally run the following to serve it locally:
-```shell
-yarn run serveDocs
-```
+To build and view the AniGraph Docs:
+1. `yarn run genAndServeDocs` will generate all data needed to serve documentation locally + open the broswer and show you documentations there.
+2. `yarn run serveDocs` will use local cache to serve documentations, which will be blazingly fast. (only run this after you have run yarn run genAndServeDocs before.)
+
+You should run `yarn run genAndServeDocs` the first 
+
