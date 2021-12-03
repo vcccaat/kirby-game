@@ -1,3 +1,8 @@
+
+# Go to the [Project ReadMe](https://github.coecis.cornell.edu/CS4620-F2021/anigraph-finalproject/blob/main/src/MainApp/README.md) for details on the final project!
+
+
+-------------
 # AniGraph:
 
 The main application for you to customize is defined by the files contained in [./src/MainApp](./src/MainApp).

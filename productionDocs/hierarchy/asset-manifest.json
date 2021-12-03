@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.js": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/static/js/main.97875bf1.chunk.js",
+    "main.js.map": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/static/js/main.97875bf1.chunk.js.map",
+    "runtime-main.js": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/static/js/runtime-main.9a26465d.js",
+    "runtime-main.js.map": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/static/js/runtime-main.9a26465d.js.map",
+    "static/css/2.723be866.chunk.css": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/static/css/2.723be866.chunk.css",
+    "static/js/2.bcafaba2.chunk.js": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/static/js/2.bcafaba2.chunk.js",
+    "static/js/2.bcafaba2.chunk.js.map": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/static/js/2.bcafaba2.chunk.js.map",
+    "index.html": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/index.html",
+    "static/css/2.723be866.chunk.css.map": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/static/css/2.723be866.chunk.css.map",
+    "static/js/2.bcafaba2.chunk.js.LICENSE.txt": "https://www.cs.cornell.edu/courses/cs4620/2021fa/anigraph/hierarchy/static/js/2.bcafaba2.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.9a26465d.js",
+    "static/css/2.723be866.chunk.css",
+    "static/js/2.bcafaba2.chunk.js",
+    "static/js/main.97875bf1.chunk.js"
+  ]
+}
