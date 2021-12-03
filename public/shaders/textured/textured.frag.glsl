@@ -10,7 +10,7 @@ struct PointLight {
 };
 uniform PointLight pointLights[NUM_POINT_LIGHTS];
 
-uniform vec4 mainColor;
+uniform vec4 modelColor;
 uniform mat4 modelViewMatrix;
 uniform float exposure;
 uniform float ambient;
@@ -18,7 +18,10 @@ uniform float diffuse;
 uniform float specular;
 uniform float specularExp;
 
-uniform sampler2D maintexture;
+uniform sampler2D colorMap;
+uniform sampler2D normalMap;
+uniform bool colorMapProvided;
+uniform bool normalMapProvided;
 
 varying vec4 vPosition;
 varying vec4 vColor;
@@ -27,10 +30,9 @@ varying vec2 vUv;
 
 
 void main()	{
-
     vec3 N = normalize(vNormal);
     vec3 position = vPosition.xyz/vPosition.w;
-    vec3 surface_color = texture(maintexture, vUv).xyz;
+    vec3 surface_color = texture(colorMap, vUv).xyz;
     float alpha = 1.0;
     vec3 diffuseLighting = vec3(0.0,0.0,0.0);
     vec3 specularLighting = vec3(0.0,0.0,0.0);

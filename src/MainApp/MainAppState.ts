@@ -35,6 +35,10 @@ import {DragonNodeController} from "./Nodes/Dragon/DragonNodeController";
 import {DragonGameControls} from "./PlayerControls/DragonGameControls";
 import {EnemyNodeModel} from "./Nodes/Enemy/EnemyNodeModel";
 import {ExampleDragOrbitControls} from "./PlayerControls/ExampleDragOrbitControls";
+import {GroundModel} from "./Nodes/Ground/GroundModel";
+import {GroundMaterialModel} from "./Materials/GroundMaterialModel";
+import {RingNodeModel} from "./Nodes/ExampleProcedureGeometry/RingNodeModel";
+import {RingSegment} from "./Nodes/ExampleProcedureGeometry/RingSegment";
 
 
 enum SceneControllerNames{
@@ -94,12 +98,6 @@ export class MainAppState extends Base2DAppAppState{
         SetAppState(newappState);
         return newappState;
     }
-    async PrepAssets(){
-        let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
-        this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
-        let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
-        this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
-    }
     get selectedModel(){
         return this.selectionModel.singleSelectedModel;
     }
@@ -120,16 +118,84 @@ export class MainAppState extends Base2DAppAppState{
         return this.sceneControllers[SceneControllerNames.MapScene];
     }
 
+    get gameCamera(){
+        return this.gameSceneController.camera;
+    }
+
+    get gameCameraNode(){
+        return this.gameSceneController.cameraNode;
+    }
+
+
+
     //##################//--Setting up the scene--\\##################
     //<editor-fold desc="Setting up the scene">
 
-    async initSceneModel() {
-        // Replace the provided examples
-        // this.initExampleScene1();
-        this.initDragonGame();
+    addArmModel(){
+        let ringModel = new RingNodeModel();
+        let joints = [
+            V3(0,0,0),
+            V3(0,0,50),
+            V3(0,100,100),
+            V3(0,-100,150),
+        ]
+        let radius = 5;
+        ringModel.segments = [
+            new RingSegment(joints[0], joints[1], radius, [Color.FromString('#ff0000'), Color.FromString('#00ff00')]),
+            new RingSegment(joints[1], joints[2], radius, [Color.FromString('#00ff00'), Color.FromString('#0000ff')]),
+            new RingSegment(joints[2], joints[3], radius, [Color.FromString('#0000ff'), Color.FromString('#ffffff')]),
+        ]
+        this.setNodeMaterial(ringModel, 'Toon');
+        this.sceneModel.addNode(ringModel);
+        return ringModel;
     }
 
-    async initDragonGame(){
+    updateSpinningArms(t:number){
+        // lets make arms spin...
+        let arms = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return node instanceof RingNodeModel;}) as RingNodeModel[];
+        for (let a of arms){
+            let armlen = 25;
+            let sa=2;
+            let sb = 5;
+            let v2=V3(Math.sin(t*sa)*armlen,Math.cos(t*sa)*armlen,50+armlen);
+            let v3 = V3(Math.sin(t*sb)*armlen,Math.cos(t*sb)*armlen,0)
+                .plus(v2);
+            a.segments[1].end=v2;
+            a.segments[2].start=v2;
+            a.segments[2].end=v3;
+
+        }
+    }
+
+    async initDebug(startInGameMode:boolean=false){
+        const self = this;
+        // add a ground plane
+
+        this.addArmModel();
+
+        self._addGroundPlane();
+        self._addStartingPointLight();
+        let trippyBall = await ExampleNodeModel.CreateDefaultNode(25);
+        trippyBall.transform.position = V3(-100, 100,10);
+        // see the trippy material for context. it's basically just textured with a colorful pattern
+        trippyBall.setMaterial('trippy')
+        this.sceneModel.addNode(trippyBall);
+        this.gameSceneController.setCurrentInteractionMode(ExampleDragOrbitControls);
+
+
+        // Pro tip: try pressing 'P' while in orbit mode to print out a camera pose to the console...
+        // this will help you set up your camera in your scene...
+        this.gameSceneController.camera.setPose(
+            new NodeTransform3D(
+                V3(2.2623523997293558, -128.47426789504541, 125.05297357609061),
+                new Quaternion(-0.48287245789277944, 0.006208070367882366, -0.005940267920390677, 0.8756485382206308)
+            )
+        )
+    }
+
+
+
+    async initDragonGame(startInGameMode:boolean=true){
         const self = this;
         this.enemySpeed = 1;
         this.enemyRange = 200;
@@ -184,11 +250,15 @@ export class MainAppState extends Base2DAppAppState{
         this.dragon.setMaterial('Toon');
 
 
-        //now let's activate the example third person controls...
-        this.gameSceneController.setCurrentInteractionMode(DragonGameControls);
 
-        // to set it to orbit controls...
-        // this.gameSceneController.setCurrentInteractionMode(ExampleDragOrbitControls);
+        if(startInGameMode) {
+            //now let's activate the example third person controls...
+            this.gameSceneController.setCurrentInteractionMode(DragonGameControls);
+        }else{
+            // or orbit controls...
+            this.gameSceneController.setCurrentInteractionMode(ExampleDragOrbitControls);
+        }
+
 
         // Pro tip: try pressing 'P' while in orbit mode to print out a camera pose to the console...
         // this will help you set up your camera in your scene...
@@ -198,6 +268,9 @@ export class MainAppState extends Base2DAppAppState{
                         new Quaternion(-0.48287245789277944, 0.006208070367882366, -0.005940267920390677, 0.8756485382206308)
             )
         )
+
+        let arm = this.addArmModel();
+        arm.transform.position = V3(-200,200,0);
 
         /***
          * IF YOU WANT A THREEJS PLAYGROUND!
@@ -255,14 +328,11 @@ export class MainAppState extends Base2DAppAppState{
      * @param wraps - how many times the texture repeats
      * @private
      */
-    _addGroundPlane(wraps:number=4.5) {
-        let groundPlane = new AGroundModel();
-        let verts = VertexArray3D.SquareXYUV(1000, wraps);
-        groundPlane.verts = verts;
+    async _addGroundPlane(wraps:number=4.5) {
+        let groundPlane = await GroundModel.CreateDefaultNode();
         groundPlane.name = 'GroundPlane';
         this.sceneModel.addNode(groundPlane);
         groundPlane.transform.position.z = -0.5;
-        this.setNodeMaterial(groundPlane, 'marble');
     }
 
     addTestSquare(sideLength:number=200, position?:Vec2, color?:Color){
@@ -304,14 +374,6 @@ export class MainAppState extends Base2DAppAppState{
     //</editor-fold>
     //##################\\--Setting up the scene--//##################
 
-    onAnimationFrameCallback(){
-        super.onAnimationFrameCallback()
-        if(this.dragon){
-            this.exampleDragonGameCallback();
-        }
-
-    }
-
     exampleDragonGameCallback(){
         // You can get the current time, and the amount of time that has passed since
         // the last frame was rendered...
@@ -347,11 +409,77 @@ export class MainAppState extends Base2DAppAppState{
             }
         }
 
+        // you can also get time since last frame with this.timeSinceLastFrame
+        this.updateSpinningArms(this.appClock.time);
+
         // Note that you can get the bounding box of any model by calling
         // e.g., for the dragon, this.dragon.getBounds()
         // or for an enemy model enemy.getBounds()
 
     }
+
+    //##################//--Customize Here--\\##################
+    //<editor-fold desc="Customize Here">
+
+    // For debugging, you can customize what happens when you select a model in the SceneGraph view (Menu->Show Scene Graph)
+    handleSceneGraphSelection(m:any){
+        this.selectionModel.selectModel(m);
+        console.log(`Model: ${m.name}: ${m.uid}`)
+        console.log(m);
+        console.log(`Transform with position:${m.transform.position}\nrotation: ${m.transform.rotation} \nmatrix:\n${m.transform.getMatrix().asPrettyString()}`)
+    }
+
+    /**
+     * Load any assets you want to use (e.g., custom textures, shaders, etc)
+     * @returns {Promise<void>}
+     * @constructor
+     */
+    async PrepAssets(){
+        let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
+        let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
+        this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
+        await this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
+        await this.materials.setMaterialModel('ground', new GroundMaterialModel(marbleTexture));
+    }
+
+
+    /**
+     * Initialize the scene model
+     * @returns {Promise<void>}
+     */
+    async initSceneModel() {
+        // Replace the provided examples, which you can use as a starting point/reference
+        // this.initExampleScene1();
+        // this.initDebug();
+
+        // this will run the dragon game... replace with another init example to start in orbit view.
+        let startInDragonMode:boolean=true;
+        this.initDragonGame(startInDragonMode);
+    }
+
+    /**
+     * Basic animation loop
+     */
+    onAnimationFrameCallback(){
+        super.onAnimationFrameCallback()
+
+        ////////////////////  Replace this ////////////////////
+        if(this.dragon){
+            this.exampleDragonGameCallback();
+        }else{
+            // for now we will update any spinning arms if we added them...
+            // you can also get time since last frame with this.timeSinceLastFrame
+            this.updateSpinningArms(this.appClock.time);
+        }
+        //////////////////////////////////////////////////////////
+
+
+
+    }
+
+    //</editor-fold>
+    //##################\\--Customize Here--//##################
+
 
 
 

@@ -12,8 +12,8 @@ export class ALoadedBoundsElement extends ATriangleMeshElement implements ALoade
         super();
         // this.setVerts(object.getBoundingBoxVertexArray());
         this._sourceObject=object;
-        this.verts = this._sourceObject.getBoundingBoxVertexArray()
-        this.setGeometry(this.verts);
+        let verts = this._sourceObject.getBoundingBoxVertexArray()
+        this.setGeometry(verts);
         this.setMaterial(Color.Random());
     }
 

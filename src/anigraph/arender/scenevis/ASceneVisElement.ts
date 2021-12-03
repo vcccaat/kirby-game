@@ -36,7 +36,7 @@ export abstract class ASceneVisElement extends ARenderElement{
      * @param args
      */
     onMaterialUpdate(newMaterial:AMaterial, ...args:any[]){
-        console.warn(`Cannot change material properties of ${this.serializationLabel}`)
+        // console.warn(`Cannot change material properties of ${this.serializationLabel}`)
     }
 
     /**

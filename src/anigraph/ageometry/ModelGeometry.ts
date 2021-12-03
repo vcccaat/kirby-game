@@ -24,6 +24,12 @@ export class GeometrySet implements HasBounds {
     protected _uid:string;
     get uid(){return this._uid};
 
+    private _updateKey!:string;
+
+    touch(){
+        this._updateKey=uuidv4();
+    }
+
     get sourceTransform(){return this._sourceTransform;}
     get sourceScale(){
         // this assumes we don't use non-uniform scales...

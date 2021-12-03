@@ -14,3 +14,14 @@ AniGraph is package designed for CS4620/CS5620 in an effort to modernize assignm
 To this end, AniGraph is written in [TypeScript](https://www.typescriptlang.org/) and uses [three.js](https://threejs.org/) for rendering in a browser. AniGraph applications can be built as a static website that is easy to serve from a personal webpage.
 
 At its core, AniGraph is a combination of a scene graph, a model-view-controller framework, and tools expressing interactions with various graphical elements.
+
+
+To build and view the AniGraph Docs, you will need to install the node server globalls:
+```shell
+npm install http-server -g
+```
+then you should be able to run `yarn run buildDocs` to build the documentation
+Finally run the following to serve it locally:
+```shell
+yarn run serveDocs
+```

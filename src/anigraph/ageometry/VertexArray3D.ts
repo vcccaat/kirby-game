@@ -2,12 +2,12 @@ import {V3, Vec3} from "../amath/Vec3";
 import {
     VertexAttributeArray,
     VertexAttributeArray2D,
-    VertexAttributeArray3D,
+    VertexAttributeArray3D, VertexAttributeArray4D,
     VertexAttributeArrayFromThreeJS, VertexPositionArray3DH
 } from "./VertexAttributeArray";
 import {ASerializable} from "../aserial";
 import {VertexArray} from "./VertexArray";
-import {V2} from "../amath/Vec2";
+import {V2, Vec2} from "../amath/Vec2";
 import {VertexIndexArray} from "./VertexIndexArray";
 import {BoundingBox3D} from "../amath/BoundingBox3D";
 import {Color} from "../amath/Color";
@@ -53,14 +53,17 @@ export class VertexArray3D extends VertexArray<Vec3>{
     // }
 
 
-    addTriangleCCW(A:Vec3, B:Vec3, C:Vec3){
+
+
+    addTriangleCCW(A:Vec3, B:Vec3, C:Vec3, uv?:Vec2[], color?:Vec4[]){
         let i = this.nVerts;
         let AB = B.minus(A);
         let AC = C.minus(A)
         let N= AB.getNormalized().cross(AC.getNormalized());
-        this.addVertex(A,N);
-        this.addVertex(B,N);
-        this.addVertex(C,N);
+        this.addVertex(A,N, uv?uv[0]:undefined, color?color[0]:undefined);
+        this.addVertex(B,N, uv?uv[1]:undefined, color?color[1]:undefined);
+        this.addVertex(C,N, uv?uv[2]:undefined, color?color[2]:undefined);
+
         this.indices.push([i,i+1,i+2]);
     }
 
@@ -98,6 +101,21 @@ export class VertexArray3D extends VertexArray<Vec3>{
     }
 
 
+    static CreateForRendering(hasNormals:boolean=true, hasTextureCoords:boolean=true, hasColors:boolean=false){
+        let v = new this();
+        v.indices = new VertexIndexArray(3);
+        if(hasNormals) {
+            v.normal = new VertexAttributeArray3D();
+        }
+        if(hasTextureCoords){
+            v.uv = new VertexAttributeArray2D()
+        }
+        if(hasColors){
+            v.color = new VertexAttributeArray4D();
+        }
+        return v;
+    }
+
     static SquareXYUV(scale:number=1, wraps:number=1){
         let verts = new VertexArray3D();
         verts.position= new VertexAttributeArray3D();
@@ -112,10 +130,10 @@ export class VertexArray3D extends VertexArray<Vec3>{
         verts.uv.push(V2(0,1).times(wraps));
 
         verts.normal = new VertexAttributeArray3D();
-        verts.normal.push(V3(0.0,0.0,-1.0).times(scale))
-        verts.normal.push(V3(0.0,0.0,-1.0).times(scale))
-        verts.normal.push(V3(0.0,0.0,-1.0).times(scale))
-        verts.normal.push(V3(0.0,0.0,-1.0).times(scale))
+        verts.normal.push(V3(0.0,0.0,1.0).times(scale))
+        verts.normal.push(V3(0.0,0.0,1.0).times(scale))
+        verts.normal.push(V3(0.0,0.0,1.0).times(scale))
+        verts.normal.push(V3(0.0,0.0,1.0).times(scale))
 
         verts.indices = new VertexIndexArray(3);
         verts.indices.push([0,1,2]);
@@ -184,13 +202,16 @@ export class VertexArray3D extends VertexArray<Vec3>{
     }
 
 
-    addVertex(v:Vec3, normal?:Vec3, color?:Color|Vec3){
+    addVertex(v:Vec3, normal?:Vec3, uv?:Vec2, color?:Color|Vec4){
         this.position.push(v);
         if(color){
-            this.color?.push(V3(...color.elements));
+            this.color?.push(V4(...color.elements));
         }
         if(normal){
             this.normal?.push(V3(...normal.elements));
+        }
+        if(uv){
+            this.uv?.push(V2(...uv.elements));
         }
     }
 
