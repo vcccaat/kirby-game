@@ -35,6 +35,8 @@ import {DragonNodeController} from "./Nodes/Dragon/DragonNodeController";
 import {DragonGameControls} from "./PlayerControls/DragonGameControls";
 import {EnemyNodeModel} from "./Nodes/Enemy/EnemyNodeModel";
 import {ExampleDragOrbitControls} from "./PlayerControls/ExampleDragOrbitControls";
+import {GroundModel} from "./Nodes/Ground/GroundModel";
+import {GroundMaterialModel} from "./Materials/GroundMaterialModel";
 
 
 enum SceneControllerNames{
@@ -96,9 +98,10 @@ export class MainAppState extends Base2DAppAppState{
     }
     async PrepAssets(){
         let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
-        this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
         let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
-        this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
+        this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
+        await this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
+        await this.materials.setMaterialModel('ground', new GroundMaterialModel(marbleTexture));
     }
     get selectedModel(){
         return this.selectionModel.singleSelectedModel;
@@ -120,16 +123,59 @@ export class MainAppState extends Base2DAppAppState{
         return this.sceneControllers[SceneControllerNames.MapScene];
     }
 
+    get gameCamera(){
+        return this.gameSceneController.camera;
+    }
+
+    get gameCameraNode(){
+        return this.gameSceneController.cameraNode;
+    }
+
+    handleSceneGraphSelection(m:any){
+        this.selectionModel.selectModel(m);
+        console.log(`Model: ${m.name}: ${m.uid}`)
+        console.log(m);
+        console.log(`Transform with position:${m.transform.position}\nrotation: ${m.transform.rotation} \nmatrix:\n${m.transform.getMatrix().asPrettyString()}`)
+        console.log(THREE.RepeatWrapping);
+    }
+
     //##################//--Setting up the scene--\\##################
     //<editor-fold desc="Setting up the scene">
 
     async initSceneModel() {
         // Replace the provided examples
         // this.initExampleScene1();
-        this.initDragonGame();
+        // this.initDragonGame();
+        this.initDebug();
     }
 
-    async initDragonGame(){
+
+    async initDebug(startInGameMode:boolean=false){
+        const self = this;
+        // add a ground plane
+        self._addGroundPlane();
+        self._addStartingPointLight();
+        let trippyBall = await ExampleNodeModel.CreateDefaultNode(25);
+        trippyBall.transform.position = V3(-100, 100,10);
+        // see the trippy material for context. it's basically just textured with a colorful pattern
+        trippyBall.setMaterial('trippy')
+        this.sceneModel.addNode(trippyBall);
+        this.gameSceneController.setCurrentInteractionMode(ExampleDragOrbitControls);
+
+
+        // Pro tip: try pressing 'P' while in orbit mode to print out a camera pose to the console...
+        // this will help you set up your camera in your scene...
+        this.gameSceneController.camera.setPose(
+            new NodeTransform3D(
+                V3(2.2623523997293558, -128.47426789504541, 125.05297357609061),
+                new Quaternion(-0.48287245789277944, 0.006208070367882366, -0.005940267920390677, 0.8756485382206308)
+            )
+        )
+    }
+
+
+
+    async initDragonGame(startInGameMode:boolean=false){
         const self = this;
         this.enemySpeed = 1;
         this.enemyRange = 200;
@@ -184,11 +230,15 @@ export class MainAppState extends Base2DAppAppState{
         this.dragon.setMaterial('Toon');
 
 
-        //now let's activate the example third person controls...
-        this.gameSceneController.setCurrentInteractionMode(DragonGameControls);
 
-        // to set it to orbit controls...
-        // this.gameSceneController.setCurrentInteractionMode(ExampleDragOrbitControls);
+        if(startInGameMode) {
+            //now let's activate the example third person controls...
+            this.gameSceneController.setCurrentInteractionMode(DragonGameControls);
+        }else{
+            // or orbit controls...
+            this.gameSceneController.setCurrentInteractionMode(ExampleDragOrbitControls);
+        }
+
 
         // Pro tip: try pressing 'P' while in orbit mode to print out a camera pose to the console...
         // this will help you set up your camera in your scene...
@@ -255,7 +305,7 @@ export class MainAppState extends Base2DAppAppState{
      * @param wraps - how many times the texture repeats
      * @private
      */
-    _addGroundPlane(wraps:number=4.5) {
+    async _addGroundPlane(wraps:number=4.5) {
         let groundPlane = new AGroundModel();
         let verts = VertexArray3D.SquareXYUV(1000, wraps);
         groundPlane.verts = verts;
@@ -263,6 +313,14 @@ export class MainAppState extends Base2DAppAppState{
         this.sceneModel.addNode(groundPlane);
         groundPlane.transform.position.z = -0.5;
         this.setNodeMaterial(groundPlane, 'marble');
+
+
+        // let groundPlane = await GroundModel.CreateDefaultNode();
+        // groundPlane.name = 'GroundPlane';
+        // this.sceneModel.addNode(groundPlane);
+        // groundPlane.transform.position.z = -0.5;
+        // // this.setNodeMaterial(groundPlane, 'ground');
+        // // (this.materials.getMaterialModel('ground') as GroundMaterialModel).setTexture('color', await ATexture.LoadAsync('./images/marble.jpg'))
     }
 
     addTestSquare(sideLength:number=200, position?:Vec2, color?:Color){

@@ -5,6 +5,9 @@ export type GenericDict={[name:string]:any};
 
 export interface ClassInterface<InstanceClass> extends Function {new (...args:any[]): InstanceClass};
 
+export function TextureKeyForName(name:string){return name+'Map';}
+export function TextureProvidedKeyForName(name:string){return name+'MapProvided';}
+
 
 export enum AniGraphEnums{
     BackgroundElementName = 'BackgroundElement',

@@ -6,13 +6,26 @@ import {AMaterialModelBase} from "./AMaterialModel";
 import {AShaderMaterial} from "./AShaderMaterial";
 import {ShaderMaterialParameters} from "three/src/materials/ShaderMaterial";
 import {Color} from "../../amath";
+import {button, folder} from "leva";
+import {ButtonInput, ButtonSettings, SpecialInputs} from "leva/src/types/index";
+import {TextureKeyForName, TextureProvidedKeyForName} from "../../basictypes";
+import {ATextureDict} from "../../arender/ATextureDict";
 
 
 export type ShaderUniformDict = {[name:string]:IUniform<any>};
 
+
+function getTextureFromFile(file: File, callback:(texture:THREE.Texture)=>void) {
+    let userImageURL = URL.createObjectURL(file);
+    let loader = new THREE.TextureLoader();
+    loader.setCrossOrigin("");
+    loader.load(userImageURL, callback);
+}
+
+
 export abstract class AShaderModelBase<ParamInterface extends {[name:string]:any}> extends AMaterialModelBase<ParamInterface>{
     uniforms!:ShaderUniformDict;
-    public textures:{[name:string]:ATexture}={};
+    public textures:{[name:string]:ATexture|undefined}={};
     public sharedUniforms:ShaderUniformDict;
 
     protected _shaderSource!:ShaderProgramSource;
@@ -26,7 +39,7 @@ export abstract class AShaderModelBase<ParamInterface extends {[name:string]:any
     get usesVertexColors(){return this.settingArgs['vertexColors'];}
     get rendersWireframe(){return this.settingArgs['wireframe'];}
 
-    public shaderSourcesLoadedPromise!:Promise<ShaderProgramSource>;
+    // public shaderSourcesLoadedPromise!:Promise<ShaderProgramSource>;
 
 
     get sourcesLoadedPromise(){
@@ -48,6 +61,23 @@ export abstract class AShaderModelBase<ParamInterface extends {[name:string]:any
         }
     }
 
+
+    getTextureGUIParams(material:AShaderMaterial) {
+        let texs = {}
+        for(let t in material.textures){
+            texs = {
+                ...texs,
+                ...AShaderModelBase.ShaderTextureGUIUpload(material, t),
+            }
+        }
+        return {
+            Textures: folder({
+                    ...texs
+                },
+                {collapsed: false}
+            ),
+        }
+    }
 
     static ShaderUniformGUIColorControl(material:AShaderMaterial, paramKey?:string){
         const paramName = paramKey?paramKey:'color';
@@ -74,6 +104,25 @@ export abstract class AShaderModelBase<ParamInterface extends {[name:string]:any
         return rval;
     }
 
+    static ShaderTextureGUIUpload(material:AShaderMaterial, paramName:string, otherSpecs?:{[name:string]:any}){
+        let rval:{[name:string]:any} = {};
+        rval[TextureKeyForName(paramName)] ={
+            image: undefined,
+            onChange:(v:any)=>{
+                if(v) {
+                    let loader = new THREE.TextureLoader();
+                    loader.setCrossOrigin("");
+                    loader.load(v, (tex:THREE.Texture)=>{
+                        let atex = new ATexture();
+                        atex._setTHREETexture(tex);
+                        material.setTexture(paramName, atex);
+                    });
+                }
+            }
+        }
+        return rval;
+    }
+
 
 
     // async _setShader(shaderName:string){
@@ -90,13 +139,20 @@ export abstract class AShaderModelBase<ParamInterface extends {[name:string]:any
     setUniformsDict(uniforms:ShaderUniformDict){
         this.uniforms = uniforms;
     }
-    setTexture(name:string, texture:ATexture|string){
-        if(texture instanceof ATexture){
-            this.textures[name]=texture;
-        }else{
-            this.textures[name]=new ATexture(texture);
+    setTexture(name:string, texture?:ATexture|string){
+        if(texture) {
+            if (texture instanceof ATexture) {
+                this.textures[name] = texture;
+            } else {
+                this.textures[name] = new ATexture(texture);
+            }
+            this.setUniform(TextureKeyForName(name), this.getTexture(name)?.threejs, 't');
+            this.setUniform(TextureProvidedKeyForName(name), !!this.getTexture(name), 'bool');
+        }else if(texture===undefined){
+            this.textures[name] = texture;
+            this.setUniform(TextureKeyForName(name), null, 't');
+            this.setUniform(TextureProvidedKeyForName(name), false, 'bool');
         }
-        this.setUniform(name, this.getTexture(name).threejs, 't');
     }
 
     getTexture(name:string){

@@ -4,6 +4,7 @@ import {AObjectState} from "../../aobject";
 import {AShaderModel, ShaderUniformDict} from "./AShaderModel";
 import * as THREE from "three";
 import {Color, Vec3, Vec4} from "../../amath";
+import {TextureKeyForName, TextureProvidedKeyForName} from "../../basictypes";
 
 export class AShaderMaterial extends AMaterial{
     @AObjectState uniforms!:ShaderUniformDict;
@@ -38,7 +39,7 @@ export class AShaderMaterial extends AMaterial{
         }
     }
 
-    public textures:{[name:string]:ATexture}={};
+    public textures:{[name:string]:ATexture|undefined}={};
     get model():AShaderModel{
         return this._model as AShaderModel;
     }
@@ -77,13 +78,20 @@ export class AShaderMaterial extends AMaterial{
         }
     }
 
-    setTexture(name:string, texture:ATexture|string){
-        if(texture instanceof ATexture){
-            this.textures[name]=texture;
-        }else{
-            this.textures[name]=new ATexture(texture);
+    setTexture(name:string, texture?:ATexture|string){
+        if(texture) {
+            if (texture instanceof ATexture) {
+                this.textures[name] = texture;
+            } else {
+                this.textures[name] = new ATexture(texture);
+            }
+            this.setUniform(TextureKeyForName(name), this.getTexture(name)?.threejs, 't');
+            this.setUniform(TextureProvidedKeyForName(name), !!this.getTexture(name), 'bool');
+        }else if(texture===undefined){
+            this.textures[name] = texture;
+            this.setUniform(TextureKeyForName(name), null, 't');
+            this.setUniform(TextureProvidedKeyForName(name), false, 'bool');
         }
-        this.setUniform(name, this.getTexture(name).threejs, 't');
     }
 
     getTexture(name:string){

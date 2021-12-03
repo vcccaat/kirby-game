@@ -1,32 +1,30 @@
-import {
-    ASerializable,
-    AShaderMaterial,
-    AShaderModel,
-    AShaderModelBase,
-    Color,
-    ShaderManager,
-} from "../../anigraph";
+import {ASerializable, AShaderMaterial, AShaderModel, AShaderModelBase, Color, ShaderManager} from "../../anigraph";
 import {ATexture} from "../../anigraph/arender/ATexture";
 import * as THREE from "three";
-ShaderManager.LoadShader('textured', 'textured/textured.vert.glsl', 'textured/textured.frag.glsl');
+let GroundShaderPromise = ShaderManager.LoadShader('ground', 'ground/ground.vert.glsl', 'ground/ground.frag.glsl');
 
 
-@ASerializable("TexturedMaterialModel")
-export class TexturedMaterialModel extends AShaderModel{
+@ASerializable("GroundMaterialModel")
+export class GroundMaterialModel extends AShaderModel{
+    static ShaderPromise = GroundShaderPromise;
     textureName:string;
     constructor(texture?:string|ATexture) {
         // texture=texture??marble;
-        super("textured");
+        super("ground");
         if(texture instanceof ATexture){
             this.setTexture('color', texture);
             this.textureName = texture.name;
+            this.getTexture('color')?.setWrapToRepeat(); // the questionmark is in case the texture isn't defined. It makes typescript happy.
         }else{
             let textureName = texture??'marble.jpg';
             this.textureName=textureName;
             this.setTexture('color', './images/'+this.textureName);
-            this.getTexture('color')?.setWrapToRepeat();
+            this.getTexture('color')?.setWrapToRepeat(); // the questionmark is in case the texture isn't defined. It makes typescript happy.
         }
-        // this.setTexture('normal', undefined);
+    }
+
+    setTexture(name: string, texture?: ATexture | string) {
+        super.setTexture(name, texture);
     }
 
     CreateMaterial(){
@@ -36,15 +34,16 @@ export class TexturedMaterialModel extends AShaderModel{
         mat.setUniform('specularExp', 20);
         mat.setUniform('specular', 1.0);
         mat.setUniform('diffuse', 2.5);
-        // mat.setTexture('maintexture', './images/'+this.textureName);
+        // mat.setTexture('color', './images/'+this.textureName);
         mat.setTexture('color', this.getTexture('color'));
+        // mat.setTexture('normal', this.getTexture('color'));
         return mat;
     }
 
     getMaterialGUIParams(material:AShaderMaterial){
         const self = this;
         return {
-            ...self.getTextureGUIParams(material),
+            ...AShaderModelBase.ShaderUniformGUIColorControl(material, 'mainColor'),
             ...AShaderModelBase.ShaderUniformGUIControl(material, 'specular', 1.0, {
                 min:0,
                 max:5,
@@ -69,7 +68,8 @@ export class TexturedMaterialModel extends AShaderModel{
                 min:0,
                 max:20,
                 step:0.01
-            })
+            }),
+            ...AShaderModelBase.ShaderTextureGUIUpload(material, 'color'),
         }
     }
 

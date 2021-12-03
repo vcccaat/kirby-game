@@ -95,46 +95,46 @@ export class  AStandardMaterialModel extends AMaterialModelBase<MeshStandardMate
     }
 }
 
-@ASerializable("ATexturedMaterialModel")
-export class  ATexturedMaterialModel extends AMaterialModelBase<MeshStandardMaterialParameters> {
-    constructor(texturePath:string) {
-        super(
-            DefaultMaterials.Standard,
-            THREE.MeshStandardMaterial,
-            {},
-            {
-                transparent: true,
-                opacity: 1,
-                side: THREE.DoubleSide,
-                depthWrite: true,
-                metalness: 0.0,
-                roughness: 1.0,
-                map:new THREE.TextureLoader().load(texturePath),
-            });
-    }
-
-    getMaterialGUIParams(material:AMaterial){
-        const self = this;
-        return {
-            // ...AMaterialModelBase.MaterialGUIColorControl(material),
-            ...AMaterialModelBase.MaterialGUIControl(material, 'opacity', 1, {
-                min:0,
-                max:1,
-                step:0.01
-            }),
-            ...AMaterialModelBase.MaterialGUIControl(material, 'roughness', 1, {
-                min:0,
-                max:1,
-                step:0.01
-            }),
-            ...AMaterialModelBase.MaterialGUIControl(material, 'metalness', 0, {
-                min:0,
-                max:1,
-                step:0.01
-            })
-        }
-    }
-}
+// @ASerializable("ATexturedMaterialModel")
+// export class  ATexturedMaterialModel extends AMaterialModelBase<MeshStandardMaterialParameters> {
+//     constructor(texturePath:string) {
+//         super(
+//             DefaultMaterials.Standard,
+//             THREE.MeshStandardMaterial,
+//             {},
+//             {
+//                 transparent: true,
+//                 opacity: 1,
+//                 side: THREE.DoubleSide,
+//                 depthWrite: true,
+//                 metalness: 0.0,
+//                 roughness: 1.0,
+//                 map:new THREE.TextureLoader().load(texturePath),
+//             });
+//     }
+//
+//     getMaterialGUIParams(material:AMaterial){
+//         const self = this;
+//         return {
+//             // ...AMaterialModelBase.MaterialGUIColorControl(material),
+//             ...AMaterialModelBase.MaterialGUIControl(material, 'opacity', 1, {
+//                 min:0,
+//                 max:1,
+//                 step:0.01
+//             }),
+//             ...AMaterialModelBase.MaterialGUIControl(material, 'roughness', 1, {
+//                 min:0,
+//                 max:1,
+//                 step:0.01
+//             }),
+//             ...AMaterialModelBase.MaterialGUIControl(material, 'metalness', 0, {
+//                 min:0,
+//                 max:1,
+//                 step:0.01
+//             })
+//         }
+//     }
+// }
 
 
 ShaderManager.LoadShader('toon', 'toon/toon.vert.glsl', 'toon/toon.frag.glsl');
@@ -142,12 +142,6 @@ ShaderManager.LoadShader('toon', 'toon/toon.vert.glsl', 'toon/toon.frag.glsl');
 export class CustomToonShaderModel extends AShaderModel{
     constructor() {
         super('toon');
-    }
-    get spriteTexture(){
-        return this.getTexture('spriteTexture')
-    }
-    set spriteTexture(v:ATexture){
-        this.setTexture('spriteTexture', v);
     }
 
     CreateMaterial(){
@@ -161,7 +155,7 @@ export class CustomToonShaderModel extends AShaderModel{
         mat.setUniform('inkingCutoff', 0.2);
         mat.setUniform('TOON', 1.0);
         mat.setUniformColor('mainColor', Color.FromString("#aaaaaa"))
-        mat.setTexture('texmap','trippy.jpeg')
+        mat.setTexture('color','trippy.jpeg')
         return mat;
     }
 
@@ -297,7 +291,10 @@ export class AMaterialManager extends AObject{
         return rval;
     }
 
-    setMaterialModel(name:string, m:AMaterialModelBase<any>){
+    async setMaterialModel(name:string, m:AMaterialModelBase<any>){
+        if(m instanceof AShaderModelBase){
+            await m.sourcesLoadedPromise;
+        }
         this.materials[name]=m;
     }
 

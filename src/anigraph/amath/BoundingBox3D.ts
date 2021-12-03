@@ -213,29 +213,53 @@ export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
         va.addVertex(corners[7]);
 
         va.indices = new VertexIndexArray(3);
-        //front
-        va.indices.push([0,1,2]);
-        va.indices.push([0,2,3]);
+
+        va.indices.push([2,1,0]);
+        va.indices.push([3,2,0]);
 
         //back
-        va.indices.push([4,6,5]);
-        va.indices.push([4,7,6]);
+        va.indices.push([5,6,4]);
+        va.indices.push([6,7,4]);
 
         // left
-        va.indices.push([4,0,3]);
-        va.indices.push([4,3,7]);
+        va.indices.push([3,0,4]);
+        va.indices.push([7,3,4]);
 
         //right
-        va.indices.push([5,2,1]);
-        va.indices.push([5,6,2]);
+        va.indices.push([1,2,5]);
+        va.indices.push([2,6,5]);
 
         // top
-        va.indices.push([3,2,6]);
-        va.indices.push([3,6,7]);
+        va.indices.push([6,2,3]);
+        va.indices.push([7,6,3]);
 
         //bottom
-        va.indices.push([0,5,1]);
-        va.indices.push([0,4,5]);
+        va.indices.push([1,5,0]);
+        va.indices.push([5,4,0]);
+
+        //front
+        // va.indices.push([0,1,2]);
+        // va.indices.push([0,2,3]);
+        //
+        // //back
+        // va.indices.push([4,6,5]);
+        // va.indices.push([4,7,6]);
+        //
+        // // left
+        // va.indices.push([4,0,3]);
+        // va.indices.push([4,3,7]);
+        //
+        // //right
+        // va.indices.push([5,2,1]);
+        // va.indices.push([5,6,2]);
+        //
+        // // top
+        // va.indices.push([3,2,6]);
+        // va.indices.push([3,6,7]);
+        //
+        // //bottom
+        // va.indices.push([0,5,1]);
+        // va.indices.push([0,4,5]);
 
         // console.warn('have not specified indices for 3d boundary lines array');
         // indices should be defined.

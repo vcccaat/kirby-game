@@ -59,7 +59,30 @@ if(interaction.keysDownState['P']){
 ```
 
 ## [./Materials](./Materials):
-Contains an example of a custom material implementation, which uses the shader in [public/shaders/textured](../../public/shaders/textured) 
+
+AMaterialModel's specify types of materials. AMaterial's are instances that can take on modified values (i.e., AMaterialModel's are the factory in a factory class pattern, for those of you who may be familiar).
+
+The example [TexturedMaterialModel.ts](./Materials/TexturedMaterialModel.ts) is a good starting point for anyone looking to make custom materials and use custom shaders. It uses the custom shader defined in [public/shaders/textured](../../public/shaders/textured).
+
+If you want to create new custom material models, you will want to load them into the app by adding them in `MainAppState.PrepAssets()`:
+```typescript
+async PrepAssets(){
+    let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
+    this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
+    let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
+    this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
+}
+```
+
+Note that you can specify different versions of the same model that differ only by texture, as shown above. You can also use the leva GUI to change the texture if you add controls for it to the MaterialModel's GUI specs. The relevant controls in the example are:
+```typescript
+...AShaderModelBase.ShaderTextureGUIUpload(material, 'maintexture'),
+...AShaderModelBase.ShaderTextureGUIUpload(material, 'normalTexture'),
+```
+note that when you use `setTexture(name, t)`, the corresponding texture will be named according to `TextureKeyForName(name)` in the body of your actually shader. By default this takes a string like 'xxx' and assigns it to 'xxxMap'. I added this to help avoid naming conflicts with other parameters of the shader.
+
+
+
 
 ## [./SceneControllers](./SceneControllers):
 

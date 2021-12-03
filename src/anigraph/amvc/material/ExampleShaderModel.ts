@@ -13,12 +13,6 @@ export class ExampleShaderModel extends AShaderModel{
     constructor() {
         super('example1');
     }
-    get spriteTexture(){
-        return this.getTexture('spriteTexture')
-    }
-    set spriteTexture(v:ATexture){
-        this.setTexture('spriteTexture', v);
-    }
 
     CreateMaterial(){
         let mat = super.CreateMaterial();
@@ -33,9 +27,8 @@ export class ExampleShaderModel extends AShaderModel{
     }
 
     getMaterialGUIParams(material:AShaderMaterial){
-        const self = this;
         return {
-            ...AShaderModelBase.ShaderUniformGUIColorControl(material, 'mainColor'),
+            ...this.getTextureGUIParams(material), // this will add buttons for loading any textures you've defined
             ...AShaderModelBase.ShaderUniformGUIControl(material, 'specularExp', 10, {
                 min:0,
                 max:100,
