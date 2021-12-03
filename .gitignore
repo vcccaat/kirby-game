@@ -39,3 +39,8 @@ src/anigraph/AnigraphDocs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Docs: generated Files
+/docs/hierarchy/build
+/docs/hierarchy/productionDocs
+/docs/hierarchy/docs
