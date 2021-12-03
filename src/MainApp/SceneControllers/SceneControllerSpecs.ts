@@ -52,7 +52,7 @@ export function BasicMapSceneControllerSpecs(){
         new AMVCSpec(ALoadedModel, ALoadedBoundsView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(GroundModel, GroundView, GroundController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(DragonNodeModel, ALoadedBoundsView, DragonNodeController, {canCreateDefault:true, isGUIOption:true}),
-        new AMVCSpec(AGroundModel, A2DPolygonView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
+        new AMVCSpec(RingNodeModel, ASceneNodeBoundsView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
         ];
 }
 
@@ -61,7 +61,6 @@ export function BasicGameSceneControllerSpecs(){
         ...CommonSpecs(),
         new AMVCSpec(AExtrudedShapeModel,AExtrudedShapeView, CubicBezierController),
         new AMVCSpec(ALoadedModel, ALoadedView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
-        new AMVCSpec(AGroundModel, AGroundView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(FlameModel, FlameView, ASceneNodeController),
         new AMVCSpec(DragonNodeModel, DragonNodeView, DragonNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(RingNodeModel, AMeshView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),

@@ -1,13 +1,14 @@
 import {AMeshModel} from "../../../anigraph/amvc/node/mesh/AMeshModel";
-import {AObjectState, Color, V2, V3, Vec2, Vec3, VertexArray3D} from "../../../anigraph";
+import {AObjectState, ASerializable, Color, V2, V3, Vec2, Vec3, VertexArray3D} from "../../../anigraph";
 
+@ASerializable("RingNodeModel")
 export class RingNodeModel extends AMeshModel{
     @AObjectState radius:number;
     @AObjectState height:number;
     @AObjectState nSamples:number;
     @AObjectState isSmooth:boolean;
 
-    constructor(radius:number=100, height=10, samples:number=50, isSmooth:boolean=true, ...args:any[]) {
+    constructor(radius:number=100, height=100, samples:number=50, isSmooth:boolean=true, ...args:any[]) {
         super();
         this.radius=radius;
         this.height = height;
@@ -38,12 +39,14 @@ export class RingNodeModel extends AMeshModel{
         // we will also calculate their texture coordinates, which we will map to the bottom of our image (v=1, in uv coordinates)
         let samplesXY0:Vec3[] = [];
         let uv0:Vec2[]=[];
-        let dtheta = Math.PI*2/(this.nSamples);
+        let dstep = 1/(this.nSamples-1);
+        let dtheta = Math.PI*2*dstep;
 
         for(let s=0;s<this.nSamples;s++){
             let theta = s*dtheta;
-            samplesXY0.push(V3(Math.cos(theta),Math.sin(theta), 0));
-            uv0.push(V2(s/this.nSamples, 1));
+            let v = V3(Math.cos(theta),Math.sin(theta), 0);
+            samplesXY0.push(v.times(this.radius));
+            uv0.push(V2(s*dstep, 1));
         }
 
         // now we'll compute another circle translated in z
@@ -74,8 +77,8 @@ export class RingNodeModel extends AMeshModel{
                 let t3 = uvh[(s + 1) % this.nSamples];
 
                 // Now let's add twp triangles to make a square
-                verts.addTriangleCCW(v0, v1, v2, [t0, t1, t2]);
-                verts.addTriangleCCW(v1, v2, v3, [t1, t2, t3]);
+                verts.addTriangleCCW(v2, v1, v0, [t2, t1, t0]);
+                verts.addTriangleCCW(v3, v1, v2, [t3, t1, t2]);
             }
 
         }else{
@@ -89,12 +92,12 @@ export class RingNodeModel extends AMeshModel{
             for (let s = 0; s < this.nSamples; s++) {
                 verts.addVertex(
                     samplesXY0[s],
-                    samplesXY0[s],
+                    samplesXY0[s].getNormalized(),
                     uv0[s]
                 );
                 verts.addVertex(
                     samplesXYh[s],
-                    samplesXY0[s],
+                    samplesXY0[s].getNormalized(),
                     uvh[s]
                 );
             }
@@ -106,16 +109,17 @@ export class RingNodeModel extends AMeshModel{
             // in counter-clockwise order relative to the front of the triangle, or they may be
             // culled (not show up) when you render.
 
+            let nverts = this.nSamples*2;
             for (let s = 0; s < this.nSamples; s++) {
                 // first let's get the 4 vertices in one segment of our ring
                 let v0 = (s * 2);
-                let v1 = (s * 2 + 1) % this.nSamples;
-                let v2 = (s * 2 + 2) % this.nSamples;
-                let v3 = (s * 2 + 3) % this.nSamples;
+                let v1 = (s * 2 + 1) % nverts;
+                let v2 = (s * 2 + 2) % nverts;
+                let v3 = (s * 2 + 3) % nverts;
 
                 //now let's add two triangles to make a square
-                verts.indices.push([v0, v1, v2]);
-                verts.indices.push([v1, v2, v3]);
+                verts.indices.push([v2, v1, v0]);
+                verts.indices.push([v2, v3, v1]);
             }
         }
 

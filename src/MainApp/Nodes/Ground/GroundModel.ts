@@ -22,7 +22,7 @@ export class GroundModel extends AMeshModel{
         super();
         this.selectable = false; // Don't want clicking on the ground to select it
         this.noiseAmplitude=10;
-        this.textureWraps=1;
+        this.textureWraps=10;
         this.reRoll(size);
     }
 

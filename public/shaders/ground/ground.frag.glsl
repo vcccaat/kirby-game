@@ -34,8 +34,6 @@ void main()	{
     vec3 N = normalize(vNormal);
     vec3 position = vPosition.xyz/vPosition.w;
     vec3 surface_color = texture(colorMap, vUv).xyz;
-//    vec3 surface_color = vec3(1.0,1.0,1.0)+0.5*texture(colorMap, vUv).xyz;
-//    vec3 surface_color = vec3(1.0,1.0,1.0)*0.2+0.75*texture(colorMap, vUv).xyz;
     float alpha = 1.0;
     vec3 diffuseLighting = vec3(0.0,0.0,0.0);
     vec3 specularLighting = vec3(0.0,0.0,0.0);
@@ -57,14 +55,13 @@ void main()	{
             specularLighting = specularLighting+specularStrength*falloff*surface_color*lightColor;
         }
     }
-    //    gl_FragColor = vec4(ones*exposure*falloff, 1.0);
     vec3 lighting = diffuseLighting*diffuse+specularLighting*specular + vec3(ambient, ambient,ambient);
     vec4 standardLighting = vec4(lighting*exposure*surface_color,1.0);
 
 //    gl_FragColor = vec4(1.0,1.0,1.0, 1.0);
 //    gl_FragColor = vec4(vUv.xy,0.0, 1.0);
 //        gl_FragColor = texture(colorMap, vUv.xy);
-    gl_FragColor = vec4(standardLighting.xyz, 1.0);
-//        gl_FragColor = standardLighting;
+//    gl_FragColor = vec4(standardLighting.xyz, 1.0);
+        gl_FragColor = standardLighting;
 
 }

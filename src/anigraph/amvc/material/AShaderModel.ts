@@ -53,7 +53,12 @@ export abstract class AShaderModelBase<ParamInterface extends {[name:string]:any
 
     constructor(shaderName?:string, shaderSettings?:ShaderMaterialParameters, uniforms?:ShaderUniformDict, sharedUniforms?:ShaderUniformDict, ...args:any[]) {
         super(shaderName, THREE.ShaderMaterial, ...args);
-        this._shaderSettings = shaderSettings??{lights:true};
+        this._shaderSettings = shaderSettings??{
+            lights:true,
+            transparent: true,
+            side: THREE.DoubleSide,
+            opacity:1.0
+        };
         this.uniforms=uniforms??{};
         this.sharedUniforms=sharedUniforms??{};
         if(shaderName) {
@@ -189,7 +194,9 @@ export abstract class AShaderModelBase<ParamInterface extends {[name:string]:any
     }
 
     CreateMaterial(){
-        let material =  new AShaderMaterial();
+        let material =  new AShaderMaterial({
+
+        });
         material.init(this);
         return material;
     }

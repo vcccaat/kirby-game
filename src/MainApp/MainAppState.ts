@@ -37,6 +37,7 @@ import {EnemyNodeModel} from "./Nodes/Enemy/EnemyNodeModel";
 import {ExampleDragOrbitControls} from "./PlayerControls/ExampleDragOrbitControls";
 import {GroundModel} from "./Nodes/Ground/GroundModel";
 import {GroundMaterialModel} from "./Materials/GroundMaterialModel";
+import {RingNodeModel} from "./Nodes/ExampleProcedureGeometry/RingNodeModel";
 
 
 enum SceneControllerNames{
@@ -153,6 +154,11 @@ export class MainAppState extends Base2DAppAppState{
     async initDebug(startInGameMode:boolean=false){
         const self = this;
         // add a ground plane
+
+        let ringModel = new RingNodeModel();
+        this.setNodeMaterial(ringModel, 'trippy');
+        this.sceneModel.addNode(ringModel);
+
         self._addGroundPlane();
         self._addStartingPointLight();
         let trippyBall = await ExampleNodeModel.CreateDefaultNode(25);
@@ -306,21 +312,10 @@ export class MainAppState extends Base2DAppAppState{
      * @private
      */
     async _addGroundPlane(wraps:number=4.5) {
-        let groundPlane = new AGroundModel();
-        let verts = VertexArray3D.SquareXYUV(1000, wraps);
-        groundPlane.verts = verts;
+        let groundPlane = await GroundModel.CreateDefaultNode();
         groundPlane.name = 'GroundPlane';
         this.sceneModel.addNode(groundPlane);
         groundPlane.transform.position.z = -0.5;
-        this.setNodeMaterial(groundPlane, 'marble');
-
-
-        // let groundPlane = await GroundModel.CreateDefaultNode();
-        // groundPlane.name = 'GroundPlane';
-        // this.sceneModel.addNode(groundPlane);
-        // groundPlane.transform.position.z = -0.5;
-        // // this.setNodeMaterial(groundPlane, 'ground');
-        // // (this.materials.getMaterialModel('ground') as GroundMaterialModel).setTexture('color', await ATexture.LoadAsync('./images/marble.jpg'))
     }
 
     addTestSquare(sideLength:number=200, position?:Vec2, color?:Color){

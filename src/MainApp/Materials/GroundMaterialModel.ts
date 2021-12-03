@@ -9,17 +9,14 @@ export class GroundMaterialModel extends AShaderModel{
     static ShaderPromise = GroundShaderPromise;
     textureName:string;
     constructor(texture?:string|ATexture) {
-        // texture=texture??marble;
         super("ground");
         if(texture instanceof ATexture){
             this.setTexture('color', texture);
             this.textureName = texture.name;
-            this.getTexture('color')?.setWrapToRepeat(); // the questionmark is in case the texture isn't defined. It makes typescript happy.
         }else{
             let textureName = texture??'marble.jpg';
             this.textureName=textureName;
             this.setTexture('color', './images/'+this.textureName);
-            this.getTexture('color')?.setWrapToRepeat(); // the questionmark is in case the texture isn't defined. It makes typescript happy.
         }
     }
 
@@ -33,17 +30,17 @@ export class GroundMaterialModel extends AShaderModel{
         mat.setUniform('exposure', 1.0);
         mat.setUniform('specularExp', 20);
         mat.setUniform('specular', 1.0);
-        mat.setUniform('diffuse', 2.5);
+        mat.setUniform('diffuse', 1.0);
         // mat.setTexture('color', './images/'+this.textureName);
         mat.setTexture('color', this.getTexture('color'));
-        // mat.setTexture('normal', this.getTexture('color'));
+        mat.setTexture('normal', this.getTexture('normal'));
         return mat;
     }
 
     getMaterialGUIParams(material:AShaderMaterial){
         const self = this;
         return {
-            ...AShaderModelBase.ShaderUniformGUIColorControl(material, 'mainColor'),
+            ...AShaderModelBase.ShaderUniformGUIColorControl(material, 'modelColor'),
             ...AShaderModelBase.ShaderUniformGUIControl(material, 'specular', 1.0, {
                 min:0,
                 max:5,
