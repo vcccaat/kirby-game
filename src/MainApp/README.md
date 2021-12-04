@@ -4,14 +4,32 @@ If you run the starter code right off, you will see this dragon game, where you 
 
 ![](../../docs/images/DragonGamePreview.gif)
 
-There is a lot of example code with comments for you to use as reference. Here are some highlights...
+There is a lot of example code with comments for you to use as reference. We will provide high-level overviews and pointers to useful functions here.
+
+# MVC / SceneGraph structure
+Remember that the central data for AniGraph is stored in model classes. Controller classes then connect these models to views, which render content to the screen. As such, most of the customization you will do involves either manipulating model data, or specifying how views and controllers should respond to that manipulation. Our main focus will be on the window we see on the right side of the video above, which represents a view of the model controlled by the [GameSceneController](./SceneControllers/GameSceneController.ts) class, but the starter code also has a [MatSceneController](./SceneControllers/MapSceneController.ts) class that controls the orthographic map view shown on the left part of the screen. 
 
 
 ## [./MainAppState.ts](./MainAppState.ts):
-You can think of the `MainAppState` class as a container for all of your app's global state. You can access this state with the `GetAppState() function from any of the files you will be customizing.
+You can think of the `MainAppState` class as a container for all of your app's global state. You can access this state with the `GetAppState()` function from any of the files you will be customizing. You can also use the `onAnimationFrameCallback()` function as a main gameloop if you want a central place to put game logic. Some useful properties/methods of the main app state"
+
+Right now, you will notice that MainAppState.ts is fairly empty but for a few boilerplate functions. This is because it inherits its default behavior from the DragonAppState example class defined in [DragonGameAppState.ts](./StarterAppState/DragonGameAppState.ts), which in turn inherits from the base class [StarterAppState.ts](./StarterAppState/StarterAppState.ts):
+
+- [StarterAppState.ts](./StarterAppState/StarterAppState.ts): a base class for implementing a game/visualization that should be easy to customize.
+- [DragonGameAppState.ts](./StarterAppState/DragonGameAppState.ts): an example of how to implement a simple game as a subclass of [StarterAppState.ts](./StarterAppState/StarterAppState.ts)
+- [MainAppState.ts](./MainAppState.ts): the actual app state used by the application. Right now it inherits from DragonGameAppState so you can see the example in action. You will probably want to switch it's parent class to StarterAppState and fill in the boilerplate functions:
+
+To swith the parent class of MainAppState to StarterAppState, change the definition in MainAppState.ts to:
+```typescript
+// export class MainAppState extends DragonGameAppState{
+export class MainAppState extends StarterAppState{
+```
+
+Now let's go over some of the useful attributes of app state.
+
 
 - `appState.gameSceneController`: the 3D scene controller on the right side of the screen
-- `appState.sceneModel`: the scene model. See the example Dragon game for how to query the scene for all nodes fitting specific criteria (e.g., [all of the lights](https://www.youtube.com/watch?v=HAfFfqiYLp0), or [all the small things](https://www.youtube.com/watch?v=9Ht5RZpzPqw)...)
+- `appState.sceneModel`: the scene model. This is a the root for the tree of `ASceneNodeModel`'s in your application. See the example Dragon game for how to query the scene for all nodes fitting specific criteria (e.g., [all of the lights](https://www.youtube.com/watch?v=HAfFfqiYLp0), or [all the small things](https://www.youtube.com/watch?v=9Ht5RZpzPqw)...).
 - `appState.selectedModel`: currently selected model
 
 ## Setting up your scene 
