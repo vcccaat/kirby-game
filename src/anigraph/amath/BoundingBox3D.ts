@@ -1,9 +1,11 @@
-// import {BoundingBox} from "./BoundingBox";
-// import {NodeTransform2D} from "./NodeTransform2D";
-// import {V2, Vec2} from "./Vec2";
-// import {VertexArray2D} from "./VertexArray2D";
-// import {VertexPositionArray2DH} from "./VertexAttributeArray";
-// import {Vec3} from "./Vec3";
+/***
+ * The BoundingBox3D class
+ * This class represents a 3D bounding box using
+ * - minPoint (Vec3): the point defined by the minimum x, y, and z coordinates being bound.
+ * - maxPoint (Vec3): the point defined by the maximum x, y, and z coordinates being bound.
+ * - transform (NodeTransform3D): a transformation associated with the bounding box. This allows for
+ *   oriented bounding boxes.
+ */
 
 import {BoundingBox2D} from "./BoundingBox2D";
 import {BoundingBox} from "./BoundingBox";
@@ -18,6 +20,12 @@ import {VertexIndexArray} from "../ageometry/VertexIndexArray";
 import * as THREE from "three";
 
 export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
+
+    constructor() {
+        super();
+        this.transform = new NodeTransform3D();
+    }
+
     clone():this{
         let cfunc:any=(this.constructor as any);
         let clone = new cfunc();
@@ -33,6 +41,13 @@ export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
         return BoundingBox3D.FromVertexArray3D(va);
     }
 
+    /**
+     * Get a bounding box at a specified location with a specified side length
+     * @param location
+     * @param size
+     * @returns {BoundingBox3D}
+     * @constructor
+     */
     static BoxAtLocationWithSize(location:Vec3, size:number=100){
         let box = new BoundingBox3D();
         let hsize = size*0.5;
@@ -42,12 +57,24 @@ export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
         return box;
     }
 
+
+    /**
+     * Get a bounding box 3D that bounds points from the given VertexArray3D
+     * @param verts
+     * @returns {BoundingBox3D}
+     * @constructor
+     */
     static FromVertexArray3D(verts:VertexArray3D){
         let rval = new BoundingBox3D();
         rval.boundVertexPositionArrray(verts.position);
         return rval;
     }
 
+
+    /**
+     * Adjusts the current bounding box to bound all of the points specified in va.
+     * @param va
+     */
     boundVertexPositionArrray(va:VertexAttributeArray<any>){
         let nverts = va.nVerts;
         for(let vi=0;vi<nverts;vi++){
@@ -55,6 +82,13 @@ export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
         }
     }
 
+
+    /**
+     * Gets the ThreeJS bounds and converts them to a BoundingBox3D object.
+     * @param obj
+     * @returns {BoundingBox3D}
+     * @constructor
+     */
     static FromTHREEJSObject(obj:THREE.Object3D){
         let threebox = new THREE.Box3().setFromObject(obj);
         let bounds = new BoundingBox3D()
@@ -63,11 +97,10 @@ export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
         return bounds;
     }
 
-    constructor() {
-        super();
-        this.transform = new NodeTransform3D();
-    }
-
+    /**
+     * Get a random point in the object space (not transformed by this.transform) of the bounding box
+     * @returns {Vec3}
+     */
     randomPointObjectSpace(){
         let rand1 = Math.random();
         let rand2 = Math.random();
@@ -82,10 +115,19 @@ export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
         )
     }
 
+    /**
+     * Get a random point from the region bounded by the oriented bounding box
+     * (i.e., the box after transforming by this.transform)
+     * @returns {Vec3}
+     */
     randomTransformedPoint(){
         return this.transform.getMatrix().times(this.randomPointObjectSpace().Point3DH).Point3D;
     }
 
+    /**
+     * Center of box
+     * @returns {Vec3}
+     */
     get center(){
         if(!this.minPoint || !this.maxPoint){
             return;
@@ -93,20 +135,38 @@ export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
         return this.transform.getMatrix().times(this.minPoint.plus(this.maxPoint).times(0.5).Point3DH).Point3D;
     }
 
+
+    /**
+     * The width in object space
+     * @returns {number}
+     */
     get localWidth(){
         // @ts-ignore
         return this.maxPoint.x-this.minPoint.x;
     }
+
+    /**
+     * The height in object space
+     * @returns {number}
+     */
     get localHeight(){
         // @ts-ignore
         return this.maxPoint.y-this.minPoint.y;
     }
 
+    /**
+     * The depth in object space
+     * @returns {number}
+     */
     get localDepth(){
         // @ts-ignore
         return this.maxPoint.z-this.minPoint.z;
     }
 
+    /**
+     * Adjust the bounds to contrain the given point (if adjustment is necessary).
+     * @param p
+     */
     public boundPoint(p:Vec2|Vec3|Vec4):void{
         if(!this.minPoint || !this.maxPoint){
             let pcl = (p instanceof Vec3)?p:((p instanceof Vec4)?p.Point3D:Vec3.From2DHPoint(p));
@@ -237,32 +297,6 @@ export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
         va.indices.push([1,5,0]);
         va.indices.push([5,4,0]);
 
-        //front
-        // va.indices.push([0,1,2]);
-        // va.indices.push([0,2,3]);
-        //
-        // //back
-        // va.indices.push([4,6,5]);
-        // va.indices.push([4,7,6]);
-        //
-        // // left
-        // va.indices.push([4,0,3]);
-        // va.indices.push([4,3,7]);
-        //
-        // //right
-        // va.indices.push([5,2,1]);
-        // va.indices.push([5,6,2]);
-        //
-        // // top
-        // va.indices.push([3,2,6]);
-        // va.indices.push([3,6,7]);
-        //
-        // //bottom
-        // va.indices.push([0,5,1]);
-        // va.indices.push([0,4,5]);
-
-        // console.warn('have not specified indices for 3d boundary lines array');
-        // indices should be defined.
         return va;
     }
 
@@ -274,16 +308,6 @@ export class BoundingBox3D extends BoundingBox<Vec3, NodeTransform3D>{
         }
     }
 
-    // BoundingBox2D(cameraMatrix?:Mat4){
-    //     let b = new BoundingBox2D();
-    //     let corners = this.corners;
-    //     for(let c of corners){
-    //         let ct = this.transform.getMatrix().times(c.Point3DH);
-    //         let pc = cameraMatrix?cameraMatrix.times(ct).Point3D:ct.Point3D;
-    //         b.boundPoint(pc.Point2D);
-    //     }
-    //     return b;
-    // }
 
     static FromBoundingBox2D(bounds2D:BoundingBox2D){
         let b = new BoundingBox3D();
