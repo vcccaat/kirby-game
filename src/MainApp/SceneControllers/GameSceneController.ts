@@ -35,7 +35,8 @@ export class GameSceneController extends A3DSceneController<ASceneNodeModel, ASc
         this.addControlType(RotateSelectedObject)
         this.addControlType(ExampleThirdPersonControls)
         this.addControlType(DragonGameControls);
-        this.setCurrentInteractionMode(DragonGameControls);
+        this.setCurrentInteractionMode(ExampleDragOrbitControls)
+        // this.setCurrentInteractionMode(DragonGameControls);
     }
 
     initSceneCamera() {
