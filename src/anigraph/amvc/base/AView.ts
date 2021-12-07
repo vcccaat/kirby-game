@@ -81,7 +81,7 @@ export abstract class AView<NodeModelType extends AModel> extends AObject{
 
     disposeElements(){
         let elementKeys = Object.keys(this.elements);
-        for(let e in elementKeys){
+        for(let e of elementKeys){
             let element = this.elements[e];
             this._removeElement(element);
             element.dispose();
