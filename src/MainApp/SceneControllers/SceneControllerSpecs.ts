@@ -29,9 +29,9 @@ import {GroundModel} from "../Nodes/Ground/GroundModel";
 import {RingNodeView} from "../Nodes/ExampleProcedureGeometry/RingNodeView";
 import {RingNodeController} from "../Nodes/ExampleProcedureGeometry/RingNodeController";
 import {BasicElementsModel, BasicElementsView} from "../Nodes/ProceduralBasicGeometryElements";
-import {SphereModel} from "../Nodes/BasicGeometryElements/SphereModel";
-import {GridModel} from "../Nodes/BasicGeometryElements/GridModel";
-import {GridView} from "../Nodes/BasicGeometryElements/GridView";
+import {SphereModel} from "../Nodes/BasicGeometry/SphereModel";
+import {GridModel} from "../Nodes/BasicGeometry/GridModel";
+import {GridView} from "../Nodes/BasicGeometry/GridView";
 
 
 
