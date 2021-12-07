@@ -121,6 +121,17 @@ export class StarterAppState extends Base2DAppAppState{
         );
     }
 
+
+
+    addPointLight(position:Vec3, intensity:number=1, ...args:any[]){
+        let pointLight = new APointLightModel();
+        this.sceneModel.addNode(pointLight);
+        if(position){
+            pointLight.transform.position=position;
+        }
+        pointLight.intensity=intensity;
+    }
+
     _addStartingPointLight() {
         let pointLight = new APointLightModel();
         this.sceneModel.addNode(pointLight);

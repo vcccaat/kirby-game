@@ -20,9 +20,7 @@ export class RingNodeView extends ASceneNodeView<RingNodeModel>{
     }
 
     disposeElements(){
-        for(let s of this.ringElements){
-            s.dispose();
-        }
+        super.disposeElements();
         this.ringElements=[];
     }
 

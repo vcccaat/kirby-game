@@ -9,6 +9,7 @@ import {APointerLockPlayerControls} from "../../anigraph/aplayercontrols";
 import {FilteredVector} from "../../anigraph/amvc/FilteredVector";
 import {MainAppState} from "../MainAppState";
 import {AWheelInteraction} from "../../anigraph/ainteraction/AWheelInteraction";
+import {DragonGameAppState} from "../StarterAppState/DragonGameAppState";
 
 @ASerializable("DragonGameControls")
 export class DragonGameControls extends APointerLockPlayerControls{
@@ -23,11 +24,15 @@ export class DragonGameControls extends APointerLockPlayerControls{
     }
 
     get dragon(){
-        return this.appState.dragon;
+        if(this.appState instanceof DragonGameAppState){
+            return (this.appState as DragonGameAppState).dragon;
+        }
     }
 
     get dragonController(){
-        return this.appState.dragonController;
+        if(this.appState instanceof DragonGameAppState){
+            return (this.appState as DragonGameAppState).dragonController;
+        }
     }
 
     //A handle for our control mode
@@ -98,7 +103,7 @@ export class DragonGameControls extends APointerLockPlayerControls{
     }
 
     updateCamera(){
-        if(this.appState.dragon) {
+        if(this.dragon) {
             this.cameraFilter.target = this.dragon.transform.position.plus(this.startOffset.times(this.camOffset));
         }
     }

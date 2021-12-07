@@ -33,6 +33,13 @@ export class ARenderElement extends ARenderElementBase{
         return this._element;
     }
 
+    // dispose() {
+    //     super.dispose();
+    //     if(this._element){
+    //         this._element.dispose();
+    //     }
+    // }
+
     onMaterialChange(newMaterial:AMaterial){
         this.setMaterial(newMaterial.threejs);
     }
@@ -103,6 +110,9 @@ export class ARenderElement extends ARenderElementBase{
     }
 
     _setBufferGeometry(verts:VertexArray<any>){
+        if(verts.nVerts==0){
+            return;
+        }
         this._geometry.setIndex(verts.indices.elements);
         for (let attribute in verts.attributes) {
             this._geometry.setAttribute(attribute, verts.getAttributeArray(attribute).BufferAttribute());

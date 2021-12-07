@@ -28,6 +28,7 @@ import {GroundController} from "../Nodes/Ground/GroundController";
 import {GroundModel} from "../Nodes/Ground/GroundModel";
 import {RingNodeView} from "../Nodes/ExampleProcedureGeometry/RingNodeView";
 import {RingNodeController} from "../Nodes/ExampleProcedureGeometry/RingNodeController";
+import {BasicElementsModel, BasicElementsView} from "../Nodes/ProceduralBasicGeometryElements";
 
 
 
@@ -42,7 +43,7 @@ export function CommonSpecs(){
             new AMVCSpec(ACameraNodeModel, ACameraNodeView, ACameraNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(EnemyNodeModel, APointLightView, APointLightController),
         new AMVCSpec(RingNodeModel, ASceneNodeBoundsView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
-
+        new AMVCSpec(BasicElementsModel, BasicElementsView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
     ];
 }
 

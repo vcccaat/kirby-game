@@ -79,6 +79,14 @@ export abstract class AView<NodeModelType extends AModel> extends AObject{
         return this.getElementList().map(fn);
     }
 
+    disposeElements(){
+        let elementKeys = Object.keys(this.elements);
+        for(let e in elementKeys){
+            let element = this.elements[e];
+            this._removeElement(element);
+            element.dispose();
+        }
+    }
 
     /**
      * Placeholder for initGraphics, which should be implemented in subclass.

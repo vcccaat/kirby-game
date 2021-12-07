@@ -195,6 +195,7 @@ export class DragonGameAppState extends StarterAppState{
 
         // let's get all of the enemy nodes...
         let enemies = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return node instanceof EnemyNodeModel;});
+        // let enemies = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return (typeof node.getBounds === 'function');});
 
         // Note that you can use the same approach to select any subset of the node models in the scene.
         // You can use this, for example, to get all of the models that you want to detect collistions with
@@ -234,6 +235,7 @@ export class DragonGameAppState extends StarterAppState{
     async initSceneModel(){
         // this will run the dragon game... replace with another init example to start in orbit view.
         let startInDragonMode:boolean=true;
+        this.gameSceneController.addControlType(DragonGameControls);
         this.initDragonGame(startInDragonMode);
     }
 

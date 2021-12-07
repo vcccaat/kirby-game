@@ -141,6 +141,51 @@ export class VertexArray3D extends VertexArray<Vec3>{
         return verts;
     }
 
+    static IndexedGrid(width:number=1, height:number=1, widthSegments:number=1,heightSegments:number=1, color?:Color){
+        // let width:number=1, height:number=1, widthSegments:number=1,heightSegments:number=1;
+
+        color = color??Color.FromString("#00ff00");
+
+        let halfW = width*0.5;
+        let halfH = height*0.5;
+        // let's use normals, texture coords, and colors...
+        let v = VertexArray3D.CreateForRendering(true,true,true);
+        for(let y=0;y<(heightSegments+1);y++) {
+            for (let x = 0; x < (widthSegments+1); x++) {
+                v.addVertex(
+                    V3(
+                        -halfW+x/(widthSegments)*width,
+                        -halfH+y/(heightSegments)*height,
+                        0
+                    ),
+                    V3(0,0,1),
+                    V2(x/widthSegments, y/heightSegments),
+                    color
+                );
+            }
+        }
+
+        for(let y=0;y<(heightSegments);y++) {
+            for (let x = 0; x < (widthSegments); x++) {
+                v.indices.push([
+                        x + y * (widthSegments+1),
+                        (x + 1) + y * (widthSegments+1),
+                        (x + 1) + (y+1) * (widthSegments+1)
+                    ]
+                )
+                v.indices.push([
+                        (x + 1) + (y+1) * (widthSegments + 1),
+                        (x) + (y+1) * (widthSegments + 1),
+                        (x) + y * (widthSegments+1)
+                    ]
+                )
+
+            }
+        }
+        return v;
+    }
+
+
     // static VertsForBounds2D(bound:BoundingBox3D){
     //     let verts = new VertexArray3D();
     //     verts.position= new VertexAttributeArray3D();
