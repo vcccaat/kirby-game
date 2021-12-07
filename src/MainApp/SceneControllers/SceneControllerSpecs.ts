@@ -4,7 +4,7 @@ import {
     AMVCSpec,
     APointLightController,
     APointLightModel,
-    APointLightView, ASceneNodeController, BasicSceneNodeController
+    APointLightView, ASceneNodeController, ASceneNodeProxyView, BasicSceneNodeController
 } from "../../anigraph";
 import {
     AGroundModel,
@@ -30,6 +30,8 @@ import {RingNodeView} from "../Nodes/ExampleProcedureGeometry/RingNodeView";
 import {RingNodeController} from "../Nodes/ExampleProcedureGeometry/RingNodeController";
 import {BasicElementsModel, BasicElementsView} from "../Nodes/ProceduralBasicGeometryElements";
 import {SphereModel} from "../Nodes/BasicGeometryElements/SphereModel";
+import {GridModel} from "../Nodes/BasicGeometryElements/GridModel";
+import {GridView} from "../Nodes/BasicGeometryElements/GridView";
 
 
 
@@ -58,6 +60,7 @@ export function BasicMapSceneControllerSpecs(){
         new AMVCSpec(GroundModel, GroundView, GroundController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(DragonNodeModel, ALoadedBoundsView, DragonNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(RingNodeModel, ASceneNodeBoundsView, RingNodeController, {canCreateDefault:true, isGUIOption:true}),
+        new AMVCSpec(GridModel, ASceneNodeProxyView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
         ];
 }
 
@@ -70,6 +73,6 @@ export function BasicGameSceneControllerSpecs(){
         new AMVCSpec(DragonNodeModel, DragonNodeView, DragonNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(RingNodeModel, RingNodeView, RingNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(GroundModel, GroundView, GroundController, {canCreateDefault:false, isGUIOption:false}),
-
+        new AMVCSpec(GridModel, GridView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
     ]
 }
