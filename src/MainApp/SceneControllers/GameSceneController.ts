@@ -18,6 +18,7 @@ import {ExampleNodeView} from "../Nodes/Example/ExampleNodeView";
 import {ExampleNodeController} from "../Nodes/Example/ExampleNodeController";
 import {ExampleThirdPersonControls} from "../PlayerControls/ExampleThirdPersonControls";
 import {DragonGameControls} from "../PlayerControls/DragonGameControls";
+import {FlyPointerDragControls} from "../PlayerControls/FlyPointerDrag";
 
 export class GameSceneController extends A3DSceneController<ASceneNodeModel, ASceneModel<ASceneNodeModel>>{
     initClassSpec() {
@@ -28,6 +29,10 @@ export class GameSceneController extends A3DSceneController<ASceneNodeModel, ASc
     }
 
 
+    initView() {
+        super.initView();
+        this.view.setSkyBoxToSpace();
+    }
 
     initCameraControls() {
         this.addControlType(ExampleFlyingCameraControls)

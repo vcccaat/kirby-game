@@ -18,7 +18,7 @@ export class A3DSceneView<NodeModelType extends ASceneNodeModel, SceneModelType 
 
     initGraphics() {
         super.initGraphics();
-        this.setSkyBoxToSpace();
+        // this.setSkyBoxToSpace();
     }
 
     CreateView(){return new A3DSceneView();}
