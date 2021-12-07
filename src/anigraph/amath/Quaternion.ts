@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {Matrix4, Vector3} from "three";
-import {Vec4} from "./Vec4";
+import {V4, Vec4} from "./Vec4";
 import {V3, Vec3} from "./Vec3";
 import {Mat4} from "./Mat4";
 import {Mat3} from "./Mat3";
@@ -116,19 +116,32 @@ export class Quaternion extends THREE.Quaternion{
     }
 
     static FromVectors(forward:Vec3, up:Vec3){
-        let oaxis = forward.times(-1);
-        // let oaxis = forward;
-        if(Precision.PEQ(forward.dot(up), 1)){
-            return Quaternion.FromRotationBetweenTwoVectors(oaxis, V3(0,0,-1));
-        }
-        return Quaternion.FromMatrix(
-            Mat3.FromColumns(
-                oaxis.cross(up).getNormalized(),
-                up,
-                oaxis
+        let lookZ = forward.getNormalized().times(-1);
+        let y = up;
+        let x = lookZ.cross(y).getNormalized();
+        let upn = lookZ.cross(x).getNormalized();
+        let q = Quaternion.FromMatrix(
+            Mat3.FromRows(
+                x,upn,lookZ
             )
-        )
+        );
+        return q;
     }
+
+    // static FromVectors(forward:Vec3, up:Vec3){
+    //     let oaxis = forward.times(-1);
+    //     // let oaxis = forward;
+    //     if(Precision.PEQ(forward.dot(up), 1)){
+    //         return Quaternion.FromRotationBetweenTwoVectors(oaxis, V3(0,0,-1));
+    //     }
+    //     return Quaternion.FromMatrix(
+    //         Mat3.FromColumns(
+    //             oaxis.cross(up).getNormalized(),
+    //             up,
+    //             oaxis
+    //         )
+    //     )
+    // }
 
     Mat3(){
         var w = this._w;

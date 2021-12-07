@@ -6,6 +6,7 @@ import {Quaternion} from "./Quaternion";
 import {Mat4} from "./Mat4";
 import {NodeTransform2D} from "./NodeTransform2D";
 import {V4} from "./Vec4";
+import {Mat3} from "./Mat3";
 
 @ASerializable("NodeTransform3D")
 export class NodeTransform3D implements NodeTransform<Vec3, Mat4>{
@@ -172,6 +173,35 @@ export class NodeTransform3D implements NodeTransform<Vec3, Mat4>{
         }
         this.anchor = PRSinv.times(m).c3.Point3D.times(-1);
     }
+
+    static LookAt(location:Vec3, target:Vec3, up:Vec3) {
+        let position = location;
+        let look = target.minus(location).getNormalized();
+        return new NodeTransform3D(
+            position,
+            Quaternion.FromVectors(look, up)
+        )
+
+
+        // Leaving the code below for reference -- students can ignore
+
+        // let look = target.minus(location);
+        // let zneg = look.getNormalized().times(-1);
+        // let r = zneg.cross(up).getNormalized();
+        // let upn = zneg.cross(r)
+        // let M = Mat4.FromColumns(
+        //     r.Vec3DH,
+        //     upn.Vec3DH,
+        //     zneg.Vec3DH,
+        //     location.Point3DH
+        // )
+        // could extract scale here
+        // let position = location;
+        // let R = Mat4.FromColumns(M.r0, M.r1,M.r2,V4(0,0,0,1));
+        // let rotation = Quaternion.FromMatrix(R);
+        // return new NodeTransform3D(position, rotation);
+    }
+
 
     static FromMatrix(mat:Mat4, position?:Vec3, rotation?:Quaternion){
         let T = new NodeTransform3D();
