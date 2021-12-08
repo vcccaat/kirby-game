@@ -1,4 +1,4 @@
-import {AMaterialManager, AObjectState, ASceneNodeModel, Color, NodeTransform3D, Quaternion, V3} from "../../anigraph";
+import {AMaterialManager, AObjectState, ASceneNodeModel, Color, NodeTransform3D, Quaternion, V3, Vec3} from "../../anigraph";
 import {DragonNodeModel} from "../Nodes/Dragon/DragonNodeModel";
 import {DragonNodeController} from "../Nodes/Dragon/DragonNodeController";
 import {EnemyNodeModel} from "../Nodes/Enemy/EnemyNodeModel";
@@ -9,6 +9,7 @@ import * as THREE from "three";
 import {StarterAppState} from "./StarterAppState";
 import {RingNodeModel} from "../Nodes/ExampleProcedureGeometry/RingNodeModel";
 import {RingSegment} from "../Nodes/ExampleProcedureGeometry/RingSegment";
+import { Vector3 } from "three";
 
 export class DragonGameAppState extends StarterAppState{
     /**
@@ -107,19 +108,19 @@ export class DragonGameAppState extends StarterAppState{
         let orbitEnemy = new EnemyNodeModel();
         this.sceneModel.addNode(orbitEnemy);
         orbitEnemy.setTransform(new NodeTransform3D(
-            V3(0, 0, 150),
+            V3(0, 0, 0),
             new Quaternion(),
             V3(1, 1, 1),
             V3(-100, -100, 0)
         ));
         orbitEnemy.orbitRate = 0.1;
         orbitEnemy.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
-
+        orbitEnemy.color = Color.Random();
         let enemy2 = new EnemyNodeModel();
         this.sceneModel.addNode(enemy2);
         enemy2.setTransform(new NodeTransform3D(V3(300, 200, 150)));
         enemy2.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
-
+        enemy2.color = Color.Random();
         //Add lucy... so that there is more stuff
         this.addModelFromFile('./models/ply/binary/Lucy100k.ply', "Lucy",
             new NodeTransform3D(
@@ -206,20 +207,32 @@ export class DragonGameAppState extends StarterAppState{
 
             // if the dragon is within the enemy's detection range then somthin's going down...
             if(vToDragon.L2()<this.enemyRange){
-                // if the dragon isn't spinning, then it's vulnerable and the enemy will chase after it on red alert
-                if(!this.dragon.isSpinning){
-                    l.color = Color.FromString("#ff0000");
-                    l.transform.position = l.transform.getObjectSpaceOrigin().plus(vToDragon.getNormalized().times(this.enemySpeed))
-                }else {
-                    //if the dragon IS spinning, the enemy will turn blue with fear and run away...
-                    l.color= Color.FromString("#0000ff");
-                    l.transform.position = l.transform.getObjectSpaceOrigin().plus(vToDragon.getNormalized().times(-this.enemySpeed))
+                if(vToDragon.L2()<1){
+                    this.sceneModel.removeNode(l);
                 }
-                //enemies don't orbit in pursuit...
-                l.transform.anchor = V3(0, 0, 0);
+                else{
+                    let d_rotation = new Vector3(1,0,0).applyQuaternion(this.dragon.transform.rotation);
+                    let d_direction = new Vec3(d_rotation.x,d_rotation.y,d_rotation.z);
+                    let angle = Math.acos(d_direction.dot(vToDragon)/(Math.sqrt(d_direction.dot(d_direction))+Math.sqrt(vToDragon.dot(vToDragon))))*180/Math.PI;
+                    // if the dragon isn't spinning, then it's vulnerable and the enemy will chase after it on red alert
+                    if(angle<60){
+                        if(!this.dragon.isSpinning){
+    
+                            l.transform.position = l.transform.getObjectSpaceOrigin().plus(vToDragon.getNormalized().times(this.enemySpeed))
+                        }
+                    }
+                    else {
+                            //if the dragon IS spinning, the enemy will turn blue with fear and run away...
+                            l.transform.position = l.transform.getObjectSpaceOrigin().plus(vToDragon.getNormalized().times(-this.enemySpeed))
+                        }
+                        //enemies don't orbit in pursuit...
+                        l.transform.anchor = V3(0, 0, 0);
+                }
+                
+                
+                
             }else{
                 //if they don't see the dragon they go neutral...
-                l.color = Color.FromString("#ffffff");
             }
         }
 
