@@ -18,7 +18,7 @@ export class MainAppState extends DragonGameAppState{
         // you can delete or replace setting the textures and shaders below if you don't want to use them.
         let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
         let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
-        this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
+        await this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
         await this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
         await this.materials.setMaterialModel('ground', new GroundMaterialModel(marbleTexture));
     }

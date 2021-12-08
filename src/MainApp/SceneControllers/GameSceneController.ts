@@ -18,7 +18,6 @@ import {ExampleNodeView} from "../Nodes/Example/ExampleNodeView";
 import {ExampleNodeController} from "../Nodes/Example/ExampleNodeController";
 import {ExampleThirdPersonControls} from "../PlayerControls/ExampleThirdPersonControls";
 import {DragonGameControls} from "../PlayerControls/DragonGameControls";
-import {FlyPointerDragControls} from "../PlayerControls/FlyPointerDrag";
 
 export class GameSceneController extends A3DSceneController<ASceneNodeModel, ASceneModel<ASceneNodeModel>>{
     initClassSpec() {
