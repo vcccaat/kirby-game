@@ -36,6 +36,8 @@ export class ALoadedModel extends ASceneNodeModel{
             object = new Object3DModelWrapper(threemesh);
         }else if(obj instanceof THREE.Mesh || obj instanceof THREE.Group){
             object = new Object3DModelWrapper(obj);
+        }else if (obj instanceof Object3DModelWrapper) {
+            object = obj;
         }else{
             throw new Error(`Unrecognized loaded object ${obj} of type ${typeof obj}`);
         }

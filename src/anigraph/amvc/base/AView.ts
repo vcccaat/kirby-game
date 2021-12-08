@@ -88,6 +88,12 @@ export abstract class AView<NodeModelType extends AModel> extends AObject{
         }
     }
 
+    dispose() {
+        this.disposeElements();
+        super.dispose();
+
+    }
+
     /**
      * Placeholder for initGraphics, which should be implemented in subclass.
      * initGraphics should NOT initialize or refer to any properties that are declared in one of the subclasses.

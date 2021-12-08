@@ -37,4 +37,10 @@ export abstract class AModel extends AObjectNode implements AModelInterface{
         super();
         this.name = name?name:this.serializationLabel;
     }
+
+    dispose() {
+        super.dispose();
+        this.signalEvent(AModel.Events.DISPOSE);
+    }
+
 }
