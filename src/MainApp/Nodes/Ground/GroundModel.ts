@@ -35,7 +35,7 @@ export class GroundModel extends AMeshModel{
         let groundNode = new GroundModel();
         groundNode.name = 'GroundPlane';
         groundNode.transform.position.z = -0.5;
-        groundNode.setMaterial('ground');
+        groundNode.setMaterial('grass'); //ground
         // groundNode.material.setTexture('marble');
         return groundNode;
     }

@@ -21,7 +21,7 @@ export class TexturedMaterialModel extends AShaderModel{
             this.setTexture('color', texture);
             this.textureName = texture.name;
         }else{
-            let textureName = texture??'marble.jpg';
+            let textureName = texture??'grass.jpg';
             this.textureName=textureName;
             this.setTexture('color', './images/'+this.textureName);
             this.getTexture('color')?.setWrapToRepeat();

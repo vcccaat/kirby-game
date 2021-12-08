@@ -121,7 +121,8 @@ export class DragonGameAppState extends StarterAppState{
         enemy2.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
 
         //Add lucy... so that there is more stuff
-        this.addModelFromFile('./models/ply/binary/Lucy100k.ply', "Lucy",
+        this.addModelFromFile('./models/ply/binary/dolphins_le.ply','dolphins',
+            // './models/ply/binary/Lucy100k.ply', "Lucy",
             new NodeTransform3D(
                 V3(100,100,80),
                 Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
@@ -133,7 +134,7 @@ export class DragonGameAppState extends StarterAppState{
         // the CreateDefaultNode methods are asynchronous in case we want to load assets,
         // this means we should await the promise that they return to use it.
         let trippyBall = await ExampleNodeModel.CreateDefaultNode(25);
-        trippyBall.transform.position = V3(-100, 300,10);
+        trippyBall.transform.position = V3(-100, 300,30); //V3(100, 10,100);
 
         // see the trippy material for context. it's basically just textured with a colorful pattern
         trippyBall.setMaterial('trippy')

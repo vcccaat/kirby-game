@@ -45,7 +45,7 @@ export class A3DSceneView<NodeModelType extends ASceneNodeModel, SceneModelType 
 
     setSkyBoxToSpace(){
         const format = '.jpg';
-        let path = './images/cube/MilkyWay/dark-s_';
+        let path = './images/cube/skyboxsun25deg/';
         const urls = [
             path + 'px' + format, path + 'nx' + format,
             path + 'py' + format, path + 'ny' + format,

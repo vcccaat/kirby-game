@@ -38,13 +38,21 @@ export class ExampleNodeModel extends AMeshModel{
      * @constructor
      */
     static async CreateDefaultNode(radius:number=50, widthSegments:number=50, heightSegments:number=50, ...args:any[]){
-        let newNode = new ExampleNodeModel();
-        newNode.verts = VertexArray3D.FromThreeJS(new THREE.SphereBufferGeometry(radius, 50,50, ...args));
-        // newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
-        // newNode.setMaterial('trippy');
-        newNode.color = Color.Random();
-        newNode.color.a = 0.5;
-        return newNode;
+        let bodyNode = new ExampleNodeModel();
+        bodyNode.verts = VertexArray3D.FromThreeJS(new THREE.SphereBufferGeometry(radius, 50,50, ...args));
+        // bodyNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
+        // bodyNode.setMaterial('trippy');
+        // bodyNode.color = Color.Random();
+        // bodyNode.color.a = 0.5;
+
+        let handNode = new ExampleNodeModel();
+        handNode.verts = VertexArray3D.FromThreeJS(new THREE.SphereBufferGeometry(0.2875*radius, 50,50, ...args));
+        // handNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
+        // handNode.setMaterial('trippy');
+        handNode.color = Color.Random();
+        handNode.color.a = 0.5;
+        handNode.transform.position.addVector(new Vec3(0,2,0))
+        return handNode;
     }
 
     onSpacebar(){

@@ -86,7 +86,7 @@ export class StarterAppState extends Base2DAppAppState{
         self._addGroundPlane();
         self._addStartingPointLight();
         let trippyBall = await ExampleNodeModel.CreateDefaultNode(25);
-        trippyBall.transform.position = V3(-100, 100,10);
+        trippyBall.transform.position = V3(-100, 100,0);
         // see the trippy material for context. it's basically just textured with a colorful pattern
         trippyBall.setMaterial('trippy')
         this.sceneModel.addNode(trippyBall);
@@ -212,10 +212,12 @@ export class StarterAppState extends Base2DAppAppState{
      * @constructor
      */
     async PrepAssets(){
-        let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
+        let trippyTexture = await ATexture.LoadAsync('./images/kirby.jpg');
         let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
+        let grassTexture = await ATexture.LoadAsync('./images/grass.jpg');
         this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
         await this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
+        await this.materials.setMaterialModel('grass', new TexturedMaterialModel(grassTexture));
         await this.materials.setMaterialModel('ground', new GroundMaterialModel(marbleTexture));
     }
 
