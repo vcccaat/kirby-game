@@ -1,12 +1,15 @@
 import * as THREE from "three";
 import {
     AMaterialManager,
+    AniGraphEnums,
     AObjectState,
     ASceneNodeModel,
     ASerializable,
     BezierTween,
+    BoundingBox3D,
     Color,
     GetAppState,
+    V3,
     Vec3,
     VertexArray3D,
 } from "../../../anigraph";
@@ -57,6 +60,13 @@ export class ExampleNodeModel extends AMeshModel{
         // overallNode.verts = VertexArray3D.FromThreeJS(group)
         
         return bodyNode;
+    }
+
+    getBounds(): BoundingBox3D {
+        let b = new BoundingBox3D();
+        b.boundBounds(BoundingBox3D.BoxAtLocationWithSize(this.transform.position, AniGraphEnums.BlockSize));
+        b.transform = this.transform;
+        return b;
     }
 
     onSpacebar(){
