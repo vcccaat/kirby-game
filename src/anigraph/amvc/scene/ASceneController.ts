@@ -332,6 +332,11 @@ export abstract class ASceneController<NodeModelType extends ASceneNodeModel, Sc
                 appController.onNodeAdded(newNodeModel);
             }),
             SceneEvents.NodeAdded);
+
+        this.subscribe(this.model.addEventListener(SceneEvents.NodeRemoved, (newNodeModel:NodeModelType)=>{
+                appController.onNodeRemoved(newNodeModel);
+            }),
+            SceneEvents.NodeRemoved);
         // this.view.initCameraControls();
         this.initCameraControls();
     }
@@ -398,6 +403,10 @@ export abstract class ASceneController<NodeModelType extends ASceneNodeModel, Sc
         newNodeController.sceneController = this.sceneController;
         newNodeController.init(newModel, newNodeView as unknown as ASceneNodeView<ASceneNodeModel>);
         this.registerController(newNodeController);
+    }
+
+    onNodeRemoved(newModel:NodeModelType){
+        // controller should remove itself if model is set...
     }
 
 

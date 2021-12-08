@@ -38,6 +38,12 @@ export abstract class ASceneModel<NodeModelType extends ASceneNodeModel> extends
         });
     }
 
+    removeNode(node:ASceneNodeModel){
+        node._removeFromParent()
+        node.dispose();
+        this.signalNodeRemoved(node);
+    }
+
     constructor(name?:string) {
         super(name);
         this.materials = new AMaterialManager();
