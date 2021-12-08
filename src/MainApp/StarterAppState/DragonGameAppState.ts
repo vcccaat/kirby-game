@@ -1,4 +1,4 @@
-import {AMaterialManager, AObjectState, ASceneNodeModel, Color, NodeTransform3D, Quaternion, V3, Vec3} from "../../anigraph";
+import {AMaterialManager, AniGraphEnums, AObjectState, ASceneNodeModel, BoundingBox3D, Color, NodeTransform3D, Quaternion, V3, Vec3, VertexArray3D} from "../../anigraph";
 import {DragonNodeModel} from "../Nodes/Dragon/DragonNodeModel";
 import {DragonNodeController} from "../Nodes/Dragon/DragonNodeController";
 import {EnemyNodeModel} from "../Nodes/Enemy/EnemyNodeModel";
@@ -130,6 +130,13 @@ export class DragonGameAppState extends StarterAppState{
             )
         );
 
+        let newNode = new ExampleNodeModel();
+        newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20,20));
+        // newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
+        // newNode.setMaterial('trippy');
+        newNode.color = Color.Random();
+        newNode.transform.position = new Vec3(50,50,10);
+        this.sceneModel.addNode(newNode);
         //add an example node model
         // the CreateDefaultNode methods are asynchronous in case we want to load assets,
         // this means we should await the promise that they return to use it.
@@ -200,6 +207,15 @@ export class DragonGameAppState extends StarterAppState{
 
         // Note that you can use the same approach to select any subset of the node models in the scene.
         // You can use this, for example, to get all of the models that you want to detect collistions with
+        let blocks = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return node instanceof ExampleNodeModel;});
+
+        for(let block of blocks){
+            let boudningBox = block.getBounds();
+            if(boudningBox.pointInBounds(this.dragon.transform.position)){
+                let movementVec = this.dragon.transform.position.minus(boudningBox.transform.getObjectSpaceOrigin());
+                this.dragon.transform.position = this.dragon.transform.position.plus(new Vec3(movementVec.getNormalized().x, movementVec.getNormalized().y, 0));
+            }
+        }
 
         for(let l of enemies){
             // let's get the vector from an enemy to the dragon...
