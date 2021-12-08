@@ -33,11 +33,11 @@ export class DragonNodeController extends ASceneNodeController<DragonNodeModel> 
 
   onKeyUp(interaction: AKeyboardInteraction, event: AInteractionEvent) {}
 
-  jumpUp: Vec3 = new Vec3(0, 0, 0.02);
+  upAcceleration: Vec3 = new Vec3(0, 0, 0.01);
   gravity: Vec3 = new Vec3(0, 0, -0.01);
   jump(updateCamera: Function, duration?: number) {
-    let initV = new Vec3(0, 0, 0);
-    duration = duration ?? 15;
+    // let initV = new Vec3(0, 0, 0);
+    duration = duration ?? 1;
     // if (this.model.isJumping) {
     //   return;
     // }
@@ -46,31 +46,38 @@ export class DragonNodeController extends ASceneNodeController<DragonNodeModel> 
     let currentFrame = self.model.currentFrame;
     let upCount = 0;
 
-    this.addTimedAction(
-      (actionProgress) => {
-        if (currentFrame !== self.model.currentFrame) return;
-        self.model.isJumping = true;
+    self.model.isJumping = true;
+    self.model.isUp = true;
+    self.model.upV = new Vec3(0, 0, 2);
 
-        initV.addVector(this.gravity);
-        if (upCount < 100) initV.addVector(this.jumpUp);
-        upCount++;
-        if (self.model.transform.position.z + initV.z < 0) {
-          self.model.transform.position.z = 0;
-          updateCamera();
-          return;
-        }
-        if (initV.z < -1.5) initV.z = -1.5;
-        self.model.transform.position.addVector(initV);
-        console.log(initV.z);
-        updateCamera();
-      },
-      duration,
-      () => {
-        self.model.isJumping = false;
-        // self.model.transform.rotation = rotationStart;
-      },
-      this.model.tween
-    );
+    // this.addTimedAction(
+    //   (actionProgress) => {
+    //     // if (!this.model.isJumping) return;
+    //     if (currentFrame !== self.model.currentFrame) return;
+
+    //     // initV.addVector(this.gravity);
+    //     this.model.upV.minus(this.upAcceleration);
+
+    //     // if (self.model.transform.position.z + initV.z < 0) {
+    //     //   self.model.transform.position.z = 0;
+    //     //   this.model.isJumping = false;
+    //     //   updateCamera();
+    //     //   return;
+    //     // }
+    //     // if (initV.z < -1.5) initV.z = -1.5;
+    //     self.model.transform.position.addVector(this.model.upV);
+    //     console.log(this.model.upV.z);
+    //     updateCamera();
+    //   },
+    //   duration,
+    //   () => {
+    //     if (currentFrame !== self.model.currentFrame) return;
+    //     self.model.upV = new Vec3(0, 0, 2);
+    //     self.model.isUp = false;
+    //     // self.model.transform.rotation = rotationStart;
+    //   },
+    //   this.model.tween
+    // );
   }
 
   applyGravity(updateCamera: Function) {
