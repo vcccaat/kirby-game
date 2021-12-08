@@ -30,6 +30,8 @@ export class RingNodeView extends ASceneNodeView<RingNodeModel>{
 
     updateSegments(){
         this.disposeElements();
+        this.element = new ARenderGroup();
+        this.addElement(this.element);
         for(let s of this.model.segments){
             let seg = RingElement.CreateSegment(s, this.model.material);
             this.ringElements.push(seg);
