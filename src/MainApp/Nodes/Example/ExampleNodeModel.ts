@@ -8,7 +8,7 @@ import {
     Color,
     GetAppState,
     Vec3,
-    VertexArray3D
+    VertexArray3D,
 } from "../../../anigraph";
 import {bezier} from "@leva-ui/plugin-bezier";
 import {AMeshModel} from "../../../anigraph/amvc/node/mesh/AMeshModel";
@@ -40,19 +40,23 @@ export class ExampleNodeModel extends AMeshModel{
     static async CreateDefaultNode(radius:number=50, widthSegments:number=50, heightSegments:number=50, ...args:any[]){
         let bodyNode = new ExampleNodeModel();
         bodyNode.verts = VertexArray3D.FromThreeJS(new THREE.SphereBufferGeometry(radius, 50,50, ...args));
+        bodyNode.color = Color.Random();
+        bodyNode.color.a = 0.5;
+        // const bodyNodeGeo = new THREE.SphereBufferGeometry(radius, 50,50, ...args)
+        // const bodyMesh = new THREE.Mesh(bodyNodeGeo)
         // bodyNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
         // bodyNode.setMaterial('trippy');
         // bodyNode.color = Color.Random();
         // bodyNode.color.a = 0.5;
 
-        let handNode = new ExampleNodeModel();
-        handNode.verts = VertexArray3D.FromThreeJS(new THREE.SphereBufferGeometry(0.2875*radius, 50,50, ...args));
-        // handNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
-        // handNode.setMaterial('trippy');
-        handNode.color = Color.Random();
-        handNode.color.a = 0.5;
-        handNode.transform.position.addVector(new Vec3(0,2,0))
-        return handNode;
+        // const handNodeGeo = new THREE.SphereBufferGeometry(0.2875*radius, 50,50, ...args);
+        // const handMesh = new THREE.Mesh(handNodeGeo)
+        // const group = new THREE.Group()
+        // group.add(bodyMesh)
+        // group.add(handMesh)
+        // overallNode.verts = VertexArray3D.FromThreeJS(group)
+        
+        return bodyNode;
     }
 
     onSpacebar(){

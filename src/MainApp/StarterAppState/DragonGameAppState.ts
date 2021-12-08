@@ -3,6 +3,7 @@ import {DragonNodeModel} from "../Nodes/Dragon/DragonNodeModel";
 import {DragonNodeController} from "../Nodes/Dragon/DragonNodeController";
 import {EnemyNodeModel} from "../Nodes/Enemy/EnemyNodeModel";
 import {ExampleNodeModel} from "../Nodes/Example/ExampleNodeModel";
+import {SphereModel} from "../Nodes/BasicGeometry/SphereModel";
 import {DragonGameControls} from "../PlayerControls/DragonGameControls";
 import {ExampleDragOrbitControls} from "../PlayerControls/ExampleDragOrbitControls";
 import * as THREE from "three";
@@ -129,6 +130,29 @@ export class DragonGameAppState extends StarterAppState{
                 V3(1,1,1).times(0.1)
             )
         );
+
+        this.addModelFromFile('./models/Kirby.obj','kirby',
+        new NodeTransform3D(
+            V3(50,50,10),
+            Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
+        )
+        )
+
+        let plants = this.addModelFromFile('./models/plants.obj','plants',
+        new NodeTransform3D(
+            V3(-20,-20,20),
+            Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
+            V3(1,1,1).times(3)
+            )
+        )
+        // tree.color = Color.FromString("#ff0000")
+
+        //add sphere
+        let randomSphere = await SphereModel.CreateDefaultNode()
+        randomSphere.transform.position = V3(-100,-200,100)
+        randomSphere.transform.rotation = Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5))
+        randomSphere.setMaterial('kirby')
+        this.sceneModel.addNode(randomSphere);
 
         //add an example node model
         // the CreateDefaultNode methods are asynchronous in case we want to load assets,
