@@ -1,11 +1,15 @@
 import {
   AMaterialManager,
+  AniGraphEnums,
   AObjectState,
   ASceneNodeModel,
+  BoundingBox3D,
   Color,
   NodeTransform3D,
   Quaternion,
   V3,
+  Vec3,
+  VertexArray3D,
 } from "../../anigraph";
 import { DragonNodeModel } from "../Nodes/Dragon/DragonNodeModel";
 import { DragonNodeController } from "../Nodes/Dragon/DragonNodeController";
@@ -17,8 +21,7 @@ import * as THREE from "three";
 import { StarterAppState } from "./StarterAppState";
 import { RingNodeModel } from "../Nodes/ExampleProcedureGeometry/RingNodeModel";
 import { RingSegment } from "../Nodes/ExampleProcedureGeometry/RingSegment";
-import { Vec3 } from "src/anigraph/amath";
-import { FilteredVector } from "../../anigraph/amvc/FilteredVector";
+import { Vector3 } from "three";
 
 export class DragonGameAppState extends StarterAppState {
   /**
@@ -37,7 +40,6 @@ export class DragonGameAppState extends StarterAppState {
    * @type {DragonNodeModel}
    */
   dragon!: DragonNodeModel;
-  dragonGameController!: DragonGameControls;
 
   /**
    * A convenient getter for accessing the dragon's scene controller in the game view, which we have customized
@@ -179,7 +181,7 @@ export class DragonGameAppState extends StarterAppState {
     this.sceneModel.addNode(orbitEnemy);
     orbitEnemy.setTransform(
       new NodeTransform3D(
-        V3(0, 0, 150),
+        V3(0, 0, 0),
         new Quaternion(),
         V3(1, 1, 1),
         V3(-100, -100, 0)
@@ -191,7 +193,7 @@ export class DragonGameAppState extends StarterAppState {
         .getMaterialModel(AMaterialManager.DefaultMaterials.Basic)
         .CreateMaterial()
     );
-
+    orbitEnemy.color = Color.Random();
     let enemy2 = new EnemyNodeModel();
     this.sceneModel.addNode(enemy2);
     enemy2.setTransform(new NodeTransform3D(V3(300, 200, 150)));
@@ -200,7 +202,7 @@ export class DragonGameAppState extends StarterAppState {
         .getMaterialModel(AMaterialManager.DefaultMaterials.Basic)
         .CreateMaterial()
     );
-
+    enemy2.color = Color.Random();
     //Add lucy... so that there is more stuff
     this.addModelFromFile(
       "./models/ply/binary/Lucy100k.ply",
@@ -214,6 +216,15 @@ export class DragonGameAppState extends StarterAppState {
       )
     );
 
+    let newNode = new ExampleNodeModel();
+    newNode.verts = VertexArray3D.FromThreeJS(
+      new THREE.BoxBufferGeometry(20, 20, 20)
+    );
+    // newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
+    // newNode.setMaterial('trippy');
+    newNode.color = Color.Random();
+    newNode.transform.position = new Vec3(50, 50, 10);
+    this.sceneModel.addNode(newNode);
     //add an example node model
     // the CreateDefaultNode methods are asynchronous in case we want to load assets,
     // this means we should await the promise that they return to use it.
@@ -290,6 +301,25 @@ export class DragonGameAppState extends StarterAppState {
 
     // Note that you can use the same approach to select any subset of the node models in the scene.
     // You can use this, for example, to get all of the models that you want to detect collistions with
+    let blocks = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
+      return node instanceof ExampleNodeModel;
+    });
+
+    for (let block of blocks) {
+      let boudningBox = block.getBounds();
+      if (boudningBox.pointInBounds(this.dragon.transform.position)) {
+        let movementVec = this.dragon.transform.position.minus(
+          boudningBox.transform.getObjectSpaceOrigin()
+        );
+        this.dragon.transform.position = this.dragon.transform.position.plus(
+          new Vec3(
+            movementVec.getNormalized().x,
+            movementVec.getNormalized().y,
+            0
+          )
+        );
+      }
+    }
 
     for (let l of enemies) {
       // let's get the vector from an enemy to the dragon...
@@ -299,24 +329,39 @@ export class DragonGameAppState extends StarterAppState {
 
       // if the dragon is within the enemy's detection range then somthin's going down...
       if (vToDragon.L2() < this.enemyRange) {
-        // if the dragon isn't spinning, then it's vulnerable and the enemy will chase after it on red alert
-        if (!this.dragon.isSpinning) {
-          l.color = Color.FromString("#ff0000");
-          l.transform.position = l.transform
-            .getObjectSpaceOrigin()
-            .plus(vToDragon.getNormalized().times(this.enemySpeed));
+        if (vToDragon.L2() < 1) {
+          this.sceneModel.removeNode(l);
         } else {
-          //if the dragon IS spinning, the enemy will turn blue with fear and run away...
-          l.color = Color.FromString("#0000ff");
-          l.transform.position = l.transform
-            .getObjectSpaceOrigin()
-            .plus(vToDragon.getNormalized().times(-this.enemySpeed));
+          let d_rotation = new Vector3(1, 0, 0).applyQuaternion(
+            this.dragon.transform.rotation
+          );
+          let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
+          let angle =
+            (Math.acos(
+              d_direction.dot(vToDragon) /
+                (Math.sqrt(d_direction.dot(d_direction)) +
+                  Math.sqrt(vToDragon.dot(vToDragon)))
+            ) *
+              180) /
+            Math.PI;
+          // if the dragon isn't spinning, then it's vulnerable and the enemy will chase after it on red alert
+          if (angle < 60) {
+            if (!this.dragon.isSpinning) {
+              l.transform.position = l.transform
+                .getObjectSpaceOrigin()
+                .plus(vToDragon.getNormalized().times(this.enemySpeed));
+            }
+          } else {
+            //if the dragon IS spinning, the enemy will turn blue with fear and run away...
+            l.transform.position = l.transform
+              .getObjectSpaceOrigin()
+              .plus(vToDragon.getNormalized().times(-this.enemySpeed));
+          }
+          //enemies don't orbit in pursuit...
+          l.transform.anchor = V3(0, 0, 0);
         }
-        //enemies don't orbit in pursuit...
-        l.transform.anchor = V3(0, 0, 0);
       } else {
         //if they don't see the dragon they go neutral...
-        l.color = Color.FromString("#ffffff");
       }
     }
 
@@ -334,12 +379,6 @@ export class DragonGameAppState extends StarterAppState {
     // this will run the dragon game... replace with another init example to start in orbit view.
     let startInDragonMode: boolean = true;
     this.gameSceneController.addControlType(DragonGameControls);
-    let state = this.gameSceneController.getInteractionMode(
-      DragonGameControls.NameInGUI()
-    ) as DragonGameControls;
-
-    console.log(state.updateCamera);
-
     this.initDragonGame(startInDragonMode);
   }
 
