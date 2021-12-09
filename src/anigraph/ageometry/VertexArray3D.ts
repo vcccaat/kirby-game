@@ -297,6 +297,46 @@ export class VertexArray3D extends VertexArray<Vec3>{
         return sphere;
     }
 
+    static Ellipsoid(latitudeBands=30,longitudeBands=20,a=6,b=7,c=20,size=20){
+        let ellipsoidgeometry = VertexArray3D.CreateForRendering(true, true);
+        for (var latNumber=0; latNumber <= latitudeBands; latNumber++)
+        {
+            var theta = (latNumber *      Math.PI *2/ latitudeBands);
+            var sinTheta = Math.sin(theta);
+            var cosTheta = Math.cos(theta);
+
+            for (var longNumber=0; longNumber <= longitudeBands; longNumber++)
+            {
+                var phi = (longNumber  *2* Math.PI / longitudeBands);
+                var sinPhi = Math.sin(phi);
+                var cosPhi = Math.cos(phi);
+
+
+                var x = a*cosPhi * cosTheta ;
+                var y = b*cosTheta*sinPhi;
+                var z = c*sinTheta;
+                //ellipsoidgeometry.vertices.push(new THREE.Vector3( x*size,y*size,z*size));
+                ellipsoidgeometry.indices.push([x*size,y*size,z*size]);
+
+            }
+
+
+        }
+        for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
+            for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
+                var first = (latNumber * (longitudeBands + 1)) + longNumber;
+                var second = first + longitudeBands + 1;
+                //ellipsoidgeometry.faces.push(new THREE.Face3(first,second,first+1));
+                ellipsoidgeometry.indices.push([first,second,first+1]);
+
+                // ellipsoidgeometry.faces.push(new THREE.Face3(second,second+1,first+1));
+                ellipsoidgeometry.indices.push([second,second+1,first+1]);
+
+            }
+        }
+        return ellipsoidgeometry;
+    }
+
     static SpriteGeometry(texture:ATexture, scale:number=100){
         let verts = new VertexArray3D();
         let aspect = texture.width/texture.height;
