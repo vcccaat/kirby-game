@@ -18,6 +18,7 @@ import {KirbySegment} from "../Nodes/Kirby/KirbySegment";
 import {Sphere} from "../Nodes/ProceduralBasicGeometryElements/SphereElement";
 import { Vector3 } from "three";
 import { PepperNodeModel } from "../Nodes/Pepper/PepperNodeModel";
+import { BombNodeModel } from "../Nodes/Bomb/BombNodeModel";
 
 export class DragonGameAppState extends StarterAppState {
   /**
@@ -186,7 +187,7 @@ export class DragonGameAppState extends StarterAppState {
   async initDragonGame(startInGameMode: boolean = true) {
     const self = this;
     this.enemySpeed = 1;
-    this.enemyRange = 200;
+    this.enemyRange = 100;
 
     // add a ground plane
     self._addGroundPlane();
@@ -243,6 +244,10 @@ export class DragonGameAppState extends StarterAppState {
     let pepper = new PepperNodeModel();
     pepper.transform.position = new Vec3(-20,20,20);
     this.sceneModel.addNode(pepper);
+
+    let bomb = new BombNodeModel();
+    bomb.transform.position = new Vec3(-50,20,20);
+    this.sceneModel.addNode(bomb);
     //add an example node model
     // the CreateDefaultNode methods are asynchronous in case we want to load assets,
     // this means we should await the promise that they return to use it.

@@ -38,6 +38,7 @@ import {GridView} from "../Nodes/BasicGeometry/GridView";
 import { PepperNodeModel } from "../Nodes/Pepper/PepperNodeModel";
 import { ExampleNodeView } from "../Nodes/Example/ExampleNodeView";
 import { ExampleNodeController } from "../Nodes/Example/ExampleNodeController";
+import { BombNodeModel } from "../Nodes/Bomb/BombNodeModel";
 
 
 
@@ -52,6 +53,7 @@ export function CommonSpecs(){
             new AMVCSpec(ACameraNodeModel, ACameraNodeView, ACameraNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(EnemyNodeModel, APointLightView, APointLightController),
         new AMVCSpec(PepperNodeModel, ExampleNodeView, ExampleNodeController),
+        new AMVCSpec(BombNodeModel, ExampleNodeView, ExampleNodeController),
         new AMVCSpec(RingNodeModel, ASceneNodeBoundsView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(KirbyNodeModel, ASceneNodeBoundsView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(BasicElementsModel, BasicElementsView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
