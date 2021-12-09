@@ -1,26 +1,35 @@
-import {AMaterialManager, AniGraphEnums, AObjectState, ASceneNodeModel, BoundingBox3D, Color, NodeTransform3D, Quaternion, V3, Vec3, VertexArray3D} from "../../anigraph";
-import {DragonNodeModel} from "../Nodes/Dragon/DragonNodeModel";
-import {DragonNodeController} from "../Nodes/Dragon/DragonNodeController";
-import {EnemyNodeModel} from "../Nodes/Enemy/EnemyNodeModel";
-import {ExampleNodeModel} from "../Nodes/Example/ExampleNodeModel";
-import {PlantNodeModel} from "../Nodes/Plant/PlantNodeModel";
-import {SphereModel} from "../Nodes/BasicGeometry/SphereModel";
-import {DragonGameControls} from "../PlayerControls/DragonGameControls";
-import {ExampleDragOrbitControls} from "../PlayerControls/ExampleDragOrbitControls";
+import {
+  AMaterialManager,
+  AniGraphEnums,
+  AObjectState,
+  ASceneNodeModel,
+  BoundingBox3D,
+  Color,
+  NodeTransform3D,
+  Quaternion,
+  V3,
+  Vec3,
+  VertexArray3D,
+} from "../../anigraph";
+import { KirbyNodeModel } from "../Nodes/Kirby/KirbyNodeModel";
+import { KirbyNodeController } from "../Nodes/Kirby/KirbyNodeController";
+import { EnemyNodeModel } from "../Nodes/Enemy/EnemyNodeModel";
+import { ExampleNodeModel } from "../Nodes/Example/ExampleNodeModel";
+import { PlantNodeModel } from "../Nodes/Plant/PlantNodeModel";
+import { SphereModel } from "../Nodes/BasicGeometry/SphereModel";
+import { KirbyGameControls } from "../PlayerControls/KirbyGameControls";
+import { ExampleDragOrbitControls } from "../PlayerControls/ExampleDragOrbitControls";
 import * as THREE from "three";
-import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
 import { FlameModel } from "src/anigraph/effects/particle/flame/FlameModel";
 import {StarterAppState} from "./StarterAppState";
 import {RingNodeModel} from "../Nodes/ExampleProcedureGeometry/RingNodeModel";
 import {RingSegment} from "../Nodes/ExampleProcedureGeometry/RingSegment";
-import {KirbyNodeModel} from "../Nodes/Kirby/KirbyNodeModel";
-import {KirbySegment} from "../Nodes/Kirby/KirbySegment";
-import {Sphere} from "../Nodes/ProceduralBasicGeometryElements/SphereElement";
+// import {KirbyNodeModel} from "../Nodes/Kirby/KirbyNodeModel";
 import { Vector3 } from "three";
 import { PepperNodeModel } from "../Nodes/Pepper/PepperNodeModel";
 import { BombNodeModel } from "../Nodes/Bomb/BombNodeModel";
 
-export class DragonGameAppState extends StarterAppState {
+export class KirbyGameAppState extends StarterAppState {
   /**
    * Enemy's detection range
    * @type {number}
@@ -33,19 +42,19 @@ export class DragonGameAppState extends StarterAppState {
   @AObjectState enemySpeed!: number;
 
   /**
-   * We will control the dragon in our example game
-   * @type {DragonNodeModel}
+   * We will control the kirby in our example game
+   * @type {KirbyNodeModel}
    */
-  dragon!: DragonNodeModel;
+  kirby!: KirbyNodeModel;
 
   /**
-   * A convenient getter for accessing the dragon's scene controller in the game view, which we have customized
-   * in Nodes/Dragon/DragonNodeController.ts
+   * A convenient getter for accessing the kirby's scene controller in the game view, which we have customized
+   * in Nodes/Kirby/KirbyNodeController.ts
    * @returns {ASceneNodeController<ASceneNodeModel> | undefined}
    */
-  get dragonController(): DragonNodeController | undefined {
-    return this.getGameNodeControllerForModel(this.dragon) as
-      | DragonNodeController
+  get kirbyController(): KirbyNodeController | undefined {
+    return this.getGameNodeControllerForModel(this.kirby) as
+      | KirbyNodeController
       | undefined;
   }
 
@@ -125,49 +134,31 @@ export class DragonGameAppState extends StarterAppState {
     }
   }
 
-  updateDragon(t: number) {
+  updateKirby(t: number) {
     //   // console.log(t % 2);
-    if (this.dragon.isJumping) return;
+    if (this.kirby.isJumping) return;
     let speed = t % 2 < 1 ? 0.05 : -0.05;
-    this.dragon.transform.position.addVector(new Vec3(0, 0, speed));
+    this.kirby.transform.position.addVector(new Vec3(0, 0, speed));
     //   // console.log(t);
   }
 
-  updateCamera() {
-    let startOffset = this.gameSceneController.camera.pose.position.clone();
-    let camera = this.gameSceneController.camera;
-
-    // let cameraFilter = new FilteredVector<Vec3>(
-    //   this.dragon.transform.position.plus(startOffset),
-    //   0.2,
-    //   (filteredValue: FilteredVector<Vec3>) => {
-    //     camera.setPosition(cameraFilter.value);
-    //   }
-    // );
-    let camOffset = 1;
-    let target = this.dragon.transform.position.plus(
-      startOffset.times(camOffset)
-    );
-    camera.setPosition(target);
-  }
-
   gravity: Vec3 = new Vec3(0, 0, -0.05);
-  dragonGravity(t: number) {
-    if (!this.dragon.isJumping) return;
-    // if (this.dragon.isUp) return;
-    // if (this.dragon.transform.position.z === 0) return;
-    if (this.dragon.transform.position.z + this.dragon.upV.z <= 0) {
-      this.dragon.transform.position.z = 0;
-      this.dragon.upV = new Vec3(0, 0, 0);
-      this.dragon.isJumping = false;
+  kirbyGravity(t: number) {
+    if (!this.kirby.isJumping) return;
+    // if (this.kirby.isUp) return;
+    // if (this.kirby.transform.position.z === 0) return;
+    if (this.kirby.transform.position.z + this.kirby.upV.z <= 30) {
+      this.kirby.transform.position.z = 30;
+      this.kirby.upV = new Vec3(0, 0, 0);
+      this.kirby.isJumping = false;
       //   this.updateCamera();
       console.log(this);
       return;
     }
 
-    this.dragon.upV.addVector(this.gravity);
-    if (this.dragon.upV.z < -3) this.dragon.upV.z = -3;
-    this.dragon.transform.position.addVector(this.dragon.upV);
+    this.kirby.upV.addVector(this.gravity);
+    if (this.kirby.upV.z < -3) this.kirby.upV.z = -3;
+    this.kirby.transform.position.addVector(this.kirby.upV);
     // this.updateCamera();
   }
 
@@ -184,7 +175,7 @@ export class DragonGameAppState extends StarterAppState {
     };
   }
 
-  async initDragonGame(startInGameMode: boolean = true) {
+  async initKirbyGame(startInGameMode: boolean = true) {
     const self = this;
     this.enemySpeed = 1;
     this.enemyRange = 100;
@@ -262,15 +253,20 @@ export class DragonGameAppState extends StarterAppState {
     // let newModel = new ExampleNodeModel()
     // let newModel = await ExampleNodeModel.CreateDefaultNode(30);
     // newModel.setMaterial('trippy');
-    this.dragon = await DragonNodeModel.CreateDefaultNode();
-    this.sceneModel.addNode(this.dragon);
-    this.dragon.transform.rotation = Quaternion.RotationZ(-Math.PI * 0.5);
-    this.dragon.transform.scale = 0.25;
-    this.dragon.setMaterial("Toon");
+    this.kirby = await KirbyNodeModel.CreateDefaultNode();
+    this.setNodeMaterial(this.kirby, 'pink');
+    this.sceneModel.addNode(this.kirby);
+    // this.kirby.transform.rotation = Quaternion.RotationZ(Math.PI * 0.5);
+    // this.kirby.setMaterial('pink');
+
+
+    this.kirby.transform.position.addVector(new Vec3(0,0, 30));
+    // this.kirby.transform.scale = 0.25;
+    this.kirby.setMaterial("kirby");
 
     if (startInGameMode) {
       //now let's activate the example third person controls...
-      this.gameSceneController.setCurrentInteractionMode(DragonGameControls);
+      this.gameSceneController.setCurrentInteractionMode(KirbyGameControls);
     } else {
       // or orbit controls...
       this.gameSceneController.setCurrentInteractionMode(
@@ -294,58 +290,13 @@ export class DragonGameAppState extends StarterAppState {
 
     let arm = this.addArmModel();
     arm.transform.position = V3(-200, 200, 0);
-            // //Add lucy... so that there is more stuff
-        // this.addModelFromFile('./models/ply/ascii/dolphins_colored.ply','dolphins',
-        //     // './models/ply/binary/Lucy100k.ply', "Lucy",
-        //     new NodeTransform3D(
-        //         V3(100,100,80),
-        //         Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
-        //         V3(1,1,1).times(0.1)
-        //     )
-        // );
-
-
-        // obj文件的kirby无法动
-        // this.addModelFromFile('./models/Kirby.obj','kirby',
-        // new NodeTransform3D(
-        //     V3(50,50,10),
-        //     Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
-        // )
-        // )
 
         // 导入植物等场景文件-> 进入PlantNodeModel
         let plants = await PlantNodeModel.CreateDefaultNode()
         this.sceneModel.addNode(plants);
-
-        //add kirby
-        let kirby_test = await SphereModel.CreateDefaultNode()
-        kirby_test.transform.position = V3(-100,-200,20)
-        kirby_test.transform.scale = V3(1,1,1).times(0.2)
-        kirby_test.transform.rotation = Quaternion.FromAxisAngle(V3(0,0,1),Math.PI/2)
-        kirby_test.setMaterial('kirby')
-        this.sceneModel.addNode(kirby_test);
-
-        let kirby = await KirbyNodeModel.CreateDefaultNode()
-        this.setNodeMaterial(kirby, 'pink');
-        this.sceneModel.addNode(kirby);
-        kirby.transform.position = V3(200,200,0);
-
-    /***
-     * IF YOU WANT A THREEJS PLAYGROUND!
-     * You can work directly in threejs using the threejs scene at this.threejsScene, which corresponds to
-     * this.gameSceneController.view.threejs
-     * You can get the camera with this.threejsCamera
-     */
-    // let threejsRoot = this.threejsSceneRoot;
-    // const tngeometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-    // const tnmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    // const torusKnot = new THREE.Mesh(tngeometry, tnmaterial);
-    // // we will put it in the corner...
-    // torusKnot.position.set(300, 300, 200);
-    // threejsRoot.add(torusKnot);
   }
 
-  exampleDragonGameCallback() {
+  exampleKirbyGameCallback() {
     // You can get the current time, and the amount of time that has passed since
     // the last frame was rendered...
     let currentGameTime = this.appClock.time;
@@ -362,56 +313,56 @@ export class DragonGameAppState extends StarterAppState {
     for (let block of blocks) {
 
       //pull the block if enter key down
-      if (this.dragon.isPulling){
-        let vToDragon = this.dragon.transform.position.minus(
+      if (this.kirby.isPulling){
+        let vToKirby = this.kirby.transform.position.minus(
           block.transform.getObjectSpaceOrigin()
         );
   
-        // if the dragon is within the enemy's detection range then somthin's going down...
-        if (vToDragon.L2() < this.enemyRange) {
+        // if the kirby is within the enemy's detection range then somthin's going down...
+        if (vToKirby.L2() < this.enemyRange) {
           
           
-          if (vToDragon.L2() < 1) {
+          if (vToKirby.L2() < 1) {
             this.sceneModel.removeNode(block);
           } 
           
           
           else {
             let d_rotation = new Vector3(1, 0, 0).applyQuaternion(
-              this.dragon.transform.rotation
+              this.kirby.transform.rotation
             );
             let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
             let angle =
               (Math.acos(
-                d_direction.dot(vToDragon) /
+                d_direction.dot(vToKirby) /
                   (Math.sqrt(d_direction.dot(d_direction)) +
-                    Math.sqrt(vToDragon.dot(vToDragon)))
+                    Math.sqrt(vToKirby.dot(vToKirby)))
               ) *
                 180) /
               Math.PI;
 
             if (angle < 60) {
-              if (!this.dragon.isSpinning) {
+              if (!this.kirby.isSpinning) {
                 block.transform.position = block.transform
                   .getObjectSpaceOrigin()
-                  .plus(vToDragon.getNormalized().times(this.enemySpeed));
+                  .plus(vToKirby.getNormalized().times(this.enemySpeed));
               }
             } 
 
           }
         } 
         else {
-          //if they don't see the dragon they go neutral...
+          //if they don't see the kirby they go neutral...
         }
       }
       else{
         let boudningBox = block.getBounds();
         //dectect collision
-        if (boudningBox.pointInBounds(this.dragon.transform.position)) {
-          let movementVec = this.dragon.transform.position.minus(
+        if (boudningBox.pointInBounds(this.kirby.transform.position)) {
+          let movementVec = this.kirby.transform.position.minus(
             boudningBox.transform.getObjectSpaceOrigin()
           );
-          this.dragon.transform.position = this.dragon.transform.position.plus(
+          this.kirby.transform.position = this.kirby.transform.position.plus(
             new Vec3(
               movementVec.getNormalized().x,
               movementVec.getNormalized().y,
@@ -428,64 +379,64 @@ export class DragonGameAppState extends StarterAppState {
     // });
     // // let enemies = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return (typeof node.getBounds === 'function');});
     // for (let l of enemies) {
-    //   // let's get the vector from an enemy to the dragon...
-    //   let vToDragon = this.dragon.transform.position.minus(
+    //   // let's get the vector from an enemy to the kirby...
+    //   let vToKirby = this.kirby.transform.position.minus(
     //     l.transform.getObjectSpaceOrigin()
     //   );
 
-    //   // if the dragon is within the enemy's detection range then somthin's going down...
-    //   if (vToDragon.L2() < this.enemyRange) {
-    //     if (vToDragon.L2() < 1) {
+    //   // if the kirby is within the enemy's detection range then somthin's going down...
+    //   if (vToKirby.L2() < this.enemyRange) {
+    //     if (vToKirby.L2() < 1) {
     //       this.sceneModel.removeNode(l);
     //     } else {
     //       let d_rotation = new Vector3(1, 0, 0).applyQuaternion(
-    //         this.dragon.transform.rotation
+    //         this.kirby.transform.rotation
     //       );
     //       let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
     //       let angle =
     //         (Math.acos(
-    //           d_direction.dot(vToDragon) /
+    //           d_direction.dot(vToKirby) /
     //             (Math.sqrt(d_direction.dot(d_direction)) +
-    //               Math.sqrt(vToDragon.dot(vToDragon)))
+    //               Math.sqrt(vToKirby.dot(vToKirby)))
     //         ) *
     //           180) /
     //         Math.PI;
-    //       // if the dragon isn't spinning, then it's vulnerable and the enemy will chase after it on red alert
+    //       // if the kirby isn't spinning, then it's vulnerable and the enemy will chase after it on red alert
     //       if (angle < 60) {
-    //         if (!this.dragon.isSpinning) {
+    //         if (!this.kirby.isSpinning) {
     //           l.transform.position = l.transform
     //             .getObjectSpaceOrigin()
-    //             .plus(vToDragon.getNormalized().times(this.enemySpeed));
+    //             .plus(vToKirby.getNormalized().times(this.enemySpeed));
     //         }
     //       } else {
-    //         //if the dragon IS spinning, the enemy will turn blue with fear and run away...
+    //         //if the kirby IS spinning, the enemy will turn blue with fear and run away...
     //         l.transform.position = l.transform
     //           .getObjectSpaceOrigin()
-    //           .plus(vToDragon.getNormalized().times(-this.enemySpeed));
+    //           .plus(vToKirby.getNormalized().times(-this.enemySpeed));
     //       }
     //       //enemies don't orbit in pursuit...
     //       l.transform.anchor = V3(0, 0, 0);
     //     }
     //   } else {
-    //     //if they don't see the dragon they go neutral...
+    //     //if they don't see the kirby they go neutral...
     //   }
     // }
 
     // you can also get time since last frame with this.timeSinceLastFrame
     this.updateSpinningArms(this.appClock.time);
-    this.updateDragon(this.appClock.time);
-    this.dragonGravity(this.appClock.time);
+    this.updateKirby(this.appClock.time);
+    this.kirbyGravity(this.appClock.time);
 
     // Note that you can get the bounding box of any model by calling
-    // e.g., for the dragon, this.dragon.getBounds()
+    // e.g., for the kirby, this.kirby.getBounds()
     // or for an enemy model enemy.getBounds()
   }
 
   async initSceneModel() {
-    // this will run the dragon game... replace with another init example to start in orbit view.
-    let startInDragonMode: boolean = true;
-    this.gameSceneController.addControlType(DragonGameControls);
-    this.initDragonGame(startInDragonMode);
+    // this will run the kirby game... replace with another init example to start in orbit view.
+    let startInKirbyMode: boolean = true;
+    this.gameSceneController.addControlType(KirbyGameControls);
+    this.initKirbyGame(startInKirbyMode);
   }
 
   /**
@@ -493,8 +444,8 @@ export class DragonGameAppState extends StarterAppState {
    */
   onAnimationFrameCallback() {
     super.onAnimationFrameCallback();
-    if (this.dragon) {
-      this.exampleDragonGameCallback();
+    if (this.kirby) {
+      this.exampleKirbyGameCallback();
     }
   }
 }

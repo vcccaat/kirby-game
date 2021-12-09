@@ -1,73 +1,95 @@
-import {AMeshModel} from "../../../anigraph/amvc/node/mesh/AMeshModel";
-import {
-    AObjectState,
-    ASceneNodeModel,
-    ASerializable, BezierTween, BoundingBox3D,
-    Color, GetAppState, NodeTransform3D, Quaternion,
-    V2,
-    V3,
-    Vec2,
-    Vec3,
-    VertexArray3D
-} from "../../../anigraph";
-
-import {KirbySegment} from "./KirbySegment";
-import {Sphere} from "../ProceduralBasicGeometryElements/SphereElement";
-import {MainAppState} from "../../MainAppState";
-// import {THREE} from "three";
 import * as THREE from "three";
+import {
+  ALoadedModel,
+  AMaterialManager,
+  AObjectState,
+  ASceneNodeModel,
+  BoundingBox3D,
+  ASerializable,
+  BezierTween,
+  Color,
+  GetAppState,
+  Quaternion,
+  Vec3,
+  V3,
+  VertexArray3D,
+} from "../../../anigraph";
+import { bezier } from "@leva-ui/plugin-bezier";
+import { AMeshModel } from "../../../anigraph/amvc/node/mesh/AMeshModel";
+import {KirbySegment} from "./KirbySegment";
 
 const DEFAULT_DURATION = 1.5;
 
-@ASerializable("RingNodeModel")
-export class KirbyNodeModel extends ASceneNodeModel{
-    @AObjectState segments:KirbySegment[];
-    @AObjectState tween: BezierTween;
-    @AObjectState spinDuration: number;
-    @AObjectState nSpins: number;
-    @AObjectState isSpinning: boolean;
-    @AObjectState isJumping: boolean;
-    @AObjectState isMoving: boolean;
-    @AObjectState currentFrame: number;
-    @AObjectState gravityFrame: number;
-    @AObjectState movingFrame: number;
+@ASerializable("KirbyModel")
+export class KirbyNodeModel extends AMeshModel {
+  //Our vertices
+  @AObjectState segments:KirbySegment[];
+  @AObjectState tween: BezierTween;
+  @AObjectState spinDuration: number;
+  @AObjectState nSpins: number;
+  @AObjectState isSpinning: boolean;
+  @AObjectState isJumping: boolean;
+  @AObjectState isMoving: boolean;
+  @AObjectState currentFrame: number;
+  @AObjectState gravityFrame: number;
+  @AObjectState movingFrame: number;
+  @AObjectState upV: Vec3;
+  @AObjectState isUp: boolean;
+  @AObjectState isPulling: boolean;
 
-    constructor(segments?:KirbySegment[], ...args:any[]) {
-        super();
-        this.tween = new BezierTween(0.33, -0.6, 0.66, 1.6);
-        this.spinDuration = DEFAULT_DURATION;
-        this.nSpins = 3;
-        this.isSpinning = false;
-        this.isJumping = false;
-        this.isMoving = false;
-        this.currentFrame = 0;
-        this.gravityFrame = 0;
-        this.movingFrame = 0;
+  @AObjectState nSegments: [number, number];
+  @AObjectState radius: number;
 
-        // these will not be selectable through clicking in map view...
-        // you can still select through the scene graph view though
-        this.selectable=false;
+  constructor(segments?:KirbySegment[], ...args:any[]) {
+    super();
+    this.tween = new BezierTween(0.33, -0.6, 0.66, 1.6);
+    this.spinDuration = DEFAULT_DURATION;
+    this.nSpins = 3;
+    this.isSpinning = false;
+    this.isJumping = false;
+    this.isMoving = false;
+    this.currentFrame = 0;
+    this.gravityFrame = 0;
+    this.movingFrame = 0;
+    this.upV = new Vec3(0, 0, 0);
+    this.isUp = true;
+    this.isPulling = false;
 
-        this.segments=[];
-        if(segments){this.segments=segments;}
-        const self=this;
+    this.nSegments = [50, 50];
+    this.radius = 1;
 
-        // To make sure that anything listening to our geometry knows when the segments change,
-        // we will trigger a geometry update whenever they change.
-        this.subscribe(this.addStateKeyListener('segments', ()=>{
-            self.geometry.touch();
-        }))
+    this.segments=[];
+    if(segments){this.segments=segments;}
 
+    const self = this;
+    // this.subscribe(
+    //   this.addStateKeyListener("nSegments", () => {
+    //     self.updateGeometry();
+    //   })
+    // );
 
-        //How to subscribe to some AppState property:
-        // let appState = GetAppState() as MainAppState;
-        // self.subscribe(GetAppState().addStateKeyListener('thing', ()=>{
-        //     console.log(`thing is: ${appState.thing}`)
-        // }))
+    // this.subscribe(
+    //   this.addStateKeyListener("radius", () => {
+    //     self.updateGeometry();
+    //   })
+    // );
+    this.subscribe(this.addStateKeyListener('segments', ()=>{
+        self.geometry.touch();
+    }))
+  }
 
+//   updateGeometry() {
+//     this.verts = VertexArray3D.Sphere(
+//       this.radius,
+//       this.nSegments[0],
+//       this.nSegments[1]
+//     );
+//   }
 
-    }
-
+  /**
+   * Define this to customize what gets created when you click the create default button in the GUI
+   * @constructor
+   */
     static async CreateDefaultNode(radius:number=20, height=10, samples:number=50, isSmooth:boolean=true, ...args:any[]) {
         let kirbyModel = new this();
         let locations = [
@@ -87,7 +109,47 @@ export class KirbyNodeModel extends ASceneNodeModel{
         return kirbyModel;
     }
 
-    getBoundsForSegments(){
+  getModelGUIControlSpec(): { [p: string]: any } {
+    const self = this;
+    const specs = {
+      spinDuration: {
+        value: self.spinDuration,
+        min: 0.5,
+        max: 10,
+        step: 0.1,
+        onChange(v: any) {
+          self.spinDuration = v;
+        },
+      },
+      nSpins: {
+        value: self.nSpins,
+        min: 1,
+        max: 10,
+        step: 1,
+        onChange(v: any) {
+          self.nSpins = v;
+        },
+      },
+      curve: bezier({
+        handles: self.tween.x1y1x2y2,
+        graph: true,
+        onChange: (v: any) => {
+          self.tween.x1y1x2y2 = [v[0], v[1], v[2], v[3]];
+        },
+      }),
+      looking: {
+        value: { x: self.transform.anchor.x, y: self.transform.anchor.y },
+        joystick: "invertY",
+        step: 5,
+        onChange: (v: any) => {
+          self.transform.anchor = new Vec3(v.x, v.y, 0);
+        },
+      },
+    };
+    return { ...super.getModelGUIControlSpec(), ...specs };
+  }
+
+  getBoundsForSegments(){
         let b = new BoundingBox3D();
         for (let s of this.segments){
             b.boundBounds(s.getBounds());
@@ -100,5 +162,4 @@ export class KirbyNodeModel extends ASceneNodeModel{
         b.transform = this.getWorldTransform();
         return b;
     }
-
 }

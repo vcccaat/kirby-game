@@ -17,10 +17,10 @@ import { APointerLockPlayerControls } from "../../anigraph/aplayercontrols";
 import { FilteredVector } from "../../anigraph/amvc/FilteredVector";
 import { MainAppState } from "../MainAppState";
 import { AWheelInteraction } from "../../anigraph/ainteraction/AWheelInteraction";
-import { DragonGameAppState } from "../StarterAppState/DragonGameAppState";
+import { KirbyGameAppState } from "../StarterAppState/KirbyGameAppState";
 
-@ASerializable("DragonGameControls")
-export class DragonGameControls extends APointerLockPlayerControls {
+@ASerializable("KirbyGameControls")
+export class KirbyGameControls extends APointerLockPlayerControls {
   cameraFilter!: FilteredVector<Vec3>;
   selectedModel!: ASceneNodeModel | undefined;
   camOffset: number = 1;
@@ -32,23 +32,23 @@ export class DragonGameControls extends APointerLockPlayerControls {
   }
 
   // eslint-disable-next-line getter-return
-  get dragon() {
-    if (this.appState instanceof DragonGameAppState) {
-      return (this.appState as DragonGameAppState).dragon;
+  get kirby() {
+    if (this.appState instanceof KirbyGameAppState) {
+      return (this.appState as KirbyGameAppState).kirby;
     }
   }
 
   // eslint-disable-next-line getter-return
-  get dragonController() {
-    if (this.appState instanceof DragonGameAppState) {
-      return (this.appState as DragonGameAppState).dragonController;
+  get kirbyController() {
+    if (this.appState instanceof KirbyGameAppState) {
+      return (this.appState as KirbyGameAppState).kirbyController;
     }
   }
 
   //A handle for our control mode
   static NameInGUI() {
     // @ts-ignore
-    return "DragonGame";
+    return "KirbyGame";
   }
 
   //##################//--Set up the camera filter--\\##################
@@ -57,9 +57,9 @@ export class DragonGameControls extends APointerLockPlayerControls {
     super.beforeActivate();
     this.startOffset = this.camera.pose.position.clone();
     const self = this;
-    if (this.dragon) {
+    if (this.kirby) {
       this.cameraFilter = new FilteredVector<Vec3>(
-        this.dragon.transform.position.plus(this.startOffset),
+        this.kirby.transform.position.plus(this.startOffset),
         0.2,
         (filteredValue: FilteredVector<Vec3>) => {
           self.camera.setPosition(self.cameraFilter.value);
@@ -89,7 +89,7 @@ export class DragonGameControls extends APointerLockPlayerControls {
    * We will add a custom click function here.
    */
   onClick() {
-    this.dragonController?.spin();
+    this.kirbyController?.spin();
     console.log("Pew Pew Pew!");
   }
 
@@ -112,8 +112,8 @@ export class DragonGameControls extends APointerLockPlayerControls {
   }
 
   updateCamera() {
-    if (this.dragon) {
-      this.cameraFilter.target = this.dragon.transform.position.plus(
+    if (this.kirby) {
+      this.cameraFilter.target = this.kirby.transform.position.plus(
         this.startOffset.times(this.camOffset)
       );
     }
@@ -133,9 +133,9 @@ export class DragonGameControls extends APointerLockPlayerControls {
     let mouseMovement = APlayerControls.GetMouseEventMovement(event);
 
     let translate = V3(mouseMovement.x, -mouseMovement.y, 0).times(1);
-    if (this.dragon) {
-      this.dragon.transform.position =
-        this.dragon.transform.position.plus(translate);
+    if (this.kirby) {
+      this.kirby.transform.position =
+        this.kirby.transform.position.plus(translate);
       this.updateCamera();
     }
   }
@@ -154,19 +154,19 @@ export class DragonGameControls extends APointerLockPlayerControls {
   }
 
   onKeyDown(interaction: AKeyboardInteraction, event: AInteractionEvent) {
-    // this.dragonController?.applyGravity(this.updateCamera.bind(this));
-    this.dragonController?.onKeyDown(interaction, event);
+    // this.kirbyController?.applyGravity(this.updateCamera.bind(this));
+    this.kirbyController?.onKeyDown(interaction, event);
     if (interaction.keysDownState[" "]) {
-      this.dragonController?.jump(this.updateCamera.bind(this));
+      this.kirbyController?.jump(this.updateCamera.bind(this));
     }
 
-    this.dragonController?.move(
+    this.kirbyController?.move(
       this.updateCamera.bind(this),
       interaction.keysDownState
     );
   }
 
   onKeyUp(interaction: AKeyboardInteraction, event: AInteractionEvent) {
-    this.dragonController?.onKeyUp(interaction, event);
+    this.kirbyController?.onKeyUp(interaction, event);
   }
 }

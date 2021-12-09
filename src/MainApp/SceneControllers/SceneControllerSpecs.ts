@@ -16,21 +16,21 @@ import {
 } from "../../anigraph/amvc/derived";
 import {FlameModel} from "../../anigraph/effects/particle/flame/FlameModel";
 import {FlameView} from "../../anigraph/effects/particle/flame/FlameView";
-import {DragonNodeModel} from "../Nodes/Dragon/DragonNodeModel";
-import {DragonNodeController} from "../Nodes/Dragon/DragonNodeController";
+import {KirbyNodeModel} from "../Nodes/Kirby/KirbyNodeModel";
+import {KirbyNodeController} from "../Nodes/Kirby/KirbyNodeController";
 import {ASceneNodeBoundsView} from "../../anigraph/amvc/node/base/ASceneNodeBoundsView";
-import {DragonNodeView} from "../Nodes/Dragon/DragonNodeView";
+import {KirbyNodeView} from "../Nodes/Kirby/KirbyNodeView";
 import {EnemyNodeModel} from "../Nodes/Enemy/EnemyNodeModel";
 import {RingNodeModel} from "../Nodes/ExampleProcedureGeometry/RingNodeModel";
-import {KirbyNodeModel} from "../Nodes/Kirby/KirbyNodeModel";
+// import {KirbyNodeModel} from "../Nodes/Kirby/KirbyNodeModel";
 import {AMeshView} from "../../anigraph/amvc/node/mesh/AMeshView";
 import GroundView from "../Nodes/Ground/GroundView";
 import {GroundController} from "../Nodes/Ground/GroundController";
 import {GroundModel} from "../Nodes/Ground/GroundModel";
 import {RingNodeView} from "../Nodes/ExampleProcedureGeometry/RingNodeView";
 import {RingNodeController} from "../Nodes/ExampleProcedureGeometry/RingNodeController";
-import {KirbyNodeView} from "../Nodes/Kirby/KirbyNodeView";
-import {KirbyNodeController} from "../Nodes/Kirby/KirbyNodeController";
+// import {KirbyNodeView} from "../Nodes/Kirby/KirbyNodeView";
+// import {KirbyNodeController} from "../Nodes/Kirby/KirbyNodeController";
 import {BasicElementsModel, BasicElementsView} from "../Nodes/ProceduralBasicGeometryElements";
 import {SphereModel} from "../Nodes/BasicGeometry/SphereModel";
 import {GridModel} from "../Nodes/BasicGeometry/GridModel";
@@ -68,7 +68,7 @@ export function BasicMapSceneControllerSpecs(){
         new AMVCSpec(FlameModel, A2DPolygonView, ASceneNodeController),
         new AMVCSpec(ALoadedModel, ALoadedBoundsView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(GroundModel, GroundView, GroundController, {canCreateDefault:false, isGUIOption:false}),
-        new AMVCSpec(DragonNodeModel, ALoadedBoundsView, DragonNodeController, {canCreateDefault:true, isGUIOption:true}),
+        new AMVCSpec(KirbyNodeModel, ALoadedBoundsView, KirbyNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(RingNodeModel, ASceneNodeBoundsView, RingNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(KirbyNodeModel, ASceneNodeBoundsView, KirbyNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(GridModel, ASceneNodeProxyView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
@@ -81,7 +81,7 @@ export function BasicGameSceneControllerSpecs(){
         new AMVCSpec(AExtrudedShapeModel,AExtrudedShapeView, CubicBezierController),
         new AMVCSpec(ALoadedModel, ALoadedView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
         new AMVCSpec(FlameModel, FlameView, ASceneNodeController),
-        new AMVCSpec(DragonNodeModel, DragonNodeView, DragonNodeController, {canCreateDefault:true, isGUIOption:true}),
+        new AMVCSpec(KirbyNodeModel, KirbyNodeView, KirbyNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(RingNodeModel, RingNodeView, RingNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(KirbyNodeModel, KirbyNodeView, KirbyNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(GroundModel, GroundView, GroundController, {canCreateDefault:false, isGUIOption:false}),

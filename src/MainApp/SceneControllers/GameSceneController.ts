@@ -17,7 +17,7 @@ import {ExampleNodeModel} from "../Nodes/Example/ExampleNodeModel";
 import {ExampleNodeView} from "../Nodes/Example/ExampleNodeView";
 import {ExampleNodeController} from "../Nodes/Example/ExampleNodeController";
 import {ExampleThirdPersonControls} from "../PlayerControls/ExampleThirdPersonControls";
-import {DragonGameControls} from "../PlayerControls/DragonGameControls";
+import {KirbyGameControls} from "../PlayerControls/KirbyGameControls";
 
 export class GameSceneController extends A3DSceneController<ASceneNodeModel, ASceneModel<ASceneNodeModel>>{
     initClassSpec() {
@@ -39,7 +39,7 @@ export class GameSceneController extends A3DSceneController<ASceneNodeModel, ASc
         this.addControlType(RotateSelectedObject)
         this.addControlType(ExampleThirdPersonControls)
         this.setCurrentInteractionMode(ExampleDragOrbitControls)
-        // this.setCurrentInteractionMode(DragonGameControls);
+        // this.setCurrentInteractionMode(KirbyGameControls);
     }
 
     initSceneCamera() {

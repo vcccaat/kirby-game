@@ -3,11 +3,11 @@ import {TexturedMaterialModel} from "./Materials/TexturedMaterialModel";
 import {ATexture} from "../anigraph/arender/ATexture";
 import {GroundMaterialModel} from "./Materials/GroundMaterialModel";
 import {StarterAppState} from "./StarterAppState/StarterAppState";
-import {DragonGameAppState} from "./StarterAppState/DragonGameAppState";
+import {KirbyGameAppState} from "./StarterAppState/KirbyGameAppState";
 
 
 
-export class MainAppState extends DragonGameAppState{
+export class MainAppState extends KirbyGameAppState{
 // export class MainAppState extends StarterAppState{
     /**
      * Load any assets you want to use (e.g., custom textures, shaders, etc)
