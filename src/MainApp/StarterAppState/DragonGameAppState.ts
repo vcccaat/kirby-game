@@ -13,6 +13,9 @@ import { FlameModel } from "src/anigraph/effects/particle/flame/FlameModel";
 import {StarterAppState} from "./StarterAppState";
 import {RingNodeModel} from "../Nodes/ExampleProcedureGeometry/RingNodeModel";
 import {RingSegment} from "../Nodes/ExampleProcedureGeometry/RingSegment";
+import {KirbyNodeModel} from "../Nodes/Kirby/KirbyNodeModel";
+import {KirbySegment} from "../Nodes/Kirby/KirbySegment";
+import {Sphere} from "../Nodes/ProceduralBasicGeometryElements/SphereElement";
 import { Vector3 } from "three";
 
 export class DragonGameAppState extends StarterAppState {
@@ -56,6 +59,24 @@ export class DragonGameAppState extends StarterAppState {
     );
   }
 
+    // addArmModel(){
+    //     let ringModel = new RingNodeModel();
+    //     let joints = [
+    //         V3(0,0,0),
+    //         V3(0,0,50),
+    //         V3(0,100,100),
+    //         V3(0,-100,150),
+    //     ]
+    //     let radius = 5;
+    //     ringModel.segments = [
+    //         new RingSegment(joints[0], joints[1], radius, [Color.FromString('#ff0000'), Color.FromString('#00ff00')]),
+    //         new RingSegment(joints[1], joints[2], radius, [Color.FromString('#00ff00'), Color.FromString('#0000ff')]),
+    //         new RingSegment(joints[2], joints[3], radius, [Color.FromString('#0000ff'), Color.FromString('#ffffff')]),
+    //     ]
+    //     this.setNodeMaterial(ringModel, 'Toon');
+    //     this.sceneModel.addNode(ringModel);
+    //     return ringModel;
+    // }
   addArmModel() {
     let ringModel = new RingNodeModel();
     let joints = [V3(0, 0, 0), V3(0, 0, 50), V3(0, 100, 100), V3(0, -100, 150)];
@@ -272,7 +293,7 @@ export class DragonGameAppState extends StarterAppState {
         //         V3(1,1,1).times(0.1)
         //     )
         // );
-    
+
 
         // obj文件的kirby无法动
         // this.addModelFromFile('./models/Kirby.obj','kirby',
@@ -287,12 +308,17 @@ export class DragonGameAppState extends StarterAppState {
         this.sceneModel.addNode(plants);
 
         //add kirby
-        let kirby = await SphereModel.CreateDefaultNode()
-        kirby.transform.position = V3(-100,-200,20)
-        kirby.transform.scale = V3(1,1,1).times(0.2)
-        kirby.transform.rotation = Quaternion.FromAxisAngle(V3(0,0,1),Math.PI/2)
-        kirby.setMaterial('kirby')
+        let kirby_test = await SphereModel.CreateDefaultNode()
+        kirby_test.transform.position = V3(-100,-200,20)
+        kirby_test.transform.scale = V3(1,1,1).times(0.2)
+        kirby_test.transform.rotation = Quaternion.FromAxisAngle(V3(0,0,1),Math.PI/2)
+        kirby_test.setMaterial('kirby')
+        this.sceneModel.addNode(kirby_test);
+
+        let kirby = await KirbyNodeModel.CreateDefaultNode()
+        this.setNodeMaterial(kirby, 'pink');
         this.sceneModel.addNode(kirby);
+        kirby.transform.position = V3(200,200,0);
 
     /***
      * IF YOU WANT A THREEJS PLAYGROUND!
