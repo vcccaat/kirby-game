@@ -3,10 +3,13 @@ import {DragonNodeModel} from "../Nodes/Dragon/DragonNodeModel";
 import {DragonNodeController} from "../Nodes/Dragon/DragonNodeController";
 import {EnemyNodeModel} from "../Nodes/Enemy/EnemyNodeModel";
 import {ExampleNodeModel} from "../Nodes/Example/ExampleNodeModel";
+import {PlantNodeModel} from "../Nodes/Plant/PlantNodeModel";
 import {SphereModel} from "../Nodes/BasicGeometry/SphereModel";
 import {DragonGameControls} from "../PlayerControls/DragonGameControls";
 import {ExampleDragOrbitControls} from "../PlayerControls/ExampleDragOrbitControls";
 import * as THREE from "three";
+import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
+import { FlameModel } from "src/anigraph/effects/particle/flame/FlameModel";
 import {StarterAppState} from "./StarterAppState";
 import {RingNodeModel} from "../Nodes/ExampleProcedureGeometry/RingNodeModel";
 import {RingSegment} from "../Nodes/ExampleProcedureGeometry/RingSegment";
@@ -122,39 +125,38 @@ export class DragonGameAppState extends StarterAppState{
         enemy2.setTransform(new NodeTransform3D(V3(300, 200, 150)));
         enemy2.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
         enemy2.color = Color.Random();
-        //Add lucy... so that there is more stuff
-        this.addModelFromFile('./models/ply/binary/dolphins_le.ply','dolphins',
-            // './models/ply/binary/Lucy100k.ply', "Lucy",
-            new NodeTransform3D(
-                V3(100,100,80),
-                Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
-                V3(1,1,1).times(0.1)
-            )
-        );
+        // //Add lucy... so that there is more stuff
+        // this.addModelFromFile('./models/ply/ascii/dolphins_colored.ply','dolphins',
+        //     // './models/ply/binary/Lucy100k.ply', "Lucy",
+        //     new NodeTransform3D(
+        //         V3(100,100,80),
+        //         Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
+        //         V3(1,1,1).times(0.1)
+        //     )
+        // );
+    
 
-        this.addModelFromFile('./models/Kirby.obj','kirby',
-        new NodeTransform3D(
-            V3(50,50,10),
-            Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
-        )
-        )
+        // obj文件的kirby无法动
+        // this.addModelFromFile('./models/Kirby.obj','kirby',
+        // new NodeTransform3D(
+        //     V3(50,50,10),
+        //     Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
+        // )
+        // )
 
-        let plants = this.addModelFromFile('./models/plants.obj','plants',
-        new NodeTransform3D(
-            V3(-20,-20,20),
-            Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5)),
-            V3(1,1,1).times(3)
-            )
-        )
-        // tree.color = Color.FromString("#ff0000")
+        // 导入植物等场景文件-> 进入PlantNodeModel
+        let plants = await PlantNodeModel.CreateDefaultNode()
+        this.sceneModel.addNode(plants);
 
-        //add sphere
-        let randomSphere = await SphereModel.CreateDefaultNode()
-        randomSphere.transform.position = V3(-100,-200,100)
-        randomSphere.transform.rotation = Quaternion.FromAxisAngle(V3(1,0,0),-Math.PI*0.5).times(Quaternion.FromAxisAngle(V3(0,0,1),-Math.PI*0.5))
-        randomSphere.setMaterial('kirby')
-        this.sceneModel.addNode(randomSphere);
+        //add kirby
+        let kirby = await SphereModel.CreateDefaultNode()
+        kirby.transform.position = V3(-100,-200,20)
+        kirby.transform.scale = V3(1,1,1).times(0.2)
+        kirby.transform.rotation = Quaternion.FromAxisAngle(V3(0,0,1),Math.PI/2)
+        kirby.setMaterial('kirby')
+        this.sceneModel.addNode(kirby);
 
+    
         let newNode = new ExampleNodeModel();
         newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20,20));
         // newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
@@ -211,13 +213,13 @@ export class DragonGameAppState extends StarterAppState{
          * this.gameSceneController.view.threejs
          * You can get the camera with this.threejsCamera
          */
-        let threejsRoot = this.threejsSceneRoot;
-        const tngeometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
-        const tnmaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-        const torusKnot = new THREE.Mesh( tngeometry, tnmaterial );
-        // we will put it in the corner...
-        torusKnot.position.set(300,300,200);
-        threejsRoot.add(torusKnot);
+        // let threejsRoot = this.threejsSceneRoot;
+        // const tngeometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
+        // const tnmaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+        // const torusKnot = new THREE.Mesh( tngeometry, tnmaterial );
+        // // we will put it in the corner...
+        // torusKnot.position.set(0,0,10);
+        // threejsRoot.add(torusKnot);
     }
 
     exampleDragonGameCallback(){

@@ -20,8 +20,8 @@ export class MainAppState extends DragonGameAppState{
         let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
         let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
         let grassTexture = await ATexture.LoadAsync('./images/grass1.png');
-        let plantTexture = await ATexture.LoadAsync('./images/plants.jpeg');
-        await this.materials.setMaterialModel('plants', new TexturedMaterialModel(plantTexture));
+        // let plantTexture = await ATexture.LoadAsync('./images/plants.jpeg');
+        // await this.materials.setMaterialModel('plants', new TexturedMaterialModel(plantTexture));
         await this.materials.setMaterialModel('kirby', new TexturedMaterialModel(kirbyTexture));
         await this.materials.setMaterialModel('trippy', new TexturedMaterialModel(trippyTexture));
         await this.materials.setMaterialModel('marble', new TexturedMaterialModel(marbleTexture));
