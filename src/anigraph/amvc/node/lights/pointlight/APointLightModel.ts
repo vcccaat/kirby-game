@@ -7,11 +7,13 @@ import {AniGraphEnums} from "../../../../basictypes";
 
 @ASerializable("APointLightModel")
 export class APointLightModel extends ALightModel{
+    [x: string]: any;
     @AObjectState falloff!:number;
     @AObjectState isActive!:boolean;
     @AObjectState orbitRate!:number;
     public clock:AClock;
     @AObjectState time:number;
+    ball: any;
     // @AObjectState color!:Color;
 
     getModelGUIControlSpec() {

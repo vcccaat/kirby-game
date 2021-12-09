@@ -39,6 +39,7 @@ export class DragonNodeModel extends ALoadedModel {
   @AObjectState movingFrame: number;
   @AObjectState upV: Vec3;
   @AObjectState isUp: boolean;
+  @AObjectState isPulling: boolean;
 
   constructor() {
     super(DragonNodeModel.DragonObject3D);
@@ -53,6 +54,7 @@ export class DragonNodeModel extends ALoadedModel {
     this.movingFrame = 0;
     this.upV = new Vec3(0, 0, 0);
     this.isUp = true;
+    this.isPulling = false;
   }
 
   /**

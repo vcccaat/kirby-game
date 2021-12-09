@@ -32,6 +32,9 @@ import {BasicElementsModel, BasicElementsView} from "../Nodes/ProceduralBasicGeo
 import {SphereModel} from "../Nodes/BasicGeometry/SphereModel";
 import {GridModel} from "../Nodes/BasicGeometry/GridModel";
 import {GridView} from "../Nodes/BasicGeometry/GridView";
+import { PepperNodeModel } from "../Nodes/Pepper/PepperNodeModel";
+import { ExampleNodeView } from "../Nodes/Example/ExampleNodeView";
+import { ExampleNodeController } from "../Nodes/Example/ExampleNodeController";
 
 
 
@@ -45,6 +48,7 @@ export function CommonSpecs(){
             new AMVCSpec(ASpriteModel, ASpriteView, BasicSceneNodeController, {canCreateDefault:false, isGUIOption:false}),
             new AMVCSpec(ACameraNodeModel, ACameraNodeView, ACameraNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(EnemyNodeModel, APointLightView, APointLightController),
+        new AMVCSpec(PepperNodeModel, ExampleNodeView, ExampleNodeController),
         new AMVCSpec(RingNodeModel, ASceneNodeBoundsView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(BasicElementsModel, BasicElementsView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),
         new AMVCSpec(SphereModel, AMeshView, BasicSceneNodeController, {canCreateDefault:true, isGUIOption:true}),

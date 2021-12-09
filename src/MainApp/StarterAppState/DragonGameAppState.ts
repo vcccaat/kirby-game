@@ -14,6 +14,7 @@ import {StarterAppState} from "./StarterAppState";
 import {RingNodeModel} from "../Nodes/ExampleProcedureGeometry/RingNodeModel";
 import {RingSegment} from "../Nodes/ExampleProcedureGeometry/RingSegment";
 import { Vector3 } from "three";
+import { PepperNodeModel } from "../Nodes/Pepper/PepperNodeModel";
 
 export class DragonGameAppState extends StarterAppState {
   /**
@@ -217,6 +218,10 @@ export class DragonGameAppState extends StarterAppState {
     newNode.color = Color.Random();
     newNode.transform.position = new Vec3(50, 50, 10);
     this.sceneModel.addNode(newNode);
+
+    let pepper = new PepperNodeModel();
+    pepper.transform.position = new Vec3(-20,20,20);
+    this.sceneModel.addNode(pepper);
     //add an example node model
     // the CreateDefaultNode methods are asynchronous in case we want to load assets,
     // this means we should await the promise that they return to use it.
@@ -315,77 +320,125 @@ export class DragonGameAppState extends StarterAppState {
     let currentGameTime = this.appClock.time;
     let timeSinceLastFrame = this.timeSinceLastFrame;
 
-    // let's get all of the enemy nodes...
-    let enemies = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
-      return node instanceof EnemyNodeModel;
-    });
-    // let enemies = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return (typeof node.getBounds === 'function');});
+
 
     // Note that you can use the same approach to select any subset of the node models in the scene.
     // You can use this, for example, to get all of the models that you want to detect collistions with
     let blocks = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
       return node instanceof ExampleNodeModel;
     });
-
+    //loop through all peppers
     for (let block of blocks) {
-      let boudningBox = block.getBounds();
-      if (boudningBox.pointInBounds(this.dragon.transform.position)) {
-        let movementVec = this.dragon.transform.position.minus(
-          boudningBox.transform.getObjectSpaceOrigin()
-        );
-        this.dragon.transform.position = this.dragon.transform.position.plus(
-          new Vec3(
-            movementVec.getNormalized().x,
-            movementVec.getNormalized().y,
-            0
-          )
-        );
-      }
-    }
 
-    for (let l of enemies) {
-      // let's get the vector from an enemy to the dragon...
-      let vToDragon = this.dragon.transform.position.minus(
-        l.transform.getObjectSpaceOrigin()
-      );
+      //pull the block if enter key down
+      if (this.dragon.isPulling){
+        let vToDragon = this.dragon.transform.position.minus(
+          block.transform.getObjectSpaceOrigin()
+        );
+  
+        // if the dragon is within the enemy's detection range then somthin's going down...
+        if (vToDragon.L2() < this.enemyRange) {
+          
+          
+          if (vToDragon.L2() < 1) {
+            this.sceneModel.removeNode(block);
+          } 
+          
+          
+          else {
+            let d_rotation = new Vector3(1, 0, 0).applyQuaternion(
+              this.dragon.transform.rotation
+            );
+            let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
+            let angle =
+              (Math.acos(
+                d_direction.dot(vToDragon) /
+                  (Math.sqrt(d_direction.dot(d_direction)) +
+                    Math.sqrt(vToDragon.dot(vToDragon)))
+              ) *
+                180) /
+              Math.PI;
 
-      // if the dragon is within the enemy's detection range then somthin's going down...
-      if (vToDragon.L2() < this.enemyRange) {
-        if (vToDragon.L2() < 1) {
-          this.sceneModel.removeNode(l);
-        } else {
-          let d_rotation = new Vector3(1, 0, 0).applyQuaternion(
-            this.dragon.transform.rotation
-          );
-          let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
-          let angle =
-            (Math.acos(
-              d_direction.dot(vToDragon) /
-                (Math.sqrt(d_direction.dot(d_direction)) +
-                  Math.sqrt(vToDragon.dot(vToDragon)))
-            ) *
-              180) /
-            Math.PI;
-          // if the dragon isn't spinning, then it's vulnerable and the enemy will chase after it on red alert
-          if (angle < 60) {
-            if (!this.dragon.isSpinning) {
-              l.transform.position = l.transform
-                .getObjectSpaceOrigin()
-                .plus(vToDragon.getNormalized().times(this.enemySpeed));
-            }
-          } else {
-            //if the dragon IS spinning, the enemy will turn blue with fear and run away...
-            l.transform.position = l.transform
-              .getObjectSpaceOrigin()
-              .plus(vToDragon.getNormalized().times(-this.enemySpeed));
+            if (angle < 60) {
+              if (!this.dragon.isSpinning) {
+                block.transform.position = block.transform
+                  .getObjectSpaceOrigin()
+                  .plus(vToDragon.getNormalized().times(this.enemySpeed));
+              }
+            } 
+
           }
-          //enemies don't orbit in pursuit...
-          l.transform.anchor = V3(0, 0, 0);
+        } 
+        else {
+          //if they don't see the dragon they go neutral...
         }
-      } else {
-        //if they don't see the dragon they go neutral...
       }
-    }
+      else{
+        let boudningBox = block.getBounds();
+        //dectect collision
+        if (boudningBox.pointInBounds(this.dragon.transform.position)) {
+          let movementVec = this.dragon.transform.position.minus(
+            boudningBox.transform.getObjectSpaceOrigin()
+          );
+          this.dragon.transform.position = this.dragon.transform.position.plus(
+            new Vec3(
+              movementVec.getNormalized().x,
+              movementVec.getNormalized().y,
+              0
+            )
+          );
+        }
+      }
+      }
+    
+    // // let's get all of the enemy nodes...
+    // let enemies = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
+    //   return node instanceof EnemyNodeModel;
+    // });
+    // // let enemies = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return (typeof node.getBounds === 'function');});
+    // for (let l of enemies) {
+    //   // let's get the vector from an enemy to the dragon...
+    //   let vToDragon = this.dragon.transform.position.minus(
+    //     l.transform.getObjectSpaceOrigin()
+    //   );
+
+    //   // if the dragon is within the enemy's detection range then somthin's going down...
+    //   if (vToDragon.L2() < this.enemyRange) {
+    //     if (vToDragon.L2() < 1) {
+    //       this.sceneModel.removeNode(l);
+    //     } else {
+    //       let d_rotation = new Vector3(1, 0, 0).applyQuaternion(
+    //         this.dragon.transform.rotation
+    //       );
+    //       let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
+    //       let angle =
+    //         (Math.acos(
+    //           d_direction.dot(vToDragon) /
+    //             (Math.sqrt(d_direction.dot(d_direction)) +
+    //               Math.sqrt(vToDragon.dot(vToDragon)))
+    //         ) *
+    //           180) /
+    //         Math.PI;
+    //       // if the dragon isn't spinning, then it's vulnerable and the enemy will chase after it on red alert
+    //       if (angle < 60) {
+    //         if (!this.dragon.isSpinning) {
+    //           l.transform.position = l.transform
+    //             .getObjectSpaceOrigin()
+    //             .plus(vToDragon.getNormalized().times(this.enemySpeed));
+    //         }
+    //       } else {
+    //         //if the dragon IS spinning, the enemy will turn blue with fear and run away...
+    //         l.transform.position = l.transform
+    //           .getObjectSpaceOrigin()
+    //           .plus(vToDragon.getNormalized().times(-this.enemySpeed));
+    //       }
+    //       //enemies don't orbit in pursuit...
+    //       l.transform.anchor = V3(0, 0, 0);
+    //     }
+    //   } else {
+    //     //if they don't see the dragon they go neutral...
+    //   }
+    // }
 
     // you can also get time since last frame with this.timeSinceLastFrame
     this.updateSpinningArms(this.appClock.time);

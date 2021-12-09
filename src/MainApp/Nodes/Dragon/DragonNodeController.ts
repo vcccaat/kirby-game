@@ -29,9 +29,19 @@ export class DragonNodeController extends ASceneNodeController<DragonNodeModel> 
         Quaternion.RotationZ(-Math.PI * 0.1)
       );
     }
+    if (interaction.keysDownState["q"]) {
+      this.model.isPulling = true;
+    }
+
+
   }
 
-  onKeyUp(interaction: AKeyboardInteraction, event: AInteractionEvent) {}
+  onKeyUp(interaction: AKeyboardInteraction, event: AInteractionEvent) {
+    if (!interaction.keysDownState["q"]) {
+      console.log("hi");
+      this.model.isPulling = false;
+    }
+  }
 
   upAcceleration: Vec3 = new Vec3(0, 0, 0.01);
   gravity: Vec3 = new Vec3(0, 0, -0.01);
