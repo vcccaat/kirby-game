@@ -16,6 +16,7 @@ import { KirbyNodeController } from '../Nodes/Kirby/KirbyNodeController';
 import { EnemyNodeModel } from '../Nodes/Enemy/EnemyNodeModel';
 import { ExampleNodeModel } from '../Nodes/Example/ExampleNodeModel';
 import { PlantNodeModel } from '../Nodes/Plant/PlantNodeModel';
+import { StarNodeModel } from '../Nodes/Star/StarNodeModel';
 import { SphereModel } from '../Nodes/BasicGeometry/SphereModel';
 import { KirbyGameControls } from '../PlayerControls/KirbyGameControls';
 import { ExampleDragOrbitControls } from '../PlayerControls/ExampleDragOrbitControls';
@@ -112,7 +113,14 @@ export class KirbyGameAppState extends StarterAppState {
 			a.segments[2].end = v3;
 		}
 	}
-
+	updateStar(t: number) {
+		let stars = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
+			return node instanceof StarNodeModel;
+		}) as StarNodeModel[];
+		for (let s of stars) {
+			s.transform.rotation = Quaternion.RotationZ(Math.PI * t);
+		}
+	}
 	countFrame: number = -1;
 	updateKirby(t: number) {
 		this.countFrame++;
@@ -200,6 +208,17 @@ export class KirbyGameAppState extends StarterAppState {
 			)
 		);
 
+		let star = await StarNodeModel.CreateDefaultNode();
+		let star2 = await StarNodeModel.CreateDefaultNode();
+		star.transform.position = new Vec3(-80, 20, 20);
+		star2.transform.position = new Vec3(80, 20, 20);
+		this.sceneModel.addNode(star);
+		this.sceneModel.addNode(star2);
+
+		let plants = await PlantNodeModel.CreateDefaultNode();
+		plants.transform.position = V3(-150, -150, 30);
+		this.sceneModel.addNode(plants);
+
 		let newNode = new ExampleNodeModel();
 		newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
 		// newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
@@ -258,10 +277,6 @@ export class KirbyGameAppState extends StarterAppState {
 
 		// let arm = this.addArmModel();
 		// arm.transform.position = V3(-200, 200, 0);
-
-		// 导入植物等场景文件-> 进入PlantNodeModel
-		let plants = await PlantNodeModel.CreateDefaultNode();
-		this.sceneModel.addNode(plants);
 	}
 
 	exampleKirbyGameCallback() {
@@ -361,6 +376,7 @@ export class KirbyGameAppState extends StarterAppState {
 		// you can also get time since last frame with this.timeSinceLastFrame
 		this.updateSpinningArms(this.appClock.time);
 		this.updateKirby(this.appClock.time);
+		this.updateStar(this.appClock.time);
 		this.kirbyGravity(this.appClock.time);
 
 		// Note that you can get the bounding box of any model by calling
