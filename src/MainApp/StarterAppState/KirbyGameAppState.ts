@@ -222,6 +222,7 @@ export class KirbyGameAppState extends StarterAppState {
 
 		let plants = await PlantNodeModel.CreateDefaultNode();
 		plants.transform.position = V3(-150, -150, 30);
+		plants.setMaterial('plant');
 		this.sceneModel.addNode(plants);
 
 		let newNode = new ExampleNodeModel();

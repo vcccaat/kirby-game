@@ -297,44 +297,70 @@ export class VertexArray3D extends VertexArray<Vec3>{
         return sphere;
     }
 
-    static Ellipsoid(latitudeBands=30,longitudeBands=20,a=6,b=7,c=20,size=20){
-        let ellipsoidgeometry = VertexArray3D.CreateForRendering(true, true);
-        for (var latNumber=0; latNumber <= latitudeBands; latNumber++)
-        {
-            var theta = (latNumber *      Math.PI *2/ latitudeBands);
-            var sinTheta = Math.sin(theta);
-            var cosTheta = Math.cos(theta);
+    static Ellipsoid(radius = 1,x=1, y=1, z=1,
+                  widthSegments = 32,
+                  heightSegments = 16,
+                  phiStart = 0,
+                  phiLength = Math.PI * 2,
+                  thetaStart = 0,
+                  thetaLength = Math.PI ){
+        let sphere = VertexArray3D.CreateForRendering(true, true);
+        widthSegments = Math.max( 3, Math.floor( widthSegments ) );
+        heightSegments = Math.max( 2, Math.floor( heightSegments ) );
+        const thetaEnd = Math.min( thetaStart + thetaLength, Math.PI );
+        let index = 0;
+        const grid = [];
+        const vertex = new Vec3();
+        const normal = new Vec3();
+        // generate vertices, normals and uvs
 
-            for (var longNumber=0; longNumber <= longitudeBands; longNumber++)
-            {
-                var phi = (longNumber  *2* Math.PI / longitudeBands);
-                var sinPhi = Math.sin(phi);
-                var cosPhi = Math.cos(phi);
-
-
-                var x = a*cosPhi * cosTheta ;
-                var y = b*cosTheta*sinPhi;
-                var z = c*sinTheta;
-                //ellipsoidgeometry.vertices.push(new THREE.Vector3( x*size,y*size,z*size));
-                ellipsoidgeometry.indices.push([x*size,y*size,z*size]);
-
+        for ( let iy = 0; iy <= heightSegments; iy ++ ) {
+            const verticesRow = [];
+            const v = iy / heightSegments;
+            // special case for the poles
+            let uOffset = 0;
+            if ( iy == 0 && thetaStart == 0 ) {
+                uOffset = 0.5 / widthSegments;
+            } else if ( iy == heightSegments && thetaEnd == Math.PI ) {
+                uOffset = - 0.5 / widthSegments;
             }
+            for ( let ix = 0; ix <= widthSegments; ix ++ ) {
+                const u = ix / widthSegments;
+                // vertex
+                vertex.x = - radius * Math.cos( phiStart + u * phiLength ) * Math.sin( thetaStart + v * thetaLength )*x;
+                vertex.y = radius * Math.cos( thetaStart + v * thetaLength )*y;
+                vertex.z = radius * Math.sin( phiStart + u * phiLength ) * Math.sin( thetaStart + v * thetaLength )*z;
 
+                // uv
+                let uv = V2( u + uOffset, 1 - v );
 
+                verticesRow.push( index ++ );
+                sphere.addVertex(
+                    vertex,
+                    vertex.getNormalized(),
+                    uv
+                );
+            }
+            grid.push( verticesRow );
         }
-        for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
-            for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
-                var first = (latNumber * (longitudeBands + 1)) + longNumber;
-                var second = first + longitudeBands + 1;
-                //ellipsoidgeometry.faces.push(new THREE.Face3(first,second,first+1));
-                ellipsoidgeometry.indices.push([first,second,first+1]);
 
-                // ellipsoidgeometry.faces.push(new THREE.Face3(second,second+1,first+1));
-                ellipsoidgeometry.indices.push([second,second+1,first+1]);
+        // indices
 
+        for ( let iy = 0; iy < heightSegments; iy ++ ) {
+            for ( let ix = 0; ix < widthSegments; ix ++ ) {
+                const a = grid[ iy ][ ix + 1 ];
+                const b = grid[ iy ][ ix ];
+                const c = grid[ iy + 1 ][ ix ];
+                const d = grid[ iy + 1 ][ ix + 1 ];
+                if ( iy !== 0 || thetaStart > 0 ){
+                    sphere.indices.push([a, b, d]);
+                }
+                if ( iy !== heightSegments - 1 || thetaEnd < Math.PI ){
+                    sphere.indices.push([b, c, d]);
+                }
             }
         }
-        return ellipsoidgeometry;
+        return sphere;
     }
 
     static SpriteGeometry(texture:ATexture, scale:number=100){
