@@ -14,11 +14,11 @@ export class KirbyNodeView extends ASceneNodeView<KirbyNodeModel> {
 		this.element = new ARenderGroup();
 		this.addElement(this.element);
 		const self = this;
-		this.controller.subscribe(
-			this.model.addStateKeyListener('segments', () => {
-				this.updateSegments();
-			})
-		);
+		// this.controller.subscribe(
+		// 	this.model.addStateKeyListener('segments', () => {
+		// 		this.updateSegments();
+		// 	})
+		// );
 		this.updateSegments();
 	}
 
