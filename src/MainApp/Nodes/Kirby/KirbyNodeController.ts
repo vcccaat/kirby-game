@@ -33,12 +33,18 @@ export class KirbyNodeController extends ASceneNodeController<KirbyNodeModel> {
       this.model.isPulling = true;
     }
 
+    // if(interaction.keysDownState["8"]) {
+    //   console.log(this.model.segments[0].transform);
+    //   let leftHand = this.model.segments[2];
+    //   let rightHand = this.model.segments[0];
+
+    //   leftHand.transform.position.addVector(new Vec3(0,0,-1));
+    // }
 
   }
 
   onKeyUp(interaction: AKeyboardInteraction, event: AInteractionEvent) {
     if (!interaction.keysDownState["q"]) {
-      console.log("hi");
       this.model.isPulling = false;
     }
   }
@@ -131,7 +137,7 @@ export class KirbyNodeController extends ASceneNodeController<KirbyNodeModel> {
     let forwardV = new Vec3(0, unitV, 0);
     let backwardV = new Vec3(0, -unitV, 0);
 
-    let duration = 2;
+    let duration = 1;
 
     // if (this.model.isMoving) {
     //   return;

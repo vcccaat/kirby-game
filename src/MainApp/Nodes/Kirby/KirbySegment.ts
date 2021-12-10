@@ -19,11 +19,15 @@ export class KirbySegment {
     radius:number;
     colors: Color[]=[];
     mat: Matrix4 = new THREE.Matrix4().makeScale( 1.0, 1.0, 1.0 );
+    transform: NodeTransform3D;
     constructor(start:Vec3,  radius:number=10, mat?: Matrix4,  colors?:Color[]){
         this.start=start;
         this.radius=radius;
         if(mat){this.mat=mat;}
         if(colors){this.colors=colors;}
+        this.transform = new NodeTransform3D(
+            this.start
+        );
     }
 
     // get vec(){return this.end.minus(this.start);}

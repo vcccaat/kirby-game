@@ -134,11 +134,28 @@ export class KirbyGameAppState extends StarterAppState {
     }
   }
 
+  countFrame: number = -1;
   updateKirby(t: number) {
+    this.countFrame ++;
+    if (this.countFrame % 2 === 0) return;
     //   // console.log(t % 2);
     if (this.kirby.isJumping) return;
-    let speed = t % 2 < 1 ? 0.05 : -0.05;
-    this.kirby.transform.position.addVector(new Vec3(0, 0, speed));
+    if (this.kirby.isMoving) return;
+    // let direction = t % 2 < 1 ? 1 : -1;
+    let countFrame = this.countFrame;
+    
+    let floatFreq = 200;
+    let floatSpeed = 0.2;
+    let direction = countFrame % floatFreq < floatFreq / 2 ? 1 : -1;
+    this.kirby.transform.position.addVector(new Vec3(0, 0, direction * floatSpeed));
+
+    let fapFreq = 60;
+    let flapSpeed = 0.3;
+      let leftHand = this.kirby.segments[2];
+      let rightHand = this.kirby.segments[0];
+      let flapDirection = countFrame % fapFreq < fapFreq / 2 ? 1 : -1;
+      leftHand.transform.position.addVector(new Vec3(0,0, flapDirection * flapSpeed));
+      rightHand.transform.position.addVector(new Vec3(0,0, flapDirection * flapSpeed));
     //   // console.log(t);
   }
 
@@ -152,7 +169,6 @@ export class KirbyGameAppState extends StarterAppState {
       this.kirby.upV = new Vec3(0, 0, 0);
       this.kirby.isJumping = false;
       //   this.updateCamera();
-      console.log(this);
       return;
     }
 
@@ -239,15 +255,15 @@ export class KirbyGameAppState extends StarterAppState {
     let bomb = new BombNodeModel();
     bomb.transform.position = new Vec3(-50,20,20);
     this.sceneModel.addNode(bomb);
-    //add an example node model
-    // the CreateDefaultNode methods are asynchronous in case we want to load assets,
-    // this means we should await the promise that they return to use it.
-    let trippyBall = await ExampleNodeModel.CreateDefaultNode(25);
-    trippyBall.transform.position = V3(-100, 300, 10);
+    // //add an example node model
+    // // the CreateDefaultNode methods are asynchronous in case we want to load assets,
+    // // this means we should await the promise that they return to use it.
+    // let trippyBall = await ExampleNodeModel.CreateDefaultNode(25);
+    // trippyBall.transform.position = V3(-100, 300, 10);
 
-    // see the trippy material for context. it's basically just textured with a colorful pattern
-    trippyBall.setMaterial("trippy");
-    this.sceneModel.addNode(trippyBall);
+    // // see the trippy material for context. it's basically just textured with a colorful pattern
+    // trippyBall.setMaterial("trippy");
+    // this.sceneModel.addNode(trippyBall);
 
     // how to add a new node directly to the scene...
     // let newModel = new ExampleNodeModel()
@@ -262,7 +278,7 @@ export class KirbyGameAppState extends StarterAppState {
 
     this.kirby.transform.position.addVector(new Vec3(0,0, 30));
     // this.kirby.transform.scale = 0.25;
-    this.kirby.setMaterial("kirby");
+    this.kirby.setMaterial("pink");
 
     if (startInGameMode) {
       //now let's activate the example third person controls...
@@ -288,8 +304,8 @@ export class KirbyGameAppState extends StarterAppState {
       )
     );
 
-    let arm = this.addArmModel();
-    arm.transform.position = V3(-200, 200, 0);
+    // let arm = this.addArmModel();
+    // arm.transform.position = V3(-200, 200, 0);
 
         // 导入植物等场景文件-> 进入PlantNodeModel
         let plants = await PlantNodeModel.CreateDefaultNode()
