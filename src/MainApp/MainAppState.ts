@@ -14,7 +14,7 @@ export class MainAppState extends KirbyGameAppState {
 	 */
 	async PrepAssets() {
 		// you can delete or replace setting the textures and shaders below if you don't want to use them.
-		let kirbyTexture = await ATexture.LoadAsync('./images/kirby4.png');
+		let kirbyTexture = await ATexture.LoadAsync('./images/kirby2.png');
 		let trippyTexture = await ATexture.LoadAsync('./images/trippy.jpeg');
 		let marbleTexture = await ATexture.LoadAsync('./images/marble.jpg');
 		let pinkTexture = await ATexture.LoadAsync('./images/pink.jpg');
