@@ -10,6 +10,7 @@ export class KirbyNodeView extends ASceneNodeView<KirbyNodeModel> {
 	element!: ARenderGroup;
 
 	initGraphics() {
+        console.log("init");
 		super.initGraphics();
 		this.element = new ARenderGroup();
 		this.addElement(this.element);

@@ -30,6 +30,7 @@ import { Vector3 } from 'three';
 import { PepperNodeModel } from '../Nodes/Pepper/PepperNodeModel';
 import { BombNodeModel } from '../Nodes/Bomb/BombNodeModel';
 
+const KIRBY_INIT_HEIGHT = 10;
 export class KirbyGameAppState extends StarterAppState {
 	/**
 	 * Enemy's detection range
@@ -153,8 +154,8 @@ export class KirbyGameAppState extends StarterAppState {
 		if (!this.kirby.isJumping) return;
 		// if (this.kirby.isUp) return;
 		// if (this.kirby.transform.position.z === 0) return;
-		if (this.kirby.transform.position.z + this.kirby.upV.z <= 30) {
-			this.kirby.transform.position.z = 30;
+		if (this.kirby.transform.position.z + this.kirby.upV.z <= KIRBY_INIT_HEIGHT) {
+			this.kirby.transform.position.z = KIRBY_INIT_HEIGHT;
 			this.kirby.upV = new Vec3(0, 0, 0);
 			this.kirby.isJumping = false;
 			//   this.updateCamera();
@@ -256,10 +257,10 @@ export class KirbyGameAppState extends StarterAppState {
 		this.kirby = await KirbyNodeModel.CreateDefaultNode();
 		// this.setNodeMaterial(this.kirby, 'pink');
 		this.sceneModel.addNode(this.kirby);
-		this.kirby.transform.rotation = Quaternion.RotationZ(Math.PI * -0.5);
+		this.kirby.transform.rotation = Quaternion.RotationZ(Math.PI * 0.5);
 		// this.kirby.setMaterial('pink');
 
-		this.kirby.transform.position.addVector(new Vec3(0, 0, 30));
+		this.kirby.transform.position.addVector(new Vec3(0, 0, KIRBY_INIT_HEIGHT));
 		// this.kirby.transform.scale = 0.25;
 		// this.kirby.setMaterial("pink");
 
