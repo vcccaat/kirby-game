@@ -126,12 +126,10 @@ export class KirbyGameAppState extends StarterAppState {
 	}
 	countFrame: number = -1;
 	updateKirby(t: number) {
-		this.countFrame++;
-		if (this.countFrame % 2 === 0) return;
-		//   // console.log(t % 2);
 		if (this.kirby.isJumping) return;
 		if (this.kirby.isMoving) return;
-		// let direction = t % 2 < 1 ? 1 : -1;
+    this.countFrame++;
+		if (this.countFrame % 2 === 0) return;
 		let countFrame = this.countFrame;
 
 		let floatFreq = 200;
@@ -146,6 +144,7 @@ export class KirbyGameAppState extends StarterAppState {
 		let flapDirection = countFrame % fapFreq < fapFreq / 2 ? 1 : -1;
 		leftHand.transform.position.addVector(new Vec3(0, 0, flapDirection * flapSpeed));
 		rightHand.transform.position.addVector(new Vec3(0, 0, flapDirection * flapSpeed));
+    this.kirby.updateHands ++;
 		//   // console.log(t);
 	}
 
