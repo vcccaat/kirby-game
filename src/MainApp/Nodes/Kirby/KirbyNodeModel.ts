@@ -106,11 +106,11 @@ export class KirbyNodeModel extends AMeshModel {
 			V3(-10, 0, 8), //left leg
 		];
 		kirbyModel.segments = [
-			new KirbySegment(locations[0], 0.3 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')]),
+			new KirbySegment(locations[0], 0.3 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'pink'),
 			new KirbySegment(locations[1], radius, new THREE.Matrix4().makeScale(1.0, 1.0, 1.0), [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'kirby'),
-			new KirbySegment(locations[2], 0.3 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')]),
-			new KirbySegment(locations[3], 0.4 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#ad1d46'), Color.FromString('#ad1d46')]),
-			new KirbySegment(locations[4], 0.4 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#ad1d46'), Color.FromString('#ad1d46')]),
+			new KirbySegment(locations[2], 0.3 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'pink'),
+			new KirbySegment(locations[3], 0.4 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#ad1d46'), Color.FromString('#ad1d46')],'kirbyfoot'),
+			new KirbySegment(locations[4], 0.4 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#ad1d46'), Color.FromString('#ad1d46')],'kirbyfoot'),
 		];
 
 		return kirbyModel;
