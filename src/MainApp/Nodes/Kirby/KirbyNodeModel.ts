@@ -40,6 +40,7 @@ export class KirbyNodeModel extends AMeshModel {
 
 	@AObjectState nSegments: [number, number];
 	@AObjectState radius: number;
+	@AObjectState updateHands: number;
 
 	constructor(segments?: KirbySegment[], ...args: any[]) {
 		super();
@@ -63,6 +64,7 @@ export class KirbyNodeModel extends AMeshModel {
 		if (segments) {
 			this.segments = segments;
 		}
+		this.updateHands = 0;
 
 		const self = this;
 		// this.subscribe(

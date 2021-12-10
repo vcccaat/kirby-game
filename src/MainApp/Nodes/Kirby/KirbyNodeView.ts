@@ -3,22 +3,26 @@ import { KirbyNodeModel } from './KirbyNodeModel';
 import { KirbyElement } from './KirbyElement';
 import { KirbyNodeController } from './KirbyNodeController';
 import { v3 } from 'uuid';
+import { Material, Color } from 'three';
 
 export class KirbyNodeView extends ASceneNodeView<KirbyNodeModel> {
 	controller!: KirbyNodeController;
 	ringElements: KirbyElement[] = [];
 	element!: ARenderGroup;
+	count: number = 0;
 
 	initGraphics() {
+		console.log('init');
 		super.initGraphics();
 		this.element = new ARenderGroup();
 		this.addElement(this.element);
 		const self = this;
 		this.controller.subscribe(
-			this.model.addStateKeyListener('segments', () => {
+			this.model.addStateKeyListener('updateHands', () => {
 				this.updateSegments();
 			})
 		);
+		this.updateSegments();
 	}
 
 	disposeElements() {
@@ -31,15 +35,20 @@ export class KirbyNodeView extends ASceneNodeView<KirbyNodeModel> {
 	}
 
 	updateSegments() {
-		this.disposeElements();
-		this.element = new ARenderGroup();
+		// this.disposeElements();
+		// this.element = new ARenderGroup();
 		this.addElement(this.element);
-		for (let s of this.model.segments) {
+		for (let i = 0; i < this.model.segments.length; i++) {
+			if (i !== 0 && i !== 2 && this.ringElements[i]) continue;
+			let s = this.model.segments[i];
+			if (this.ringElements[i]) this.element.remove(this.ringElements[i]);
 			let seg = KirbyElement.CreateSegment(s, this.model.material);
-			this.ringElements.push(seg);
+			this.ringElements[i] = seg;
+			// this.element.remove();
 			this.element.add(seg);
 			if (s.material) {
-				seg.setMaterial(GetAppState().materials.getMaterialModel(s.material).CreateMaterial().threejs);
+				let material = GetAppState().materials.getMaterialModel(s.material).CreateMaterial().threejs;
+				seg.setMaterial(material);
 			}
 		}
 	}
