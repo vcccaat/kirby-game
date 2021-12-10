@@ -98,12 +98,12 @@ export class KirbyNodeModel extends AMeshModel {
 	static async CreateDefaultNode(radius: number = 20, height = 10, samples: number = 50, isSmooth: boolean = true, ...args: any[]) {
 		let kirbyModel = new this();
 		let locations = [
-			V3(20, 0, 25), //right hand
+			V3(0, 20, 25), //right hand
 			V3(0, 0, 25),
 			// V3(new Vector3(0, 0, 25).applyQuaternion(Quaternion.RotationZ(Math.PI * 0.5))), //body
-			V3(-20, 0, 25), //left hand
-			V3(10, 0, 8), //right leg
-			V3(-10, 0, 8), //left leg
+			V3(0, -20, 25), //left hand
+			V3(0, 10, 8), //right leg
+			V3(0, -10, 8), //left leg
 		];
 		kirbyModel.segments = [
 			new KirbySegment(locations[0], 0.3 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'pink'),
