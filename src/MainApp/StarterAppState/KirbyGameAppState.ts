@@ -113,6 +113,7 @@ export class KirbyGameAppState extends StarterAppState {
 			a.segments[2].end = v3;
 		}
 	}
+
 	updateStar(t: number) {
 		let stars = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
 			return node instanceof StarNodeModel;
@@ -212,6 +213,9 @@ export class KirbyGameAppState extends StarterAppState {
 		let star2 = await StarNodeModel.CreateDefaultNode();
 		star.transform.position = new Vec3(-80, 20, 20);
 		star2.transform.position = new Vec3(80, 20, 20);
+		star.setMaterial('Normals');
+		star2.setMaterial('Toon');
+		// star2.setMaterial(this.materials.getMaterialModel('Glow').CreateMaterial());
 		this.sceneModel.addNode(star);
 		this.sceneModel.addNode(star2);
 
@@ -275,8 +279,8 @@ export class KirbyGameAppState extends StarterAppState {
 			)
 		);
 
-		// let arm = this.addArmModel();
-		// arm.transform.position = V3(-200, 200, 0);
+		let arm = this.addArmModel();
+		arm.transform.position = V3(-200, 200, 0);
 	}
 
 	exampleKirbyGameCallback() {
