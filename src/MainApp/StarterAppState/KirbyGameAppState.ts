@@ -256,7 +256,7 @@ export class KirbyGameAppState extends StarterAppState {
 		this.kirby = await KirbyNodeModel.CreateDefaultNode();
 		// this.setNodeMaterial(this.kirby, 'pink');
 		this.sceneModel.addNode(this.kirby);
-		// this.kirby.transform.rotation = Quaternion.RotationZ(Math.PI * 0.5);
+		this.kirby.transform.rotation = Quaternion.RotationZ(Math.PI * -0.5);
 		// this.kirby.setMaterial('pink');
 
 		this.kirby.transform.position.addVector(new Vec3(0, 0, 30));
