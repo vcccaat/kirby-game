@@ -157,7 +157,7 @@ export class KirbyNodeController extends ASceneNodeController<KirbyNodeModel> {
         if (keysDownState["ArrowLeft"]) v.addVector(leftV);
         if (keysDownState["ArrowRight"]) v.addVector(rightV);
 
-        let directV = new Vec3(0, 1, 0);
+        let directV = new Vec3(0, -1, 0);
         let normalizedV = v.clone();
         normalizedV.normalize();
         let cos = directV.dot(normalizedV);
