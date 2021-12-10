@@ -45,6 +45,7 @@ export class KirbyGameAppState extends StarterAppState {
 	/**
 	 * We will control the kirby in our example game
 	 * @type {KirbyNodeModel}
+	 * @type {KirbyNodeModel}
 	 */
 	kirby!: KirbyNodeModel;
 

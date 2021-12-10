@@ -44,8 +44,23 @@ export class KirbySegment {
 	}
 
 	ComputeGeometry() {
-		let shape = VertexArray3D.Sphere(this.radius);
-		shape.ApplyMatrix(new Mat4(this.mat.elements));
+		let shape = VertexArray3D.CreateForRendering(true, true);
+		let rotMatrix = new THREE.Matrix4();
+		rotMatrix.set(
+			1, 0, 0, 0,
+			0, Math.cos(-Math.PI/2), -Math.sin(-Math.PI/2), 0,
+			0, Math.sin(-Math.PI), Math.cos(-Math.PI), 0,
+			0, 0, 0, 1
+		);
+		if(!this.mat.equals(new THREE.Matrix4().makeScale(1.0, 1.0, 1.0))){//hands and legs
+			//shape = VertexArray3D.Ellipsoid(30,20,6,7,20, this.radius);
+			shape = VertexArray3D.Sphere(this.radius);
+		}
+		else{//body
+			shape = VertexArray3D.Sphere(this.radius);
+			shape.ApplyMatrix(new Mat4(rotMatrix.elements));
+		}
+		// shape.ApplyMatrix(new Mat4(this.mat.elements));
 		return shape;
 	}
 }
