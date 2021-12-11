@@ -31,21 +31,37 @@ export class KirbyNodeController extends ASceneNodeController<KirbyNodeModel> {
     }
     if (interaction.keysDownState["q"]) {
       this.model.isPulling = true;
+      this.addTimedAction(
+        (actionProgress) => {
+          if (!this.model.isPulling) return;
+          if (this.model.transform.scale.x <= 1.2) this.model.transform.scale = this.model.transform.scale.x *= 1.02;
+        },
+        1,
+        () => {
+        },
+        this.model.tween
+      );
     }
-
-    // if(interaction.keysDownState["8"]) {
-    //   console.log(this.model.segments[0].transform);
-    //   let leftHand = this.model.segments[2];
-    //   let rightHand = this.model.segments[0];
-
-    //   leftHand.transform.position.addVector(new Vec3(0,0,-1));
-    // }
-
   }
+  
 
   onKeyUp(interaction: AKeyboardInteraction, event: AInteractionEvent) {
     if (!interaction.keysDownState["q"]) {
       this.model.isPulling = false;
+      this.addTimedAction(
+        (actionProgress) => {
+          if (this.model.isPulling) return;
+          if (this.model.transform.scale.x <= 1) {
+            this.model.transform.scale = 1;
+            return;
+          }
+          if (this.model.transform.scale.x > 1) this.model.transform.scale = this.model.transform.scale.x *= 0.98;
+        },
+        1,
+        () => {
+        },
+        this.model.tween
+      );
     }
   }
 

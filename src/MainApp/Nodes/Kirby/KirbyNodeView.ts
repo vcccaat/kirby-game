@@ -27,6 +27,12 @@ export class KirbyNodeView extends ASceneNodeView<KirbyNodeModel> {
 				this.updateFeet();
 			})
 		);
+
+        this.controller.subscribe(
+			this.model.addStateKeyListener('isPulling', () => {
+				this.updateBody();
+			})
+		);
 		this.updateSegments();
 	}
 
@@ -71,5 +77,18 @@ export class KirbyNodeView extends ASceneNodeView<KirbyNodeModel> {
 				seg.setMaterial(material);
 			}
 		}
+	}
+
+    updateBody() {
+        if (!this.ringElements[1]) return;
+        let s = this.model.segments[1];
+        if (this.ringElements[1]) this.element.remove(this.ringElements[1]);
+        let seg = KirbyElement.CreateSegment(s, this.model.material);
+        this.ringElements[1] = seg;
+        this.element.add(seg);
+        if (s.material) {
+            let material = GetAppState().materials.getMaterialModel(s.material).CreateMaterial().threejs;
+            seg.setMaterial(material);
+        }
 	}
 }
