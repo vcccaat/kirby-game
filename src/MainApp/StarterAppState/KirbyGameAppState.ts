@@ -492,11 +492,11 @@ export class KirbyGameAppState extends StarterAppState {
 		let angle = 0;
 		while(now< start + laneLength){
 			let tree1 = await PlantNodeModel.CreateDefaultNode();
-			// let tree2 = await PlantNodeModel.CreateDefaultNode();
+			let tree2 = await PlantNodeModel.CreateDefaultNode();
 			tree1.transform.position = V3(-150, now, 30);
-			// tree2.transform.position = V3(150, now, 30);
+			tree2.transform.position = V3(150, now, 30);
 			this.sceneModel.addNode(tree1);
-			// this.sceneModel.addNode(tree2);
+			this.sceneModel.addNode(tree2);
 			now += 50;
 		}
 		
