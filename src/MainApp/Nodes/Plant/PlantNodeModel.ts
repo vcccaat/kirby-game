@@ -10,7 +10,7 @@ import { ExampleNodeModel } from '../Example/ExampleNodeModel';
 // loader.loadAsync("./models/plants.obj");
 
 const loader = new PLYLoader();
-const plantGeometry = loader.loadAsync('./models/ply/binary/tree.ply');
+const plantGeometry = loader.loadAsync('./models/ply/binary/trees.ply');
 
 export class PlantNodeModel extends ALoadedModel {
 	static PlantObject3D: THREE.Object3D;
@@ -29,8 +29,10 @@ export class PlantNodeModel extends ALoadedModel {
 		}
 
 		let plants = new PlantNodeModel();
-		plants.transform.scale = V3(1, 1, 1).times(20);
+		plants.transform.scale = V3(1, 1, 1).times(600);
 		plants.color = Color.FromString('#00603C');
+		plants.setMaterial('plant');
+
 		return plants;
 	}
 	getBounds(): BoundingBox3D {

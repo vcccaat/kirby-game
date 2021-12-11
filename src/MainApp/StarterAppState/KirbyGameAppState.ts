@@ -127,13 +127,13 @@ export class KirbyGameAppState extends StarterAppState {
 		}
 	}
 	countFrame: number = -1;
+  leftDirection: number = 1;
+  rightDirection: number = -1;
 	updateKirby(t: number) {
-		this.countFrame++;
+		// if (this.kirby.isJumping) return;
+		// if (this.kirby.isMoving) return;
+    this.countFrame++;
 		if (this.countFrame % 2 === 0) return;
-		//   // console.log(t % 2);
-		if (this.kirby.isJumping) return;
-		if (this.kirby.isMoving) return;
-		// let direction = t % 2 < 1 ? 1 : -1;
 		let countFrame = this.countFrame;
 
 		let floatFreq = 200;
@@ -148,8 +148,45 @@ export class KirbyGameAppState extends StarterAppState {
 		let flapDirection = countFrame % fapFreq < fapFreq / 2 ? 1 : -1;
 		leftHand.transform.position.addVector(new Vec3(0, 0, flapDirection * flapSpeed));
 		rightHand.transform.position.addVector(new Vec3(0, 0, flapDirection * flapSpeed));
+
+    let leftFeet = this.kirby.segments[3];
+		let rightFeet = this.kirby.segments[4];
+
+    if (leftFeet.transform.position.x >= 4) this.leftDirection = -1;
+    if (leftFeet.transform.position.x <= -4) this.leftDirection = 1;
+
+    if (rightFeet.transform.position.x >= 4) this.rightDirection = -1;
+    if (rightFeet.transform.position.x <= -4) this.rightDirection = 1;
+
+    leftFeet.transform.position.addVector(new Vec3(this.leftDirection * flapSpeed, 0, 0));
+		rightFeet.transform.position.addVector(new Vec3(this.rightDirection * flapSpeed, 0, 0));
+
+    // this.kirby.segments[3].transform.position.addVector(new Vec3(0, flapDirection * flapSpeed, 0));
+
+    this.kirby.updateHands ++;
+    this.kirby.updateFeet ++;
 		//   // console.log(t);
 	}
+
+  countMoveFrame: number = -1;
+  kirbyWalking(t: number) {
+    // add animation of kirby's feet while moving
+    // if (!this.kirby.isMoving) return;
+    // this.countMoveFrame ++;
+    // let countFrame = this.countFrame;
+
+    // let fapFreq = 60;
+		// let flapSpeed = 0.3;
+		// let leftFeet = this.kirby.segments[3];
+		// let rightFeet = this.kirby.segments[4];
+		// let flapDirection = countFrame % fapFreq < fapFreq / 2 ? 1 : -1;
+		// leftFeet.transform.position.addVector(new Vec3(flapDirection * flapSpeed, 0, 0));
+		// rightFeet.transform.position.addVector(new Vec3(flapDirection * flapSpeed,0, 0));
+    // this.kirby.updateFeet ++;
+
+  }
+
+
 
 	gravity: Vec3 = new Vec3(0, 0, -0.05);
 	kirbyGravity(t: number) {
@@ -401,6 +438,7 @@ export class KirbyGameAppState extends StarterAppState {
 		this.updateKirby(this.appClock.time);
 		this.updateStar(this.appClock.time);
 		this.kirbyGravity(this.appClock.time);
+    this.kirbyWalking(this.appClock.time);
 
 		// Note that you can get the bounding box of any model by calling
 		// e.g., for the kirby, this.kirby.getBounds()

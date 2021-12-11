@@ -23,6 +23,7 @@ export class MainAppState extends KirbyGameAppState {
 		let bombTexture = await ATexture.LoadAsync('./images/bomb.png');
 		let firetTexture = await ATexture.LoadAsync('images/fireBall.png');
 		let footTexture = await ATexture.LoadAsync('./images/kirbyfoot.jpg');
+		let plantTexture = await ATexture.LoadAsync('./images/plant.jpg');
 		// let plantTexture = await ATexture.LoadAsync('./images/plants.jpeg');
 		// await this.materials.setMaterialModel('plants', new TexturedMaterialModel(plantTexture));
 		await this.materials.setMaterialModel('fire', new TexturedMaterialModel(firetTexture));
@@ -35,6 +36,7 @@ export class MainAppState extends KirbyGameAppState {
 		await this.materials.setMaterialModel('bomb', new TexturedMaterialModel(bombTexture));
 		await this.materials.setMaterialModel('pink', new TexturedMaterialModel(pinkTexture));
 		await this.materials.setMaterialModel('kirbyfoot', new TexturedMaterialModel(footTexture));
+		await this.materials.setMaterialModel('plant', new TexturedMaterialModel(plantTexture));
 	}
 
 	/**
