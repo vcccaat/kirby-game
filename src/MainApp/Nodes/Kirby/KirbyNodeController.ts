@@ -131,7 +131,7 @@ export class KirbyNodeController extends ASceneNodeController<KirbyNodeModel> {
   }
 
   move(updateCamera: Function, keysDownState: { [name: string]: boolean }) {
-    let unitV = 0.5;
+    let unitV = 1;
     let leftV = new Vec3(-unitV, 0, 0);
     let rightV = new Vec3(unitV, 0, 0);
     let forwardV = new Vec3(0, unitV, 0);
