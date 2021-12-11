@@ -1,6 +1,7 @@
+import { AMeshModel } from 'src/anigraph/amvc/node/mesh/AMeshModel';
 import * as THREE from 'three';
 import { Vector3, Vector4 } from 'three';
-import { ATexture, Color, V3, Vec3, Vec4, VertexArray3D } from '../../../anigraph';
+import { ALoadedModel, ATexture, Color, V3, Vec3, Vec4, VertexArray3D } from '../../../anigraph';
 import { ExampleNodeModel } from '../Example/ExampleNodeModel';
 
 export class WaterNodeModel extends ExampleNodeModel {

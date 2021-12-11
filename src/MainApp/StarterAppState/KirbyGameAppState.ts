@@ -360,34 +360,37 @@ export class KirbyGameAppState extends StarterAppState {
 		//loop through all peppers
 		for (let block of blocks) {
 			//pull the block if enter key down
-			if (this.kirby.isPulling) {
-				let vToKirby = this.kirby.transform.position.minus(block.transform.getObjectSpaceOrigin());
-
-				// if the kirby is within the enemy's detection range then somthin's going down...
-				if (vToKirby.L2() < this.enemyRange) {
-					if (vToKirby.L2() < 1) {
-						this.sceneModel.removeNode(block);
-					} else {
-						let d_rotation = new Vector3(1, 0, 0).applyQuaternion(this.kirby.transform.rotation);
-						let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
-						let angle = (Math.acos(d_direction.dot(vToKirby) / (Math.sqrt(d_direction.dot(d_direction)) + Math.sqrt(vToKirby.dot(vToKirby)))) * 180) / Math.PI;
-
-						if (angle < 60) {
-							if (!this.kirby.isSpinning) {
-								block.transform.position = block.transform.getObjectSpaceOrigin().plus(vToKirby.getNormalized().times(this.enemySpeed));
+			if(!(block instanceof WaterNodeModel)){
+				if (this.kirby.isPulling) {
+					let vToKirby = this.kirby.transform.position.minus(block.transform.getObjectSpaceOrigin());
+	
+					// if the kirby is within the enemy's detection range then somthin's going down...
+					if (vToKirby.L2() < this.enemyRange) {
+						if (vToKirby.L2() < 1) {
+							this.sceneModel.removeNode(block);
+						} else {
+							let d_rotation = new Vector3(1, 0, 0).applyQuaternion(this.kirby.transform.rotation);
+							let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
+							let angle = (Math.acos(d_direction.dot(vToKirby) / (Math.sqrt(d_direction.dot(d_direction)) + Math.sqrt(vToKirby.dot(vToKirby)))) * 180) / Math.PI;
+	
+							if (angle < 60) {
+								if (!this.kirby.isSpinning) {
+									block.transform.position = block.transform.getObjectSpaceOrigin().plus(vToKirby.getNormalized().times(this.enemySpeed));
+								}
 							}
 						}
+					} else {
+						//if they don't see the kirby they go neutral...
 					}
 				} else {
-					//if they don't see the kirby they go neutral...
-				}
-			} else {
-				let boudningBox = block.getBounds();
-				//dectect collision
-				if (boudningBox.pointInBounds(this.kirby.transform.position)) {
-					let movementVec = this.kirby.transform.position.minus(boudningBox.transform.getObjectSpaceOrigin());
-					this.kirby.transform.position = this.kirby.transform.position.plus(new Vec3(movementVec.getNormalized().x, movementVec.getNormalized().y, 0));
-				}
+					let boudningBox = block.getBounds();
+					//dectect collision
+					if (boudningBox.pointInBounds(this.kirby.transform.position)) {
+						let movementVec = this.kirby.transform.position.minus(boudningBox.transform.getObjectSpaceOrigin());
+						this.kirby.transform.position = this.kirby.transform.position.plus(new Vec3(movementVec.getNormalized().x, movementVec.getNormalized().y, 0));
+					}
+			}
+			
 			}
 		}
 
