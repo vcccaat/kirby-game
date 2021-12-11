@@ -186,17 +186,18 @@ export class KirbyGameAppState extends StarterAppState {
 		};
 	}
 
-   CreateTestSquare(color?: Color, position?: Vec2, isFire?: boolean) {
+   CreateTestSquare(color?: Color, position?: Vec2, isFire?: boolean, additionalHeight?: boolean) {
     position = position ? position : V2();
     // color = color?color:Color.FromString('#55aa55');
     color = color ? color : Color.FromString('#888888');
-    let newShape = new FlameModel(isFire);
+    let newShape = new FlameModel(isFire,additionalHeight);
     let sz = 25;
     let verts = new VertexArray2D();
     verts.position.push(V2(sz, -sz));
     verts.position.push(V2(-sz, -sz));
     verts.position.push(V2(-sz, sz));
     verts.position.push(V2(sz, sz));
+    
     newShape.color = color;
     newShape.verts = verts;
     // newShape.recenterAnchor();
@@ -210,6 +211,7 @@ export class KirbyGameAppState extends StarterAppState {
     // let flame = this.CreateTestSquare(Color.FromString('yellow'), new Vec2(0,0), true);
     // flameModel.color = Color.FromString('#ff0000');
     this.flame.transform.position.addVector(new Vec3(200,-600,0));
+    // this.flame.transform.rotation = Quaternion.RotationZ(Math.PI * 0.5);
     this.flame.name = "xxx"
     
     // this.sceneModel.removeNode(flame);
@@ -259,78 +261,39 @@ export class KirbyGameAppState extends StarterAppState {
 		this.sceneModel.addNode(star);
 		this.sceneModel.addNode(star2);
 
-		
-		// this.generateScene(30, 200, 400);
-		// this.generateRiver(200);
-		// let newNode = new ExampleNodeModel();
-		// newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
-		// // newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
-		// // newNode.setMaterial('trippy');
-		// newNode.color = Color.Random();
-		// newNode.transform.position = new Vec3(50, 50, 10);
-		// this.sceneModel.addNode(newNode);
-
-        // let flame = new FlameModel(100);
-        let waterFall = this.CreateTestSquare(Color.FromString('#00a2ff'), new Vec2(0,0), false);
-        // flameModel.color = Color.FromString('#00a2ff');
-        waterFall.transform.position.addVector(new Vec3(0,-175,0));
-        this.sceneModel.addNode(waterFall);
-    
-        // let flame = this.CreateTestSquare(Color.FromString('yellow'), new Vec2(0,0), true);
-        // flame.transform.position.addVector(new Vec3(150,-1000,0));
-        // this.sceneModel.addNode(flame);
-
-        // let flame1 = this.CreateTestSquare(Color.FromString('yellow'), new Vec2(0,0), true);
-        // flame1.transform.position.addVector(new Vec3(-150,-375,0));
-        // this.sceneModel.addNode(flame1);
 
     const numOfItem = 10
     for(let i = 0; i<numOfItem; i++){
      
       let pepper = new PepperNodeModel();
-      pepper.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-800, 20);
+      pepper.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-975, 20);
       this.sceneModel.addNode(pepper);
 
       let bomb = new BombNodeModel();
-      bomb.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-800, 20);
+      bomb.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-975, 20);
       this.sceneModel.addNode(bomb);
     }
 		this.generateScene(40, 200, 500);
 		this.generateRiver(200);
-		this.generateMountain(8,4,2);
+		this.generateMountain(4,4,2);
 
-		let newNode = new ExampleNodeModel();
-		newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
-		// newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
-		// newNode.setMaterial('trippy');
-		newNode.color = Color.Random();
-		newNode.transform.position = new Vec3(50, 50, 10);
-		this.sceneModel.addNode(newNode);
+    // let flame = new FlameModel(100);
+    let waterFall = this.CreateTestSquare(Color.FromString('#00a2ff'), new Vec2(0,0), false, true);
+    // flameModel.color = Color.FromString('#00a2ff');
+    waterFall.transform.position.addVector(new Vec3(0,-176,0));
+    waterFall.transform.rotation = Quaternion.RotationZ(-Math.PI * 0.5).times(Quaternion.RotationX(-Math.PI * 0.5));
+    this.sceneModel.addNode(waterFall);
 
-		let pepper = new PepperNodeModel();
-		pepper.transform.position = new Vec3(-20, 20, 20);
-		this.sceneModel.addNode(pepper);
+    // let pond = this.CreateTestSquare(Color.FromString('#00a2ff'), new Vec2(0,0), false, false);
+    // pond.transform.position.addVector(new Vec3(0,-230,0));
+    // this.sceneModel.addNode(pond);
 
-		let bomb = new BombNodeModel();
-		bomb.transform.position = new Vec3(-50, 20, 20);
-		this.sceneModel.addNode(bomb);
+    // let flame1 = this.CreateTestSquare(Color.FromString('yellow'), new Vec2(0,0), true);
+    // flame1.transform.position.addVector(new Vec3(-150,-375,0));
+    // this.sceneModel.addNode(flame1);
 
-		// //add an example node model
-		// // the CreateDefaultNode methods are asynchronous in case we want to load assets,
-		// // this means we should await the promise that they return to use it.
-		// let trippyBall = await ExampleNodeModel.CreateDefaultNode(25);
-		// trippyBall.transform.position = V3(-100, 300, 10);
 
-		// // see the trippy material for context. it's basically just textured with a colorful pattern
-		// trippyBall.setMaterial("trippy");
-		// this.sceneModel.addNode(trippyBall);
-
-		// how to add a new node directly to the scene...
-		// let newModel = new ExampleNodeModel()
-		// let newModel = await ExampleNodeModel.CreateDefaultNode(30);
-		// newModel.setMaterial('trippy');
 		this.kirby = await KirbyNodeModel.CreateDefaultNode();
-		// this.setNodeMaterial(this.kirby, 'pink');
 		this.sceneModel.addNode(this.kirby);
 		this.kirby.transform.rotation = Quaternion.RotationZ(Math.PI * 0.5);
 		// this.kirby.setMaterial('pink');
@@ -361,7 +324,8 @@ export class KirbyGameAppState extends StarterAppState {
     let display = document.createElement("div");
     display.className = 'bomb'
     document.getElementsByTagName("body")[0].appendChild(display);
-    display.setAttribute("style", "position: absolute; top: 200px; right: 650px; font-weight: bold;");
+    display.innerHTML = 'Bomb Counts: ' + this.countBomb + '/10'
+    display.setAttribute("style", "position: absolute; top: 180px; right: 700px; font-weight: bold;");
 
 	}
 
@@ -402,13 +366,7 @@ export class KirbyGameAppState extends StarterAppState {
               this.countBomb += 1
               
               let display = document.getElementsByClassName('bomb')[0]
-              display.innerHTML = 'Bomb Count:' + String(this.countBomb);
-              
-             
-        
-              
-          
-              // document.getElementsByClassName('A3DSceneController')[0].innerHTML.
+              display.innerHTML = 'Bomb Counts: ' + this.countBomb + '/10'
             }
 					} else {
 						let d_rotation = new Vector3(1, 0, 0).applyQuaternion(this.kirby.transform.rotation);
@@ -433,55 +391,6 @@ export class KirbyGameAppState extends StarterAppState {
 				}
 			}
 		}
-
-		// // let's get all of the enemy nodes...
-		// let enemies = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
-		//   return node instanceof EnemyNodeModel;
-		// });
-		// // let enemies = this.sceneModel.filterNodes((node:ASceneNodeModel)=>{return (typeof node.getBounds === 'function');});
-		// for (let l of enemies) {
-		//   // let's get the vector from an enemy to the kirby...
-		//   let vToKirby = this.kirby.transform.position.minus(
-		//     l.transform.getObjectSpaceOrigin()
-		//   );
-
-		//   // if the kirby is within the enemy's detection range then somthin's going down...
-		//   if (vToKirby.L2() < this.enemyRange) {
-		//     if (vToKirby.L2() < 1) {
-		//       this.sceneModel.removeNode(l);
-		//     } else {
-		//       let d_rotation = new Vector3(1, 0, 0).applyQuaternion(
-		//         this.kirby.transform.rotation
-		//       );
-		//       let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
-		//       let angle =
-		//         (Math.acos(
-		//           d_direction.dot(vToKirby) /
-		//             (Math.sqrt(d_direction.dot(d_direction)) +
-		//               Math.sqrt(vToKirby.dot(vToKirby)))
-		//         ) *
-		//           180) /
-		//         Math.PI;
-		//       // if the kirby isn't spinning, then it's vulnerable and the enemy will chase after it on red alert
-		//       if (angle < 60) {
-		//         if (!this.kirby.isSpinning) {
-		//           l.transform.position = l.transform
-		//             .getObjectSpaceOrigin()
-		//             .plus(vToKirby.getNormalized().times(this.enemySpeed));
-		//         }
-		//       } else {
-		//         //if the kirby IS spinning, the enemy will turn blue with fear and run away...
-		//         l.transform.position = l.transform
-		//           .getObjectSpaceOrigin()
-		//           .plus(vToKirby.getNormalized().times(-this.enemySpeed));
-		//       }
-		//       //enemies don't orbit in pursuit...
-		//       l.transform.anchor = V3(0, 0, 0);
-		//     }
-		//   } else {
-		//     //if they don't see the kirby they go neutral...
-		//   }
-		// }
 
 		// you can also get time since last frame with this.timeSinceLastFrame
 		// this.updateSpinningArms(this.appClock.time);
@@ -532,9 +441,6 @@ export class KirbyGameAppState extends StarterAppState {
 			this.sceneModel.addNode(tree);
 			angle += 2 * Math.PI / numOfTrees;
 		}
-		// let tree = await PlantNodeModel.CreateDefaultNode();
-		// tree.transform.position = V3(-150, -150, 30);
-		// this.sceneModel.addNode(plants);
 
 	}
 
@@ -543,25 +449,22 @@ export class KirbyGameAppState extends StarterAppState {
 		let now = start;
 		while(now< start + laneLength){
 			let water = new WaterNodeModel();
-			water.transform.position = V3(0, now, 100);
+			water.transform.position = V3(0, now-175, 100);
 			this.sceneModel.addNode(water);
 			now += 50;
 		}
-		
-		
-
 	}
 
 	generateMountain(width:number,height:number,depth:number){
 
-		let x = -175;
-		let y = 0;
+		let x = -210;
+		let y = -175;
 		let z = 25;
 		let size = 50;
 		for(let i  = 0;i<width;i++){
 			for(let j = 0;j<height;j++){
 				for(let k = 0;k<depth;k++){
-					if((i === 0 && k === (depth-1)) || (i === (width-1) && k === (depth-1))){
+					if((i === 0 && k === (depth-1))){
 						continue;
 					}
 					let soil = new MountainNodeModel();
@@ -572,7 +475,29 @@ export class KirbyGameAppState extends StarterAppState {
 				z = 20;
 				y += size;
 			}
-			y = 0;
+			y = -175;
+			x += size;
+		}
+
+		x = 60;
+		y = -175;
+		z = 25;
+		size = 50;
+		for(let i  = 0;i<width;i++){
+			for(let j = 0;j<height;j++){
+				for(let k = 0;k<depth;k++){
+					if((i === width-1 && k === (depth-1))){
+						continue;
+					}
+					let soil = new MountainNodeModel();
+					soil.transform.position = V3(x, y ,z);
+					this.sceneModel.addNode(soil);
+					z += size;
+				}
+				z = 20;
+				y += size;
+			}
+			y = -175;
 			x += size;
 		}
 		

@@ -3,6 +3,7 @@ import { FlameParticle } from './FlameParticle';
 import { ASerializable } from '../../../aserial';
 import { Color, Vec2, V3 } from '../../../amath';
 import { A2DParticlesModel } from '../A2DParticlesModel';
+import {Quaternion} from '../../../../anigraph';
 
 export enum FlameParticleEnums {
 	MAX_HEIGHT_FACTOR = 5,
@@ -38,6 +39,7 @@ export class FlameModel extends A2DParticlesModel {
 	@AObjectState integrateForce: boolean;
 	@AObjectState forceStrength: number;
 	@AObjectState isFire: boolean;
+    @AObjectState additionalHeight: boolean;
 
 	static ForceTarget: Vec2;
 	getTarget() {
@@ -62,7 +64,7 @@ export class FlameModel extends A2DParticlesModel {
 	//     this.clock.paused = v;
 	// }
 
-	constructor(isFire?: boolean, max_num_particles?: number) {
+	constructor(isFire?: boolean, additionalHeight?:boolean, max_num_particles?: number) {
 		super();
 		// this.verts = new VertexArray2D();
 		// this._maxNumParticles = max_num_particles!==undefined?max_num_particles:AParticleEnums.DEFAULT_MAX_N_PARTICLES;
@@ -70,10 +72,10 @@ export class FlameModel extends A2DParticlesModel {
 		// this.clock = new AClock();
 		// this.time = 0;
 		const self = this;
-		this.rate = 1;
+		this.rate = 1.5;
 		this.paused = false;
-		this.particleSize = 0.4;
-		this.height = 1.5;
+		this.particleSize = 0.7;
+		this.height = 1;
 		this.amplitude = 0.5;
 		this.frequency = 0.8;
 		this.randomness = 1.1;
@@ -82,9 +84,10 @@ export class FlameModel extends A2DParticlesModel {
 		this.playing = true;
 		this.colorShift = 0.75;
 		this.integrateForce = false;
-		this.forceStrength = 3;
+		this.forceStrength = 5;
 		this.isFire = isFire || false;
 		this.play();
+        this.additionalHeight = additionalHeight || false;
 
 		// this.color = Color.FromString('#0000FF');
 
@@ -139,8 +142,15 @@ export class FlameModel extends A2DParticlesModel {
 		let emissionScale = corners[0].minus(corners[1]).L2();
 		let heightScale = corners[2].minus(corners[0]).L2();
 		let palpha = Math.random();
-		let startPosition = this.getBounds().randomTransformedPoint().plus(V3(0, 0, 100));
-		// corners[0]
+        let startPosition 
+        if (this.additionalHeight){
+		startPosition = this.getBounds().randomTransformedPoint().plus(V3(0,0,heightScale * this.height));
+        }
+        else {
+        startPosition = this.getBounds().randomTransformedPoint();
+    
+        }
+        // corners[0]
 		// .times(palpha)
 		// .plus(
 		//     corners[1].times(1-palpha)

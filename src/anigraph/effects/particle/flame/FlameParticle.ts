@@ -124,9 +124,9 @@ export class FlameParticle extends AParticle {
 			.minus(
 				V3(
 					this.amplitude * Math.sin(this.frequency * 2 * Math.PI * t + this.phase * 2 * Math.PI),
-
+					
 					this.amplitude * Math.cos(this.frequency * 2 * Math.PI * t + this.phase * 2 * Math.PI),
-					progress_gamma * this.height
+					progress_gamma * this.height,
 				)
 			)
 			.minus(this.eulerPosition);
