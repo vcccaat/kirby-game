@@ -223,6 +223,27 @@ export class KirbyGameAppState extends StarterAppState {
 		this.sceneModel.addNode(star2);
 
 		
+		// this.generateScene(30, 200, 400);
+		// this.generateRiver(200);
+		// let newNode = new ExampleNodeModel();
+		// newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
+		// // newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
+		// // newNode.setMaterial('trippy');
+		// newNode.color = Color.Random();
+		// newNode.transform.position = new Vec3(50, 50, 10);
+		// this.sceneModel.addNode(newNode);
+
+    const numOfItem = 10
+    for(let i = 0; i<numOfItem; i++){
+     
+      let pepper = new PepperNodeModel();
+      pepper.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-800, 20);
+      this.sceneModel.addNode(pepper);
+
+      let bomb = new BombNodeModel();
+      bomb.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-800, 20);
+      this.sceneModel.addNode(bomb);
+    }
 		this.generateScene(40, 200, 500);
 		this.generateRiver(200);
 		this.generateMountain(8,4,2);
@@ -471,11 +492,11 @@ export class KirbyGameAppState extends StarterAppState {
 		let angle = 0;
 		while(now< start + laneLength){
 			let tree1 = await PlantNodeModel.CreateDefaultNode();
-			let tree2 = await PlantNodeModel.CreateDefaultNode();
+			// let tree2 = await PlantNodeModel.CreateDefaultNode();
 			tree1.transform.position = V3(-150, now, 30);
-			tree2.transform.position = V3(150, now, 30);
+			// tree2.transform.position = V3(150, now, 30);
 			this.sceneModel.addNode(tree1);
-			this.sceneModel.addNode(tree2);
+			// this.sceneModel.addNode(tree2);
 			now += 50;
 		}
 		
