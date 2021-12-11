@@ -233,16 +233,16 @@ export class KirbyGameAppState extends StarterAppState {
 		enemy2.setTransform(new NodeTransform3D(V3(300, 200, 150)));
 		enemy2.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
 		enemy2.color = Color.Random();
-		//Add lucy... so that there is more stuff
-		this.addModelFromFile(
-			'./models/ply/binary/Lucy100k.ply',
-			'Lucy',
-			new NodeTransform3D(
-				V3(100, 100, 80),
-				Quaternion.FromAxisAngle(V3(1, 0, 0), -Math.PI * 0.5).times(Quaternion.FromAxisAngle(V3(0, 0, 1), -Math.PI * 0.5)),
-				V3(1, 1, 1).times(0.1)
-			)
-		);
+		// //Add lucy... so that there is more stuff
+		// this.addModelFromFile(
+		// 	'./models/ply/binary/Lucy100k.ply',
+		// 	'Lucy',
+		// 	new NodeTransform3D(
+		// 		V3(100, 100, 80),
+		// 		Quaternion.FromAxisAngle(V3(1, 0, 0), -Math.PI * 0.5).times(Quaternion.FromAxisAngle(V3(0, 0, 1), -Math.PI * 0.5)),
+		// 		V3(1, 1, 1).times(0.1)
+		// 	)
+		// );
 
 		let star = await StarNodeModel.CreateDefaultNode();
 		let star2 = await StarNodeModel.CreateDefaultNode();
@@ -294,7 +294,7 @@ export class KirbyGameAppState extends StarterAppState {
 		this.kirby.transform.rotation = Quaternion.RotationZ(Math.PI * 0.5);
 		// this.kirby.setMaterial('pink');
 
-		this.kirby.transform.position.addVector(new Vec3(0, 0, KIRBY_INIT_HEIGHT));
+		this.kirby.transform.position.addVector(new Vec3(0, -400, KIRBY_INIT_HEIGHT+50));
 		// this.kirby.transform.scale = 0.25;
 		// this.kirby.setMaterial("pink");
 
