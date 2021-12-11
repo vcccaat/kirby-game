@@ -32,7 +32,7 @@ export class GroundModel extends AMeshModel{
      */
     static async CreateDefaultNode(texture?:string|ATexture, ...args:any[]){
         await GroundMaterialModel.ShaderPromise;
-        let groundNode = new GroundModel();
+        let groundNode = new GroundModel(2000);
         groundNode.name = 'GroundPlane';
         groundNode.transform.position.z = -0.5;
         groundNode.setMaterial('grass'); //ground
@@ -43,7 +43,7 @@ export class GroundModel extends AMeshModel{
     reRoll(size:number=1000, textureWraps?:number, nSamplesPerSide?:number){
         // doesn't use nSamplesPerSide yet...
         if(textureWraps !== undefined){this.textureWraps=textureWraps;}
-        this.verts = VertexArray3D.SquareXYUV(1000, this.textureWraps);
+        this.verts = VertexArray3D.SquareXYUV(size, this.textureWraps);
     }
 
     getModelGUIControlSpec(): { [p: string]: any } {
