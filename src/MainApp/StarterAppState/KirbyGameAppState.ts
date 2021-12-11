@@ -270,6 +270,20 @@ export class KirbyGameAppState extends StarterAppState {
 		// newNode.transform.position = new Vec3(50, 50, 10);
 		// this.sceneModel.addNode(newNode);
 
+        // let flame = new FlameModel(100);
+        let waterFall = this.CreateTestSquare(Color.FromString('#00a2ff'), new Vec2(0,0), false);
+        // flameModel.color = Color.FromString('#00a2ff');
+        waterFall.transform.position.addVector(new Vec3(0,-175,0));
+        this.sceneModel.addNode(waterFall);
+    
+        // let flame = this.CreateTestSquare(Color.FromString('yellow'), new Vec2(0,0), true);
+        // flame.transform.position.addVector(new Vec3(150,-1000,0));
+        // this.sceneModel.addNode(flame);
+
+        // let flame1 = this.CreateTestSquare(Color.FromString('yellow'), new Vec2(0,0), true);
+        // flame1.transform.position.addVector(new Vec3(-150,-375,0));
+        // this.sceneModel.addNode(flame1);
+
     const numOfItem = 10
     for(let i = 0; i<numOfItem; i++){
      
@@ -300,14 +314,6 @@ export class KirbyGameAppState extends StarterAppState {
 		let bomb = new BombNodeModel();
 		bomb.transform.position = new Vec3(-50, 20, 20);
 		this.sceneModel.addNode(bomb);
-
-    // let flame = new FlameModel(100);
-    let waterFall = this.CreateTestSquare(Color.FromString('#00a2ff'), new Vec2(0,0), false);
-    // flameModel.color = Color.FromString('#00a2ff');
-    waterFall.transform.position.addVector(new Vec3(0,-400,0));
-    this.sceneModel.addNode(waterFall);
-
-    this.flame = this.CreateTestSquare(Color.FromString('yellow'), new Vec2(0,0), true);
 
 		// //add an example node model
 		// // the CreateDefaultNode methods are asynchronous in case we want to load assets,

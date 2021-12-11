@@ -148,7 +148,7 @@ export class KirbyNodeController extends ASceneNodeController<KirbyNodeModel> {
 
   move(updateCamera: Function, keysDownState: { [name: string]: boolean }) {
     if (!keysDownState["ArrowUp"] && !keysDownState["ArrowDown"] && !keysDownState["ArrowLeft"] && !keysDownState["ArrowRight"]) return;
-    let unitV = 1;
+    let unitV = 4;
     let leftV = new Vec3(-unitV, 0, 0);
     let rightV = new Vec3(unitV, 0, 0);
     let forwardV = new Vec3(0, unitV, 0);
