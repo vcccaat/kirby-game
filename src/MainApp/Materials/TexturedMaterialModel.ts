@@ -33,7 +33,7 @@ export class TexturedMaterialModel extends AShaderModel{
         let mat = super.CreateMaterial();
         mat.setUniform('ambient', 0.6);
         mat.setUniform('exposure', 1.0);
-        mat.setUniform('specularExp', 20);
+        mat.setUniform('specularExp', 2);
         mat.setUniform('specular', 1.0);
         mat.setUniform('diffuse', 2.5);
         // mat.setTexture('maintexture', './images/'+this.textureName);

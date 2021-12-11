@@ -32,6 +32,7 @@ import { PepperNodeModel } from '../Nodes/Pepper/PepperNodeModel';
 import { BombNodeModel } from '../Nodes/Bomb/BombNodeModel';
 import { v3 } from 'uuid';
 import { WaterNodeModel } from '../Nodes/Water/WaterNodeModel';
+import { LightNodeModel } from '../Nodes/LightSource/LightNodeModel';
 
 const KIRBY_INIT_HEIGHT = 10;
 export class KirbyGameAppState extends StarterAppState {
@@ -52,7 +53,7 @@ export class KirbyGameAppState extends StarterAppState {
 	 * @type {KirbyNodeModel}
 	 */
 	kirby!: KirbyNodeModel;
-
+  countBomb: number=0;
 	/**
 	 * A convenient getter for accessing the kirby's scene controller in the game view, which we have customized
 	 * in Nodes/Kirby/KirbyNodeController.ts
@@ -87,12 +88,10 @@ export class KirbyGameAppState extends StarterAppState {
 		if (this.countFrame % 2 === 0) return;
 		let countFrame = this.countFrame;
 
-		if (!this.kirby.isJumping) {
-      let floatFreq = 200;
-      let floatSpeed = 0.2;
-      let direction = countFrame % floatFreq < floatFreq / 2 ? 1 : -1;
-      this.kirby.transform.position.addVector(new Vec3(0, 0, direction * floatSpeed));
-    }
+		let floatFreq = 200;
+		let floatSpeed = 0.2;
+		let direction = countFrame % floatFreq < floatFreq / 2 ? 1 : -1;
+		this.kirby.transform.position.addVector(new Vec3(0, 0, direction * floatSpeed));
 
 		let fapFreq = 60;
 		let flapSpeed = 0.3;
@@ -154,19 +153,18 @@ export class KirbyGameAppState extends StarterAppState {
 		if (!this.kirby.isJumping) return;
 		// if (this.kirby.isUp) return;
 		// if (this.kirby.transform.position.z === 0) return;
-    let kirbyGameControls = this.gameSceneController.getInteractionMode("KirbyGame") as KirbyGameControls;
 		if (this.kirby.transform.position.z + this.kirby.upV.z <= KIRBY_INIT_HEIGHT) {
 			this.kirby.transform.position.z = KIRBY_INIT_HEIGHT;
 			this.kirby.upV = new Vec3(0, 0, 0);
 			this.kirby.isJumping = false;
-      kirbyGameControls.updateCamera();
+			//   this.updateCamera();
 			return;
 		}
 
 		this.kirby.upV.addVector(this.gravity);
 		if (this.kirby.upV.z < -3) this.kirby.upV.z = -3;
 		this.kirby.transform.position.addVector(this.kirby.upV);
-    kirbyGameControls.updateCamera();
+		// this.updateCamera();
 	}
 
 	getControlPanelStandardSpec(): {} {
@@ -190,29 +188,25 @@ export class KirbyGameAppState extends StarterAppState {
 		// add a ground plane
 		self._addGroundPlane();
 
-		let orbitEnemy = new EnemyNodeModel();
+    let lightSource = new LightNodeModel()
+    this.sceneModel.addNode(lightSource);
+    lightSource.transform.position = new Vec3(-500, -1050, 50);
+    // let lightSource2 = new LightNodeModel()
+    // this.sceneModel.addNode(lightSource2);
+    // lightSource2.transform.position = new Vec3(650, -1000, 500);
+    // let lightSource3 = new LightNodeModel()
+    // this.sceneModel.addNode(lightSource3);
+    // lightSource3.transform.position = new Vec3(600, 600, 500);
+    // let lightSource4 = new LightNodeModel()
+    // this.sceneModel.addNode(lightSource4);
+    // lightSource4.transform.position = new Vec3(-600, 500, 500);
 
+		let orbitEnemy = new EnemyNodeModel();
 		this.sceneModel.addNode(orbitEnemy);
 		orbitEnemy.transform.position = new Vec3(0, -700, -50);
 		orbitEnemy.orbitRate = 0;
 		orbitEnemy.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
 		orbitEnemy.color = Color.FromString('#fff200');
-
-		// let enemy2 = new EnemyNodeModel();
-		// this.sceneModel.addNode(enemy2);
-		// enemy2.setTransform(new NodeTransform3D(V3(300, 200, 150)));
-		// enemy2.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
-		// enemy2.color = Color.Random();
-		// //Add lucy... so that there is more stuff
-		// this.addModelFromFile(
-		// 	'./models/ply/binary/Lucy100k.ply',
-		// 	'Lucy',
-		// 	new NodeTransform3D(
-		// 		V3(100, 100, 80),
-		// 		Quaternion.FromAxisAngle(V3(1, 0, 0), -Math.PI * 0.5).times(Quaternion.FromAxisAngle(V3(0, 0, 1), -Math.PI * 0.5)),
-		// 		V3(1, 1, 1).times(0.1)
-		// 	)
-		// );
 
 		let star = await StarNodeModel.CreateDefaultNode();
 		let star2 = await StarNodeModel.CreateDefaultNode();
@@ -224,27 +218,28 @@ export class KirbyGameAppState extends StarterAppState {
 		this.sceneModel.addNode(star);
 		this.sceneModel.addNode(star2);
 
-		// let plants = await PlantNodeModel.CreateDefaultNode();
-		// plants.transform.position = V3(-150, -150, 30);
-		// this.sceneModel.addNode(plants);
 		
-		this.generateScene(40, 200, 500);
+		this.generateScene(30, 200, 400);
 		this.generateRiver(400);
-		let newNode = new ExampleNodeModel();
-		newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
-		// newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
-		// newNode.setMaterial('trippy');
-		newNode.color = Color.Random();
-		newNode.transform.position = new Vec3(50, 50, 10);
-		this.sceneModel.addNode(newNode);
+		// let newNode = new ExampleNodeModel();
+		// newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
+		// // newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
+		// // newNode.setMaterial('trippy');
+		// newNode.color = Color.Random();
+		// newNode.transform.position = new Vec3(50, 50, 10);
+		// this.sceneModel.addNode(newNode);
 
-		let pepper = new PepperNodeModel();
-		pepper.transform.position = new Vec3(-20, 20, 20);
-		this.sceneModel.addNode(pepper);
+    const numOfItem = 10
+    for(let i = 0; i<numOfItem; i++){
+     
+      let pepper = new PepperNodeModel();
+      pepper.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-800, 20);
+      this.sceneModel.addNode(pepper);
 
-		let bomb = new BombNodeModel();
-		bomb.transform.position = new Vec3(-50, 20, 20);
-		this.sceneModel.addNode(bomb);
+      let bomb = new BombNodeModel();
+      bomb.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-800, 20);
+      this.sceneModel.addNode(bomb);
+    }
 		// //add an example node model
 		// // the CreateDefaultNode methods are asynchronous in case we want to load assets,
 		// // this means we should await the promise that they return to use it.
@@ -288,6 +283,11 @@ export class KirbyGameAppState extends StarterAppState {
 
 		// let arm = this.addArmModel();
 		// arm.transform.position = V3(-200, 200, 0);
+    let display = document.createElement("div");
+    display.className = 'bomb'
+    document.getElementsByTagName("body")[0].appendChild(display);
+    display.setAttribute("style", "position: absolute; top: 200px; right: 650px; font-weight: bold;");
+
 	}
 
 	exampleKirbyGameCallback() {
@@ -299,9 +299,7 @@ export class KirbyGameAppState extends StarterAppState {
 			return node instanceof PlantNodeModel;
 		});
 		//console.log(trees.length);
-		for(let tree of trees)
-		{
-			
+		for(let tree of trees){
 			let boudningBox = tree.getBounds();
 			//dectect collision
 			if (boudningBox.pointInBounds(this.kirby.transform.position)) {
@@ -317,37 +315,47 @@ export class KirbyGameAppState extends StarterAppState {
 		//loop through all peppers
 		for (let block of blocks) {
 			//pull the block if enter key down
-			if(!(block instanceof WaterNodeModel)){
-				if (this.kirby.isPulling) {
-					let vToKirby = this.kirby.transform.position.minus(block.transform.getObjectSpaceOrigin());
-	
-					// if the kirby is within the enemy's detection range then somthin's going down...
-					if (vToKirby.L2() < this.enemyRange) {
-						if (vToKirby.L2() < 1) {
-							this.sceneModel.removeNode(block);
-						} else {
-							let d_rotation = new Vector3(1, 0, 0).applyQuaternion(this.kirby.transform.rotation);
-							let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
-							let angle = (Math.acos(d_direction.dot(vToKirby) / (Math.sqrt(d_direction.dot(d_direction)) + Math.sqrt(vToKirby.dot(vToKirby)))) * 180) / Math.PI;
-	
-							if (angle < 60) {
-								if (!this.kirby.isSpinning) {
-									block.transform.position = block.transform.getObjectSpaceOrigin().plus(vToKirby.getNormalized().times(this.enemySpeed));
-								}
+			if (this.kirby.isPulling) {
+				let vToKirby = this.kirby.transform.position.minus(block.transform.getObjectSpaceOrigin());
+
+				// if the kirby is within the enemy's detection range then somthin's going down...
+				if (vToKirby.L2() < this.enemyRange) {
+					if (vToKirby.L2() < 1) {
+						this.sceneModel.removeNode(block);
+
+            if (block instanceof BombNodeModel){
+              this.countBomb += 1
+              
+              let display = document.getElementsByClassName('bomb')[0]
+              display.innerHTML = 'Bomb Count:' + String(this.countBomb);
+              
+             
+        
+              
+          
+              // document.getElementsByClassName('A3DSceneController')[0].innerHTML.
+            }
+					} else {
+						let d_rotation = new Vector3(1, 0, 0).applyQuaternion(this.kirby.transform.rotation);
+						let d_direction = new Vec3(d_rotation.x, d_rotation.y, d_rotation.z);
+						let angle = (Math.acos(d_direction.dot(vToKirby) / (Math.sqrt(d_direction.dot(d_direction)) + Math.sqrt(vToKirby.dot(vToKirby)))) * 180) / Math.PI;
+
+						if (angle < 60) {
+							if (!this.kirby.isSpinning) {
+								block.transform.position = block.transform.getObjectSpaceOrigin().plus(vToKirby.getNormalized().times(this.enemySpeed));
 							}
 						}
-					} else {
-						//if they don't see the kirby they go neutral...
 					}
 				} else {
-					let boudningBox = block.getBounds();
-					//dectect collision
-					if (boudningBox.pointInBounds(this.kirby.transform.position)) {
-						let movementVec = this.kirby.transform.position.minus(boudningBox.transform.getObjectSpaceOrigin());
-						this.kirby.transform.position = this.kirby.transform.position.plus(new Vec3(movementVec.getNormalized().x, movementVec.getNormalized().y, 0));
-					}
-			}
-			
+					//if they don't see the kirby they go neutral...
+				}
+			} else {
+				let boudningBox = block.getBounds();
+				//dectect collision
+				if (boudningBox.pointInBounds(this.kirby.transform.position)) {
+					let movementVec = this.kirby.transform.position.minus(boudningBox.transform.getObjectSpaceOrigin());
+					this.kirby.transform.position = this.kirby.transform.position.plus(new Vec3(movementVec.getNormalized().x, movementVec.getNormalized().y, 0));
+				}
 			}
 		}
 
@@ -416,8 +424,6 @@ export class KirbyGameAppState extends StarterAppState {
 		// this will run the kirby game... replace with another init example to start in orbit view.
 		let startInKirbyMode: boolean = true;
 		this.gameSceneController.addControlType(KirbyGameControls);
-    // console.log("=======")
-    // console.log(this.gameSceneController.getInteractionMode("KirbyGame"));
 		this.initKirbyGame(startInKirbyMode);
 	}
 

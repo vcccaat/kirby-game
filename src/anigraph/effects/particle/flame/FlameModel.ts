@@ -74,7 +74,7 @@ export class FlameModel extends A2DParticlesModel {
 		this.particleSize = 0.4;
 		this.height = 1.5;
 		this.amplitude = 0.5;
-		this.frequency = 0.5;
+		this.frequency = 0.8;
 		this.randomness = 1.1;
 		this.lifespan = 1.0;
 		this.gamma = 2.0;

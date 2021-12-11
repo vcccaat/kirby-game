@@ -9,7 +9,7 @@ export class AExtrudedShapeModel extends CubicBezierModel{
     constructor() {
         super();
         this.extrudeSettings = {};
-        this.extrudeDepth=10;
+        this.extrudeDepth=80;
     }
 
     setExtrudeSetting(name:string, value:any){
