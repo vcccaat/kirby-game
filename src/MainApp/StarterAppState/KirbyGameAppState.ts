@@ -87,10 +87,12 @@ export class KirbyGameAppState extends StarterAppState {
 		if (this.countFrame % 2 === 0) return;
 		let countFrame = this.countFrame;
 
-		let floatFreq = 200;
-		let floatSpeed = 0.2;
-		let direction = countFrame % floatFreq < floatFreq / 2 ? 1 : -1;
-		this.kirby.transform.position.addVector(new Vec3(0, 0, direction * floatSpeed));
+		if (!this.kirby.isJumping) {
+      let floatFreq = 200;
+      let floatSpeed = 0.2;
+      let direction = countFrame % floatFreq < floatFreq / 2 ? 1 : -1;
+      this.kirby.transform.position.addVector(new Vec3(0, 0, direction * floatSpeed));
+    }
 
 		let fapFreq = 60;
 		let flapSpeed = 0.3;
@@ -152,18 +154,19 @@ export class KirbyGameAppState extends StarterAppState {
 		if (!this.kirby.isJumping) return;
 		// if (this.kirby.isUp) return;
 		// if (this.kirby.transform.position.z === 0) return;
+    let kirbyGameControls = this.gameSceneController.getInteractionMode("KirbyGame") as KirbyGameControls;
 		if (this.kirby.transform.position.z + this.kirby.upV.z <= KIRBY_INIT_HEIGHT) {
 			this.kirby.transform.position.z = KIRBY_INIT_HEIGHT;
 			this.kirby.upV = new Vec3(0, 0, 0);
 			this.kirby.isJumping = false;
-			//   this.updateCamera();
+      kirbyGameControls.updateCamera();
 			return;
 		}
 
 		this.kirby.upV.addVector(this.gravity);
 		if (this.kirby.upV.z < -3) this.kirby.upV.z = -3;
 		this.kirby.transform.position.addVector(this.kirby.upV);
-		// this.updateCamera();
+    kirbyGameControls.updateCamera();
 	}
 
 	getControlPanelStandardSpec(): {} {
@@ -413,6 +416,8 @@ export class KirbyGameAppState extends StarterAppState {
 		// this will run the kirby game... replace with another init example to start in orbit view.
 		let startInKirbyMode: boolean = true;
 		this.gameSceneController.addControlType(KirbyGameControls);
+    // console.log("=======")
+    // console.log(this.gameSceneController.getInteractionMode("KirbyGame"));
 		this.initKirbyGame(startInKirbyMode);
 	}
 
