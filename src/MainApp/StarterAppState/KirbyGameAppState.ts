@@ -70,54 +70,6 @@ export class KirbyGameAppState extends StarterAppState {
 		console.log(`Transform with position:${m.transform.position}\nrotation: ${m.transform.rotation} \nmatrix:\n${m.transform.getMatrix().asPrettyString()}`);
 	}
 
-	// addArmModel(){
-	//     let ringModel = new RingNodeModel();
-	//     let joints = [
-	//         V3(0,0,0),
-	//         V3(0,0,50),
-	//         V3(0,100,100),
-	//         V3(0,-100,150),
-	//     ]
-	//     let radius = 5;
-	//     ringModel.segments = [
-	//         new RingSegment(joints[0], joints[1], radius, [Color.FromString('#ff0000'), Color.FromString('#00ff00')]),
-	//         new RingSegment(joints[1], joints[2], radius, [Color.FromString('#00ff00'), Color.FromString('#0000ff')]),
-	//         new RingSegment(joints[2], joints[3], radius, [Color.FromString('#0000ff'), Color.FromString('#ffffff')]),
-	//     ]
-	//     this.setNodeMaterial(ringModel, 'Toon');
-	//     this.sceneModel.addNode(ringModel);
-	//     return ringModel;
-	// }
-	addArmModel() {
-		let ringModel = new RingNodeModel();
-		let joints = [V3(0, 0, 0), V3(0, 0, 50), V3(0, 100, 100), V3(0, -100, 150)];
-		let radius = 5;
-		ringModel.segments = [
-			new RingSegment(joints[0], joints[1], radius, [Color.FromString('#ff0000'), Color.FromString('#00ff00')]),
-			new RingSegment(joints[1], joints[2], radius, [Color.FromString('#00ff00'), Color.FromString('#0000ff')]),
-			new RingSegment(joints[2], joints[3], radius, [Color.FromString('#0000ff'), Color.FromString('#ffffff')]),
-		];
-		this.setNodeMaterial(ringModel, 'Toon');
-		this.sceneModel.addNode(ringModel);
-		return ringModel;
-	}
-
-	updateSpinningArms(t: number) {
-		// lets make arms spin...
-		let arms = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
-			return node instanceof RingNodeModel;
-		}) as RingNodeModel[];
-		for (let a of arms) {
-			let armlen = 25;
-			let sa = 2;
-			let sb = 5;
-			let v2 = V3(Math.sin(t * sa) * armlen, Math.cos(t * sa) * armlen, 50 + armlen);
-			let v3 = V3(Math.sin(t * sb) * armlen, Math.cos(t * sb) * armlen, 0).plus(v2);
-			a.segments[1].end = v2;
-			a.segments[2].start = v2;
-			a.segments[2].end = v3;
-		}
-	}
 
 	updateStar(t: number) {
 		let stars = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
@@ -160,7 +112,7 @@ export class KirbyGameAppState extends StarterAppState {
     // leftFeet.transform.position.addVector(new Vec3(this.leftDirection * flapSpeed, 0, 0));
 		// rightFeet.transform.position.addVector(new Vec3(this.rightDirection * flapSpeed, 0, 0));
 
-    // this.kirby.segments[3].transform.position.addVector(new Vec3(0, flapDirection * flapSpeed, 0));
+		// this.kirby.segments[3].transform.position.addVector(new Vec3(0, flapDirection * flapSpeed, 0));
 
     this.kirby.updateHands ++;
     // this.kirby.updateFeet ++;
@@ -236,32 +188,34 @@ export class KirbyGameAppState extends StarterAppState {
 		self._addGroundPlane();
 
 		let orbitEnemy = new EnemyNodeModel();
+
 		this.sceneModel.addNode(orbitEnemy);
-		orbitEnemy.setTransform(new NodeTransform3D(V3(0, 0, 0), new Quaternion(), V3(1, 1, 1), V3(-100, -100, 0)));
-		orbitEnemy.orbitRate = 0.1;
+		orbitEnemy.transform.position = new Vec3(0, -700, -50);
+		orbitEnemy.orbitRate = 0;
 		orbitEnemy.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
-		orbitEnemy.color = Color.Random();
-		let enemy2 = new EnemyNodeModel();
-		this.sceneModel.addNode(enemy2);
-		enemy2.setTransform(new NodeTransform3D(V3(300, 200, 150)));
-		enemy2.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
-		enemy2.color = Color.Random();
-		//Add lucy... so that there is more stuff
-		this.addModelFromFile(
-			'./models/ply/binary/Lucy100k.ply',
-			'Lucy',
-			new NodeTransform3D(
-				V3(100, 100, 80),
-				Quaternion.FromAxisAngle(V3(1, 0, 0), -Math.PI * 0.5).times(Quaternion.FromAxisAngle(V3(0, 0, 1), -Math.PI * 0.5)),
-				V3(1, 1, 1).times(0.1)
-			)
-		);
+		orbitEnemy.color = Color.FromString('#fff200');
+
+		// let enemy2 = new EnemyNodeModel();
+		// this.sceneModel.addNode(enemy2);
+		// enemy2.setTransform(new NodeTransform3D(V3(300, 200, 150)));
+		// enemy2.setMaterial(this.materials.getMaterialModel(AMaterialManager.DefaultMaterials.Basic).CreateMaterial());
+		// enemy2.color = Color.Random();
+		// //Add lucy... so that there is more stuff
+		// this.addModelFromFile(
+		// 	'./models/ply/binary/Lucy100k.ply',
+		// 	'Lucy',
+		// 	new NodeTransform3D(
+		// 		V3(100, 100, 80),
+		// 		Quaternion.FromAxisAngle(V3(1, 0, 0), -Math.PI * 0.5).times(Quaternion.FromAxisAngle(V3(0, 0, 1), -Math.PI * 0.5)),
+		// 		V3(1, 1, 1).times(0.1)
+		// 	)
+		// );
 
 		let star = await StarNodeModel.CreateDefaultNode();
 		let star2 = await StarNodeModel.CreateDefaultNode();
-		star.transform.position = new Vec3(-80, 20, 20);
-		star2.transform.position = new Vec3(80, 20, 20);
-		star.setMaterial('Normals');
+		star.transform.position = new Vec3(-80, -700, 50);
+		star2.transform.position = new Vec3(80, -700, 50);
+		star.setMaterial('Toon');
 		star2.setMaterial('Toon');
 		// star2.setMaterial(this.materials.getMaterialModel('Glow').CreateMaterial());
 		this.sceneModel.addNode(star);
@@ -308,7 +262,7 @@ export class KirbyGameAppState extends StarterAppState {
 		this.kirby.transform.rotation = Quaternion.RotationZ(Math.PI * 0.5);
 		// this.kirby.setMaterial('pink');
 
-		this.kirby.transform.position.addVector(new Vec3(0, 0, KIRBY_INIT_HEIGHT));
+		this.kirby.transform.position.addVector(new Vec3(0, -830, KIRBY_INIT_HEIGHT));
 		// this.kirby.transform.scale = 0.25;
 		// this.kirby.setMaterial("pink");
 
@@ -329,8 +283,8 @@ export class KirbyGameAppState extends StarterAppState {
 			)
 		);
 
-		let arm = this.addArmModel();
-		arm.transform.position = V3(-200, 200, 0);
+		// let arm = this.addArmModel();
+		// arm.transform.position = V3(-200, 200, 0);
 	}
 
 	exampleKirbyGameCallback() {
@@ -444,11 +398,11 @@ export class KirbyGameAppState extends StarterAppState {
 		// }
 
 		// you can also get time since last frame with this.timeSinceLastFrame
-		this.updateSpinningArms(this.appClock.time);
+		// this.updateSpinningArms(this.appClock.time);
 		this.updateKirby(this.appClock.time);
 		this.updateStar(this.appClock.time);
 		this.kirbyGravity(this.appClock.time);
-    this.kirbyWalking(this.appClock.time);
+		this.kirbyWalking(this.appClock.time);
 
 		// Note that you can get the bounding box of any model by calling
 		// e.g., for the kirby, this.kirby.getBounds()
@@ -472,7 +426,7 @@ export class KirbyGameAppState extends StarterAppState {
 		}
 	}
 	async generateScene(numOfTrees:number, laneLength:number, playgroundRadius:number){
-		let start = -200;
+		let start = -850;
 		let now = start;
 		let anchor = V3(0,start + laneLength+playgroundRadius,30);
 		let angle = 0;
@@ -488,7 +442,7 @@ export class KirbyGameAppState extends StarterAppState {
 		
 		for(let i = 0; i<numOfTrees; i++){
 			let tree = await PlantNodeModel.CreateDefaultNode();
-			tree.transform.position = V3(anchor.x + playgroundRadius*Math.sin(angle), anchor.y + playgroundRadius * Math.cos(angle), 30 );
+			tree.transform.position = V3(anchor.x + playgroundRadius*Math.sin(angle), anchor.y + playgroundRadius * Math.cos(angle), 50 );
 			this.sceneModel.addNode(tree);
 			angle += 2 * Math.PI / numOfTrees;
 		}

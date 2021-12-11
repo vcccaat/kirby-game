@@ -229,6 +229,7 @@ export class Base2DAppAppState extends Basic2DAppState<ASceneNodeModel, ASceneMo
         // groundPlane.verts.ApplyMatrix(tform);
         this.sceneModel.addNode(groundPlane);
         groundPlane.transform.position.z = -0.5;
+
     }
 
     // _addGroundPlane() {
