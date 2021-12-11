@@ -96,48 +96,49 @@ export class KirbyNodeController extends ASceneNodeController<KirbyNodeModel> {
     // );
   }
 
-  applyGravity(updateCamera: Function) {
-    let gravity = new Vec3(0, 0, -0.01);
-    let initV = new Vec3(0, 0, 0);
-    let duration = 10000;
+  // applyGravity(updateCamera: Function) {
+  //   let gravity = new Vec3(0, 0, -0.01);
+  //   let initV = new Vec3(0, 0, 0);
+  //   let duration = 10000;
 
-    const self = this;
-    self.model.gravityFrame += 1;
-    let gravityFrame = self.model.gravityFrame;
+  //   const self = this;
+  //   self.model.gravityFrame += 1;
+  //   let gravityFrame = self.model.gravityFrame;
 
-    this.addTimedAction(
-      (actionProgress) => {
-        if (gravityFrame !== self.model.gravityFrame) return;
+  //   this.addTimedAction(
+  //     (actionProgress) => {
+  //       if (gravityFrame !== self.model.gravityFrame) return;
 
-        if (self.model.transform.position.z <= 0) {
-          self.model.transform.position.z = 0;
-          return;
-        }
+  //       if (self.model.transform.position.z <= 0) {
+  //         self.model.transform.position.z = 0;
+  //         return;
+  //       }
 
-        initV.addVector(gravity);
-        // if (initV.z < -2) initV.z = -2;
-        self.model.transform.position.addVector(initV);
+  //       initV.addVector(gravity);
+  //       // if (initV.z < -2) initV.z = -2;
+  //       self.model.transform.position.addVector(initV);
 
-        console.log(initV.z);
-        updateCamera();
-      },
-      duration,
-      () => {
-        // self.model.isJumping = false;
-        // self.model.transform.rotation = rotationStart;
-      },
-      this.model.tween
-    );
-  }
+  //       console.log(initV.z);
+  //       updateCamera();
+  //     },
+  //     duration,
+  //     () => {
+  //       // self.model.isJumping = false;
+  //       // self.model.transform.rotation = rotationStart;
+  //     },
+  //     this.model.tween
+  //   );
+  // }
 
   move(updateCamera: Function, keysDownState: { [name: string]: boolean }) {
+    if (!keysDownState["ArrowUp"] && !keysDownState["ArrowDown"] && !keysDownState["ArrowLeft"] && !keysDownState["ArrowRight"]) return;
     let unitV = 1;
     let leftV = new Vec3(-unitV, 0, 0);
     let rightV = new Vec3(unitV, 0, 0);
     let forwardV = new Vec3(0, unitV, 0);
     let backwardV = new Vec3(0, -unitV, 0);
 
-    let duration = 1;
+    let duration = 0.6;
 
     // if (this.model.isMoving) {
     //   return;
