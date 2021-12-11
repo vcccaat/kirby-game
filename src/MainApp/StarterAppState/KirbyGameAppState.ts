@@ -58,6 +58,8 @@ export class KirbyGameAppState extends StarterAppState {
 	 */
 	kirby!: KirbyNodeModel;
   countBomb: number=0;
+  flame!: FlameModel;
+
 	/**
 	 * A convenient getter for accessing the kirby's scene controller in the game view, which we have customized
 	 * in Nodes/Kirby/KirbyNodeController.ts
@@ -184,6 +186,41 @@ export class KirbyGameAppState extends StarterAppState {
 		};
 	}
 
+   CreateTestSquare(color?: Color, position?: Vec2, isFire?: boolean) {
+    position = position ? position : V2();
+    // color = color?color:Color.FromString('#55aa55');
+    color = color ? color : Color.FromString('#888888');
+    let newShape = new FlameModel(isFire);
+    let sz = 25;
+    let verts = new VertexArray2D();
+    verts.position.push(V2(sz, -sz));
+    verts.position.push(V2(-sz, -sz));
+    verts.position.push(V2(-sz, sz));
+    verts.position.push(V2(sz, sz));
+    newShape.color = color;
+    newShape.verts = verts;
+    // newShape.recenterAnchor();
+    // newShape.verts = verts;
+    // this.sceneController.model.addNode(newShape);
+    return newShape;
+  }
+
+  addBomb() {
+    let kirbyGameControls = this.gameSceneController.getInteractionMode("KirbyGame") as KirbyGameControls;
+    // let flame = this.CreateTestSquare(Color.FromString('yellow'), new Vec2(0,0), true);
+    // flameModel.color = Color.FromString('#ff0000');
+    this.flame.transform.position.addVector(new Vec3(200,-600,0));
+    this.flame.name = "xxx"
+    
+    // this.sceneModel.removeNode(flame);
+    // let startOffset = this.gameSceneController.camera.pose.position.clone();
+    // let camOffset = 1;
+
+    // this.gameSceneController.camera.setPosition(new Vec3(0,0,100))
+    kirbyGameControls.updateCamera();
+    this.sceneModel.addNode(this.flame);
+  }
+
 	async initKirbyGame(startInGameMode: boolean = true) {
 		const self = this;
 		this.enemySpeed = 1;
@@ -265,29 +302,12 @@ export class KirbyGameAppState extends StarterAppState {
 		this.sceneModel.addNode(bomb);
 
     // let flame = new FlameModel(100);
+    let waterFall = this.CreateTestSquare(Color.FromString('#00a2ff'), new Vec2(0,0), false);
+    // flameModel.color = Color.FromString('#00a2ff');
+    waterFall.transform.position.addVector(new Vec3(0,-400,0));
+    this.sceneModel.addNode(waterFall);
 
-    function CreateTestSquare(color?: Color, position?: Vec2) {
-      position = position ? position : V2();
-      // color = color?color:Color.FromString('#55aa55');
-      color = color ? color : Color.FromString('#888888');
-      let newShape = new FlameModel();
-      let sz = 25;
-      let verts = new VertexArray2D();
-      verts.position.push(V2(sz, -sz));
-      verts.position.push(V2(-sz, -sz));
-      verts.position.push(V2(-sz, sz));
-      verts.position.push(V2(sz, sz));
-  
-      newShape.color = color;
-      newShape.verts = verts;
-      // newShape.recenterAnchor();
-      // newShape.verts = verts;
-      // this.sceneController.model.addNode(newShape);
-      return newShape;
-    }
-    let flameModel = CreateTestSquare(undefined, new Vec2(0,0));
-    flameModel.transform.position.addVector(new Vec3(0,-400,0));
-    this.sceneModel.addNode(flameModel);
+    this.flame = this.CreateTestSquare(Color.FromString('yellow'), new Vec2(0,0), true);
 
 		// //add an example node model
 		// // the CreateDefaultNode methods are asynchronous in case we want to load assets,

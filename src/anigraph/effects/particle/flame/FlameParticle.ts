@@ -21,6 +21,7 @@ export class FlameParticle extends AParticle {
 	public id: number;
 	public velocity!: Vec3;
 	public eulerPosition!: Vec3;
+	public model!: FlameModel;
 
 	get position() {
 		return this._position;
@@ -53,6 +54,7 @@ export class FlameParticle extends AParticle {
 		this.id = id;
 		this.reset(model, t0 ? t0 : 0, lifespan ? lifespan : 0, radius, position, color, height, frequency, amplitude, phase, sizeDecay, colorShift, gamma, alpha);
 		this.hidden = true;
+		this.model = model;
 	}
 
 	reset(
@@ -87,6 +89,7 @@ export class FlameParticle extends AParticle {
 		this.colorShift = colorShift;
 		this.velocity = V3(0, 0, 0);
 		this.eulerPosition = V3(0, 0, 0);
+		this.model = model;
 		this.update(t0, model);
 	}
 
@@ -105,8 +108,19 @@ export class FlameParticle extends AParticle {
 		let progress = this.age / this.lifespan;
 		let progress_gamma = Math.pow(progress, this._gamma);
 		let inv_progress_gamma = 1 - Math.pow(1 - progress, this._gamma);
-		this._position = this.startPosition
+		if (this.model.isFire) {
+			this._position = this.startPosition
+			.plus(
+				V3(
+					this.amplitude * Math.sin(this.frequency * 2 * Math.PI * t + this.phase * 2 * Math.PI),
 
+					this.amplitude * Math.cos(this.frequency * 2 * Math.PI * t + this.phase * 2 * Math.PI),
+					progress_gamma * this.height
+				)
+			)
+			.plus(this.eulerPosition);
+		} else {
+			this._position = this.startPosition
 			.minus(
 				V3(
 					this.amplitude * Math.sin(this.frequency * 2 * Math.PI * t + this.phase * 2 * Math.PI),
@@ -116,11 +130,17 @@ export class FlameParticle extends AParticle {
 				)
 			)
 			.minus(this.eulerPosition);
-
+		}
 		this._radius = this.startRadius * (1 - progress_gamma) + this.sizeDecay * this.startRadius * progress_gamma;
-		this._color = this.startColor
-			// .Spun(-inv_progress_gamma * this.colorShift)
+		if (this.model.isFire) {
+			this._color = this.startColor
+			.Spun(-inv_progress_gamma * this.colorShift)
 			.Desaturate(progress_gamma * 0.7 * FlameParticleEnums.DESATURATE)
 			.Darken(progress_gamma * 0.8 * FlameParticleEnums.DARKEN);
+		} else {
+			this._color = this.startColor
+			.Desaturate(progress_gamma * 0.7 * FlameParticleEnums.DESATURATE)
+			.Darken(progress_gamma * 0.8 * FlameParticleEnums.DARKEN);
+		}
 	}
 }

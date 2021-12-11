@@ -37,6 +37,7 @@ export class FlameModel extends A2DParticlesModel {
 	@AObjectState colorShift: number;
 	@AObjectState integrateForce: boolean;
 	@AObjectState forceStrength: number;
+	@AObjectState isFire: boolean;
 
 	static ForceTarget: Vec2;
 	getTarget() {
@@ -61,7 +62,7 @@ export class FlameModel extends A2DParticlesModel {
 	//     this.clock.paused = v;
 	// }
 
-	constructor(max_num_particles?: number) {
+	constructor(isFire?: boolean, max_num_particles?: number) {
 		super();
 		// this.verts = new VertexArray2D();
 		// this._maxNumParticles = max_num_particles!==undefined?max_num_particles:AParticleEnums.DEFAULT_MAX_N_PARTICLES;
@@ -82,9 +83,10 @@ export class FlameModel extends A2DParticlesModel {
 		this.colorShift = 0.75;
 		this.integrateForce = false;
 		this.forceStrength = 3;
+		this.isFire = isFire || false;
 		this.play();
 
-		this.color = Color.FromString('#0000FF');
+		// this.color = Color.FromString('#0000FF');
 
 		this.subscribe(
 			this.clock.addTimeListener((t: number) => {
@@ -143,7 +145,7 @@ export class FlameModel extends A2DParticlesModel {
 		// .plus(
 		//     corners[1].times(1-palpha)
 		// );
-		let startColor = Color.FromString('#00a2ff'); //this.color.Spun(this.randomness * FlameParticleEnums.COLOR_RANDOM_SHIFT);
+		let startColor = this.color; //this.color.Spun(this.randomness * FlameParticleEnums.COLOR_RANDOM_SHIFT);
 		let particleSize = this.particleSize * emissionScale;
 		let height = heightScale * this.height * (1 + this.randomness * Math.random());
 		let amplitude = emissionScale * this.amplitude;

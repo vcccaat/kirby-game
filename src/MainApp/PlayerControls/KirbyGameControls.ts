@@ -164,6 +164,10 @@ export class KirbyGameControls extends APointerLockPlayerControls {
       this.updateCamera.bind(this),
       interaction.keysDownState
     );
+
+    if (interaction.keysDownState["b"]) {
+      (this.appState as KirbyGameAppState).addBomb();
+    }
   }
 
   onKeyUp(interaction: AKeyboardInteraction, event: AInteractionEvent) {
