@@ -22,6 +22,11 @@ export class KirbyNodeView extends ASceneNodeView<KirbyNodeModel> {
 				this.updateSegments();
 			})
 		);
+		this.controller.subscribe(
+			this.model.addStateKeyListener('updateFeet', () => {
+				this.updateFeet();
+			})
+		);
 		this.updateSegments();
 	}
 
@@ -37,7 +42,7 @@ export class KirbyNodeView extends ASceneNodeView<KirbyNodeModel> {
 	updateSegments() {
 		// this.disposeElements();
 		// this.element = new ARenderGroup();
-		this.addElement(this.element);
+		// this.addElement(this.element);
 		for (let i = 0; i < this.model.segments.length; i++) {
 			if (i !== 0 && i !== 2 && this.ringElements[i]) continue;
 			let s = this.model.segments[i];
@@ -45,6 +50,21 @@ export class KirbyNodeView extends ASceneNodeView<KirbyNodeModel> {
 			let seg = KirbyElement.CreateSegment(s, this.model.material);
 			this.ringElements[i] = seg;
 			// this.element.remove();
+			this.element.add(seg);
+			if (s.material) {
+				let material = GetAppState().materials.getMaterialModel(s.material).CreateMaterial().threejs;
+				seg.setMaterial(material);
+			}
+		}
+	}
+
+	updateFeet() {
+		for (let i = 0; i < this.model.segments.length; i++) {
+			if (i !== 3 && i !== 4 && this.ringElements[i]) continue;
+			let s = this.model.segments[i];
+			if (this.ringElements[i]) this.element.remove(this.ringElements[i]);
+			let seg = KirbyElement.CreateSegment(s, this.model.material);
+			this.ringElements[i] = seg;
 			this.element.add(seg);
 			if (s.material) {
 				let material = GetAppState().materials.getMaterialModel(s.material).CreateMaterial().threejs;

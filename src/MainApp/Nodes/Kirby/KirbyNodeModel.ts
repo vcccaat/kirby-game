@@ -41,6 +41,7 @@ export class KirbyNodeModel extends AMeshModel {
 	@AObjectState nSegments: [number, number];
 	@AObjectState radius: number;
 	@AObjectState updateHands: number;
+	@AObjectState updateFeet: number;
 
 	constructor(segments?: KirbySegment[], ...args: any[]) {
 		super();
@@ -65,6 +66,7 @@ export class KirbyNodeModel extends AMeshModel {
 			this.segments = segments;
 		}
 		this.updateHands = 0;
+		this.updateFeet = 0;
 
 		const self = this;
 		// this.subscribe(
@@ -108,11 +110,11 @@ export class KirbyNodeModel extends AMeshModel {
 			V3(0, -10, 8), //left leg
 		];
 		kirbyModel.segments = [
-			new KirbySegment(locations[0], 0.3 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'pink'),
-			new KirbySegment(locations[1], radius, new THREE.Matrix4().makeScale(1.0, 1.0, 1.0), [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'kirby'),
-			new KirbySegment(locations[2], 0.3 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'pink'),
-			new KirbySegment(locations[3], 0.4 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#ad1d46'), Color.FromString('#ad1d46')],'kirbyfoot'),
-			new KirbySegment(locations[4], 0.4 * radius, new THREE.Matrix4().makeScale(1.0, 1.0, 0.8), [Color.FromString('#ad1d46'), Color.FromString('#ad1d46')],'kirbyfoot'),
+			new KirbySegment(locations[0], 0.4 * radius, 1, 1, 0.4, [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'pink'),
+			new KirbySegment(locations[1], radius, 1,1,1, [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'kirby'),
+			new KirbySegment(locations[2], 0.4 * radius, 1, 1, 0.4, [Color.FromString('#FFC0CB'), Color.FromString('#FFC0CB')], 'pink'),
+			new KirbySegment(locations[3], 0.4 * radius, 1.5, 1.0, 0.8, [Color.FromString('#ad1d46'), Color.FromString('#ad1d46')],'kirbyfoot'),
+			new KirbySegment(locations[4], 0.4 * radius, 1.5, 1.0, 0.8, [Color.FromString('#ad1d46'), Color.FromString('#ad1d46')],'kirbyfoot'),
 		];
 
 		return kirbyModel;

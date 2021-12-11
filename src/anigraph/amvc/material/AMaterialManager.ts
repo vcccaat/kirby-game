@@ -272,7 +272,7 @@ export class AMaterialManager extends AObject {
 	}
 
 	getMaterialModel(name: string) {
-		// console.log('get material model', name);
+		console.log('get material model', name);
 		return this.materials[name];
 	}
 }
