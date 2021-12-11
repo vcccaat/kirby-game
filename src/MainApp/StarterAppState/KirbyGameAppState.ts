@@ -1,4 +1,5 @@
 import {
+	ALoadedModel,
 	AMaterialManager,
 	AniGraphEnums,
 	AObjectState,
@@ -29,6 +30,7 @@ import { RingSegment } from '../Nodes/ExampleProcedureGeometry/RingSegment';
 import { Vector3 } from 'three';
 import { PepperNodeModel } from '../Nodes/Pepper/PepperNodeModel';
 import { BombNodeModel } from '../Nodes/Bomb/BombNodeModel';
+import { v3 } from 'uuid';
 
 const KIRBY_INIT_HEIGHT = 10;
 export class KirbyGameAppState extends StarterAppState {
@@ -221,10 +223,12 @@ export class KirbyGameAppState extends StarterAppState {
 		this.sceneModel.addNode(star);
 		this.sceneModel.addNode(star2);
 
-		let plants = await PlantNodeModel.CreateDefaultNode();
-		plants.transform.position = V3(-150, -150, 30);
-		this.sceneModel.addNode(plants);
-
+		// let plants = await PlantNodeModel.CreateDefaultNode();
+		// plants.transform.position = V3(-150, -150, 30);
+		// this.sceneModel.addNode(plants);
+		
+		this.generateScene(30, 200, 500);
+		
 		let newNode = new ExampleNodeModel();
 		newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
 		// newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
@@ -290,7 +294,20 @@ export class KirbyGameAppState extends StarterAppState {
 		// the last frame was rendered...
 		let currentGameTime = this.appClock.time;
 		let timeSinceLastFrame = this.timeSinceLastFrame;
-
+		let trees = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
+			return node instanceof PlantNodeModel;
+		});
+		//console.log(trees.length);
+		for(let tree of trees)
+		{
+			
+			let boudningBox = tree.getBounds();
+			//dectect collision
+			if (boudningBox.pointInBounds(this.kirby.transform.position)) {
+				let movementVec = this.kirby.transform.position.minus(boudningBox.transform.getObjectSpaceOrigin());
+				this.kirby.transform.position = this.kirby.transform.position.plus(new Vec3(movementVec.getNormalized().x, movementVec.getNormalized().y, 0));
+			}
+		}
 		// Note that you can use the same approach to select any subset of the node models in the scene.
 		// You can use this, for example, to get all of the models that you want to detect collistions with
 		let blocks = this.sceneModel.filterNodes((node: ASceneNodeModel) => {
@@ -405,5 +422,30 @@ export class KirbyGameAppState extends StarterAppState {
 		if (this.kirby) {
 			this.exampleKirbyGameCallback();
 		}
+	}
+	async generateScene(numOfTrees:number, laneLength:number, playgroundRadius:number){
+		let length = -200;
+		let anchor = V3(0,laneLength+playgroundRadius,30);
+		let angle = 0;
+		while(length<laneLength){
+			let tree1 = await PlantNodeModel.CreateDefaultNode();
+			let tree2 = await PlantNodeModel.CreateDefaultNode();
+			tree1.transform.position = V3(-150, length, 30);
+			tree2.transform.position = V3(150, length, 30);
+			this.sceneModel.addNode(tree1);
+			this.sceneModel.addNode(tree2);
+			length += 50;
+		}
+		
+		for(let i = 0; i<numOfTrees; i++){
+			let tree = await PlantNodeModel.CreateDefaultNode();
+			tree.transform.position = V3(anchor.x + playgroundRadius*Math.sin(angle), anchor.y + playgroundRadius * Math.cos(angle), 30 );
+			this.sceneModel.addNode(tree);
+			angle += 2 * Math.PI / numOfTrees;
+		}
+		// let tree = await PlantNodeModel.CreateDefaultNode();
+		// tree.transform.position = V3(-150, -150, 30);
+		// this.sceneModel.addNode(plants);
+
 	}
 }
