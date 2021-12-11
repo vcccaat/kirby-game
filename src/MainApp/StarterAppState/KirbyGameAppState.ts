@@ -31,6 +31,7 @@ import { Vector3 } from 'three';
 import { PepperNodeModel } from '../Nodes/Pepper/PepperNodeModel';
 import { BombNodeModel } from '../Nodes/Bomb/BombNodeModel';
 import { v3 } from 'uuid';
+import { WaterNodeModel } from '../Nodes/Water/WaterNodeModel';
 
 const KIRBY_INIT_HEIGHT = 10;
 export class KirbyGameAppState extends StarterAppState {
@@ -491,6 +492,20 @@ export class KirbyGameAppState extends StarterAppState {
 		// let tree = await PlantNodeModel.CreateDefaultNode();
 		// tree.transform.position = V3(-150, -150, 30);
 		// this.sceneModel.addNode(plants);
+
+	}
+
+	generateRiver(laneLength:number){
+		let start = -200;
+		let now = start;
+		while(now< start + laneLength){
+			let water = new WaterNodeModel();
+			water.transform.position = V3(0, now, 30);
+			this.sceneModel.addNode(water);
+			now += 50;
+		}
+		
+		
 
 	}
 }

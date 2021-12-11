@@ -1,7 +1,7 @@
 
 import { ExampleNodeController } from "../Example/ExampleNodeController";
-import {PepperNodeModel} from "./PepperNodeModel";
+import {WaterNodeModel} from "./WaterNodeModel";
 
-export class PepperNodeController extends ExampleNodeController{
-    _model!:PepperNodeModel;
+export class WaterNodeController extends ExampleNodeController{
+    _model!:WaterNodeModel;
 }
