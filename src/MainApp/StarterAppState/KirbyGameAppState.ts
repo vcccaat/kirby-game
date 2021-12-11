@@ -468,17 +468,18 @@ export class KirbyGameAppState extends StarterAppState {
 		}
 	}
 	async generateScene(numOfTrees:number, laneLength:number, playgroundRadius:number){
-		let length = -450;
-		let anchor = V3(0,laneLength+playgroundRadius,30);
+		let start = -200;
+		let now = start;
+		let anchor = V3(0,start + laneLength+playgroundRadius,30);
 		let angle = 0;
-		while(length<laneLength){
+		while(now< start + laneLength){
 			let tree1 = await PlantNodeModel.CreateDefaultNode();
 			let tree2 = await PlantNodeModel.CreateDefaultNode();
-			tree1.transform.position = V3(-150, length, 30);
-			tree2.transform.position = V3(150, length, 30);
+			tree1.transform.position = V3(-150, now, 30);
+			tree2.transform.position = V3(150, now, 30);
 			this.sceneModel.addNode(tree1);
 			this.sceneModel.addNode(tree2);
-			length += 40;
+			now += 50;
 		}
 		
 		for(let i = 0; i<numOfTrees; i++){
