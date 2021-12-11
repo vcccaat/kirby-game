@@ -18,8 +18,8 @@ export enum AniGraphEnums{
     DefaultZNear=0.5,
     DefaultZFar=4000,
     DefaultMovementSpeed=10,
-    BlockSize = 50,
-    TreeSize = 50,
+    BlockSize = 80,
+    TreeSize = 80,
 }
 
 
