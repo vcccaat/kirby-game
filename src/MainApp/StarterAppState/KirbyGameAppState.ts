@@ -32,6 +32,7 @@ import { PepperNodeModel } from '../Nodes/Pepper/PepperNodeModel';
 import { BombNodeModel } from '../Nodes/Bomb/BombNodeModel';
 import { v3 } from 'uuid';
 import { WaterNodeModel } from '../Nodes/Water/WaterNodeModel';
+import { MountainNodeModel } from '../Nodes/Mountain/MountainNodeModel';
 
 const KIRBY_INIT_HEIGHT = 10;
 export class KirbyGameAppState extends StarterAppState {
@@ -230,6 +231,8 @@ export class KirbyGameAppState extends StarterAppState {
 		
 		this.generateScene(40, 200, 500);
 		this.generateRiver(400);
+		this.generateMountain(8,4,2);
+
 		let newNode = new ExampleNodeModel();
 		newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
 		// newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
@@ -465,6 +468,34 @@ export class KirbyGameAppState extends StarterAppState {
 			water.transform.position = V3(0, now, 0);
 			this.sceneModel.addNode(water);
 			now += 50;
+		}
+		
+		
+
+	}
+
+	generateMountain(width:number,height:number,depth:number){
+
+		let x = -200;
+		let y = 0;
+		let z = 20;
+		let size = 50;
+		for(let i  = 0;i<width;i++){
+			for(let j = 0;j<height;j++){
+				for(let k = 0;k<depth;k++){
+					if((i === 0 && k === (depth-1)) || (i === (width-1) && k === (depth-1))){
+						continue;
+					}
+					let soil = new MountainNodeModel();
+					soil.transform.position = V3(x, y ,z);
+					this.sceneModel.addNode(soil);
+					z += size;
+				}
+				z = 20;
+				y += size;
+			}
+			y = 0;
+			x += size;
 		}
 		
 		
