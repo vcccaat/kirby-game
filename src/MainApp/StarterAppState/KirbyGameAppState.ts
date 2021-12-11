@@ -233,7 +233,7 @@ export class KirbyGameAppState extends StarterAppState {
 		// this.sceneModel.addNode(plants);
 		
 		this.generateScene(40, 200, 500);
-		this.generateRiver(400);
+		this.generateRiver(200);
 		this.generateMountain(8,4,2);
 
 		let newNode = new ExampleNodeModel();
@@ -490,11 +490,11 @@ export class KirbyGameAppState extends StarterAppState {
 	}
 
 	generateRiver(laneLength:number){
-		let start = -850;
+		let start = 0;
 		let now = start;
 		while(now< start + laneLength){
 			let water = new WaterNodeModel();
-			water.transform.position = V3(0, now, 0);
+			water.transform.position = V3(0, now, 100);
 			this.sceneModel.addNode(water);
 			now += 50;
 		}
@@ -505,9 +505,9 @@ export class KirbyGameAppState extends StarterAppState {
 
 	generateMountain(width:number,height:number,depth:number){
 
-		let x = -200;
+		let x = -175;
 		let y = 0;
-		let z = 20;
+		let z = 25;
 		let size = 50;
 		for(let i  = 0;i<width;i++){
 			for(let j = 0;j<height;j++){

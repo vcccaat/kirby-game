@@ -9,7 +9,7 @@ export class WaterNodeModel extends ExampleNodeModel {
 
 	constructor() {
 		super();
-		this.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(70, 50, 20));
+		this.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(70, 50, 5));
 		//this.color = new Color(255, 80, 80, 0.5);
 		this.setMaterial('water');
 	}
