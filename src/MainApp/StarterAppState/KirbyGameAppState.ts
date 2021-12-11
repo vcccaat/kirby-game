@@ -33,6 +33,9 @@ import { BombNodeModel } from '../Nodes/Bomb/BombNodeModel';
 import { v3 } from 'uuid';
 import { WaterNodeModel } from '../Nodes/Water/WaterNodeModel';
 import { MountainNodeModel } from '../Nodes/Mountain/MountainNodeModel';
+import { VertexArray2D } from 'src/anigraph/ageometry';
+import { V2 } from 'src/anigraph/amath';
+import { Vec2 } from 'src/anigraph/amath';
 
 const KIRBY_INIT_HEIGHT = 10;
 export class KirbyGameAppState extends StarterAppState {
@@ -248,6 +251,32 @@ export class KirbyGameAppState extends StarterAppState {
 		let bomb = new BombNodeModel();
 		bomb.transform.position = new Vec3(-50, 20, 20);
 		this.sceneModel.addNode(bomb);
+
+    // let flame = new FlameModel(100);
+
+    function CreateTestSquare(color?: Color, position?: Vec2) {
+      position = position ? position : V2();
+      // color = color?color:Color.FromString('#55aa55');
+      color = color ? color : Color.FromString('#888888');
+      let newShape = new FlameModel();
+      let sz = 25;
+      let verts = new VertexArray2D();
+      verts.position.push(V2(sz, -sz));
+      verts.position.push(V2(-sz, -sz));
+      verts.position.push(V2(-sz, sz));
+      verts.position.push(V2(sz, sz));
+  
+      newShape.color = color;
+      newShape.verts = verts;
+      // newShape.recenterAnchor();
+      // newShape.verts = verts;
+      // this.sceneController.model.addNode(newShape);
+      return newShape;
+    }
+    let flameModel = CreateTestSquare(undefined, new Vec2(0,0));
+    flameModel.transform.position.addVector(new Vec3(0,-400,0));
+    this.sceneModel.addNode(flameModel);
+
 		// //add an example node model
 		// // the CreateDefaultNode methods are asynchronous in case we want to load assets,
 		// // this means we should await the promise that they return to use it.
