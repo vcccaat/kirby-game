@@ -127,11 +127,9 @@ export class KirbyGameAppState extends StarterAppState {
 		}
 	}
 	countFrame: number = -1;
-  leftDirection: number = 1;
-  rightDirection: number = -1;
 	updateKirby(t: number) {
 		// if (this.kirby.isJumping) return;
-		// if (this.kirby.isMoving) return;
+		if (this.kirby.isMoving) return;
     this.countFrame++;
 		if (this.countFrame % 2 === 0) return;
 		let countFrame = this.countFrame;
@@ -149,9 +147,40 @@ export class KirbyGameAppState extends StarterAppState {
 		leftHand.transform.position.addVector(new Vec3(0, 0, flapDirection * flapSpeed));
 		rightHand.transform.position.addVector(new Vec3(0, 0, flapDirection * flapSpeed));
 
+    // let leftFeet = this.kirby.segments[3];
+		// let rightFeet = this.kirby.segments[4];
+
+    // if (leftFeet.transform.position.x >= 4) this.leftDirection = -1;
+    // if (leftFeet.transform.position.x <= -4) this.leftDirection = 1;
+
+    // if (rightFeet.transform.position.x >= 4) this.rightDirection = -1;
+    // if (rightFeet.transform.position.x <= -4) this.rightDirection = 1;
+
+    // leftFeet.transform.position.addVector(new Vec3(this.leftDirection * flapSpeed, 0, 0));
+		// rightFeet.transform.position.addVector(new Vec3(this.rightDirection * flapSpeed, 0, 0));
+
+    // this.kirby.segments[3].transform.position.addVector(new Vec3(0, flapDirection * flapSpeed, 0));
+
+    this.kirby.updateHands ++;
+    // this.kirby.updateFeet ++;
+		//   // console.log(t);
+	}
+
+  leftDirection: number = 1;
+  rightDirection: number = -1;
+  kirbyWalking(t: number) {
+    // add animation of kirby's feet while moving
+    if (this.kirby.isJumping) return;
+    let flapSpeed = 0.3;
     let leftFeet = this.kirby.segments[3];
 		let rightFeet = this.kirby.segments[4];
-
+    if (!this.kirby.isMoving) {
+      if (leftFeet.transform.position.x === 0) return;
+      leftFeet.transform.position.x = 0;
+      rightFeet.transform.position.x = 0;
+      this.kirby.updateFeet ++;
+      return;
+    }
     if (leftFeet.transform.position.x >= 4) this.leftDirection = -1;
     if (leftFeet.transform.position.x <= -4) this.leftDirection = 1;
 
@@ -160,30 +189,7 @@ export class KirbyGameAppState extends StarterAppState {
 
     leftFeet.transform.position.addVector(new Vec3(this.leftDirection * flapSpeed, 0, 0));
 		rightFeet.transform.position.addVector(new Vec3(this.rightDirection * flapSpeed, 0, 0));
-
-    // this.kirby.segments[3].transform.position.addVector(new Vec3(0, flapDirection * flapSpeed, 0));
-
-    this.kirby.updateHands ++;
     this.kirby.updateFeet ++;
-		//   // console.log(t);
-	}
-
-  countMoveFrame: number = -1;
-  kirbyWalking(t: number) {
-    // add animation of kirby's feet while moving
-    // if (!this.kirby.isMoving) return;
-    // this.countMoveFrame ++;
-    // let countFrame = this.countFrame;
-
-    // let fapFreq = 60;
-		// let flapSpeed = 0.3;
-		// let leftFeet = this.kirby.segments[3];
-		// let rightFeet = this.kirby.segments[4];
-		// let flapDirection = countFrame % fapFreq < fapFreq / 2 ? 1 : -1;
-		// leftFeet.transform.position.addVector(new Vec3(flapDirection * flapSpeed, 0, 0));
-		// rightFeet.transform.position.addVector(new Vec3(flapDirection * flapSpeed,0, 0));
-    // this.kirby.updateFeet ++;
-
   }
 
 

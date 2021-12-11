@@ -146,6 +146,14 @@ export class KirbyNodeController extends ASceneNodeController<KirbyNodeModel> {
     self.model.movingFrame++;
     let movingFrame = self.model.movingFrame;
 
+    let leftHand = self.model.segments[0];
+    let rightHand = self.model.segments[2];
+
+    if (leftHand.transform.position.x > -10) leftHand.transform.position.addVector(new Vec3(-10,0,0));
+    if (rightHand.transform.position.x > -10) rightHand.transform.position.addVector(new Vec3(-10,0,0));
+
+    self.model.updateHands ++;
+
     this.addTimedAction(
       (actionProgress) => {
         self.model.isMoving = true;
@@ -176,6 +184,10 @@ export class KirbyNodeController extends ASceneNodeController<KirbyNodeModel> {
       duration,
       () => {
         self.model.isMoving = false;
+        let xL = leftHand.transform.position.x;
+        let xR = rightHand.transform.position.x;
+        leftHand.transform.position.addVector(new Vec3(-xL,0,0));
+        rightHand.transform.position.addVector(new Vec3(-xR,0,0));
         // self.model.transform.rotation = rotationStart;
       },
       this.model.tween
