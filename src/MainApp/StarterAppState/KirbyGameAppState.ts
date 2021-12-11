@@ -225,7 +225,7 @@ export class KirbyGameAppState extends StarterAppState {
 		// plants.transform.position = V3(-150, -150, 30);
 		// this.sceneModel.addNode(plants);
 		
-		this.generateScene(30, 200, 500);
+		this.generateScene(40, 200, 500);
 		this.generateRiver(400);
 		let newNode = new ExampleNodeModel();
 		newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
@@ -453,7 +453,7 @@ export class KirbyGameAppState extends StarterAppState {
 	}
 
 	generateRiver(laneLength:number){
-		let start = -200;
+		let start = -850;
 		let now = start;
 		while(now< start + laneLength){
 			let water = new WaterNodeModel();
