@@ -33,6 +33,10 @@ import { BombNodeModel } from '../Nodes/Bomb/BombNodeModel';
 import { v3 } from 'uuid';
 import { WaterNodeModel } from '../Nodes/Water/WaterNodeModel';
 import { LightNodeModel } from '../Nodes/LightSource/LightNodeModel';
+import { MountainNodeModel } from '../Nodes/Mountain/MountainNodeModel';
+import { VertexArray2D } from 'src/anigraph/ageometry';
+import { V2 } from 'src/anigraph/amath';
+import { Vec2 } from 'src/anigraph/amath';
 
 const KIRBY_INIT_HEIGHT = 10;
 export class KirbyGameAppState extends StarterAppState {
@@ -219,27 +223,51 @@ export class KirbyGameAppState extends StarterAppState {
 		this.sceneModel.addNode(star2);
 
 		
-		this.generateScene(30, 200, 400);
-		this.generateRiver(400);
-		// let newNode = new ExampleNodeModel();
-		// newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
-		// // newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
-		// // newNode.setMaterial('trippy');
-		// newNode.color = Color.Random();
-		// newNode.transform.position = new Vec3(50, 50, 10);
-		// this.sceneModel.addNode(newNode);
+		this.generateScene(40, 200, 500);
+		this.generateRiver(200);
+		this.generateMountain(8,4,2);
 
-    const numOfItem = 10
-    for(let i = 0; i<numOfItem; i++){
-     
-      let pepper = new PepperNodeModel();
-      pepper.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-800, 20);
-      this.sceneModel.addNode(pepper);
+		let newNode = new ExampleNodeModel();
+		newNode.verts = VertexArray3D.FromThreeJS(new THREE.BoxBufferGeometry(20, 20, 20));
+		// newNode.setMaterial(AMaterialManager.DefaultMaterials.Standard);
+		// newNode.setMaterial('trippy');
+		newNode.color = Color.Random();
+		newNode.transform.position = new Vec3(50, 50, 10);
+		this.sceneModel.addNode(newNode);
 
-      let bomb = new BombNodeModel();
-      bomb.transform.position = new Vec3(800*Math.random()-400, 800*Math.random()-800, 20);
-      this.sceneModel.addNode(bomb);
+		let pepper = new PepperNodeModel();
+		pepper.transform.position = new Vec3(-20, 20, 20);
+		this.sceneModel.addNode(pepper);
+
+		let bomb = new BombNodeModel();
+		bomb.transform.position = new Vec3(-50, 20, 20);
+		this.sceneModel.addNode(bomb);
+
+    // let flame = new FlameModel(100);
+
+    function CreateTestSquare(color?: Color, position?: Vec2) {
+      position = position ? position : V2();
+      // color = color?color:Color.FromString('#55aa55');
+      color = color ? color : Color.FromString('#888888');
+      let newShape = new FlameModel();
+      let sz = 25;
+      let verts = new VertexArray2D();
+      verts.position.push(V2(sz, -sz));
+      verts.position.push(V2(-sz, -sz));
+      verts.position.push(V2(-sz, sz));
+      verts.position.push(V2(sz, sz));
+  
+      newShape.color = color;
+      newShape.verts = verts;
+      // newShape.recenterAnchor();
+      // newShape.verts = verts;
+      // this.sceneController.model.addNode(newShape);
+      return newShape;
     }
+    let flameModel = CreateTestSquare(undefined, new Vec2(0,0));
+    flameModel.transform.position.addVector(new Vec3(0,-400,0));
+    this.sceneModel.addNode(flameModel);
+
 		// //add an example node model
 		// // the CreateDefaultNode methods are asynchronous in case we want to load assets,
 		// // this means we should await the promise that they return to use it.
@@ -464,13 +492,41 @@ export class KirbyGameAppState extends StarterAppState {
 	}
 
 	generateRiver(laneLength:number){
-		let start = -850;
+		let start = 0;
 		let now = start;
 		while(now< start + laneLength){
 			let water = new WaterNodeModel();
-			water.transform.position = V3(0, now, 0);
+			water.transform.position = V3(0, now, 100);
 			this.sceneModel.addNode(water);
 			now += 50;
+		}
+		
+		
+
+	}
+
+	generateMountain(width:number,height:number,depth:number){
+
+		let x = -175;
+		let y = 0;
+		let z = 25;
+		let size = 50;
+		for(let i  = 0;i<width;i++){
+			for(let j = 0;j<height;j++){
+				for(let k = 0;k<depth;k++){
+					if((i === 0 && k === (depth-1)) || (i === (width-1) && k === (depth-1))){
+						continue;
+					}
+					let soil = new MountainNodeModel();
+					soil.transform.position = V3(x, y ,z);
+					this.sceneModel.addNode(soil);
+					z += size;
+				}
+				z = 20;
+				y += size;
+			}
+			y = 0;
+			x += size;
 		}
 		
 		
