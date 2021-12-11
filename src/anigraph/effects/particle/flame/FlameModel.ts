@@ -75,7 +75,7 @@ export class FlameModel extends A2DParticlesModel {
 		this.height = 1.5;
 		this.amplitude = 0.5;
 		this.frequency = 0.5;
-		this.randomness = 1.2;
+		this.randomness = 1.1;
 		this.lifespan = 1.0;
 		this.gamma = 2.0;
 		this.playing = true;
@@ -137,13 +137,13 @@ export class FlameModel extends A2DParticlesModel {
 		let emissionScale = corners[0].minus(corners[1]).L2();
 		let heightScale = corners[2].minus(corners[0]).L2();
 		let palpha = Math.random();
-		let startPosition = this.getBounds().randomTransformedPoint();
+		let startPosition = this.getBounds().randomTransformedPoint().plus(V3(0, 0, 100));
 		// corners[0]
 		// .times(palpha)
 		// .plus(
 		//     corners[1].times(1-palpha)
 		// );
-		let startColor = Color.FromString('#0000FF'); //this.color.Spun(this.randomness * FlameParticleEnums.COLOR_RANDOM_SHIFT);
+		let startColor = Color.FromString('#00a2ff'); //this.color.Spun(this.randomness * FlameParticleEnums.COLOR_RANDOM_SHIFT);
 		let particleSize = this.particleSize * emissionScale;
 		let height = heightScale * this.height * (1 + this.randomness * Math.random());
 		let amplitude = emissionScale * this.amplitude;

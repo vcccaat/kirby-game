@@ -45,7 +45,7 @@ export class FlameParticle extends AParticle {
 		amplitude: number = 1,
 		phase: number = 0,
 		sizeDecay: number = 1,
-		colorShift: number = 0.5,
+		colorShift: number = 0.1,
 		gamma: number = 2,
 		alpha: number = 1
 	) {
@@ -67,7 +67,7 @@ export class FlameParticle extends AParticle {
 		amplitude: number = 1,
 		phase: number = 0,
 		sizeDecay: number = 1,
-		colorShift: number = 0.5,
+		colorShift: number = 0.8,
 		gamma: number = 2,
 		alpha: number = 1
 	) {
@@ -76,7 +76,7 @@ export class FlameParticle extends AParticle {
 		this.lifespan = lifespan;
 		this.startRadius = radius;
 		this.startPosition = position ? position.clone() : V3();
-		this.startColor = color ? color : Color.FromString('#0000FF');
+		this.startColor = color ? color : Color.FromString('#00a2ff');
 		this.frequency = frequency;
 		this.amplitude = amplitude;
 		this.phase = phase;
@@ -106,7 +106,7 @@ export class FlameParticle extends AParticle {
 		let progress_gamma = Math.pow(progress, this._gamma);
 		let inv_progress_gamma = 1 - Math.pow(1 - progress, this._gamma);
 		this._position = this.startPosition
-			.plus(V3(0, 100, 0))
+
 			.minus(
 				V3(
 					this.amplitude * Math.sin(this.frequency * 2 * Math.PI * t + this.phase * 2 * Math.PI),
@@ -118,9 +118,9 @@ export class FlameParticle extends AParticle {
 			.minus(this.eulerPosition);
 
 		this._radius = this.startRadius * (1 - progress_gamma) + this.sizeDecay * this.startRadius * progress_gamma;
-		this._color = this.startColor;
-		// .Spun(-inv_progress_gamma * this.colorShift)
-		// .Desaturate(progress_gamma * 0.5 * FlameParticleEnums.DESATURATE)
-		// .Darken(progress_gamma * 0.5 * FlameParticleEnums.DARKEN);
+		this._color = this.startColor
+			// .Spun(-inv_progress_gamma * this.colorShift)
+			.Desaturate(progress_gamma * 0.7 * FlameParticleEnums.DESATURATE)
+			.Darken(progress_gamma * 0.8 * FlameParticleEnums.DARKEN);
 	}
 }
